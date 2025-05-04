@@ -4,6 +4,7 @@ import './adminDashboard.css';
 
 // Import services
 import portfolioService from '../../services/portfolioService';
+import apiService from '../../services/apiService';
 
 // Import components
 import Sidebar from './Sidebar';
@@ -143,6 +144,8 @@ const AdminDashboard = () => {
     console.log('Initializing storage in AdminDashboard');
     try {
       portfolioService.initializeStorage();
+      // Fetch initial user profile from the API
+      fetchUserProfile();
     } catch (error) {
       console.error('Error initializing portfolio storage:', error);
       showNotification('Error initializing data. Please try refreshing the page.', 'error');
@@ -171,19 +174,18 @@ const AdminDashboard = () => {
 
   // State for portfolio data
   const [portfolioData, setPortfolioData] = useState({
-    name: 'Fahim Faysal',
+    name: 'John Doe',
     title: 'Web Developer',
-    projectsCount: 3,
-    educationCount: 3,
-    skillsCount: 18,
-    portfolioViews: 384
+    projectsCount: 0,
+    educationCount: 0,
+    skillsCount: 0,
+    portfolioViews: 0
   });
 
   // State for personal info data
   const [personalInfo, setPersonalInfo] = useState({
     name: '',
     jobTitle: '',
-    introText: '',
     bio: '',
     email: '',
     phone: '',
@@ -198,15 +200,9 @@ const AdminDashboard = () => {
     hero: {
       greeting: "Hello, I'm",
       description: "",
-      stats: [
-        { value: "5+", label: "Years Experience" },
-        { value: "100+", label: "Projects Completed" },
-        { value: "50+", label: "Happy Clients" }
-      ],
       buttonText: "Get In Touch",
-      profileImageUrl: null
-    },
-    aboutImageUrl: null
+      stats: []
+    }
   });
 
   // State for education entries
@@ -238,15 +234,30 @@ const AdminDashboard = () => {
   const [showDeleteEducationConfirm, setShowDeleteEducationConfirm] = useState(false);
   const [deleteEducationIndex, setDeleteEducationIndex] = useState(null);
 
+  // Fetch user profile from API
+  const fetchUserProfile = async () => {
+    try {
+      const response = await apiService.getUserProfile(1);
+      if (response.success) {
+        setPersonalInfo(response.data);
+        // Update portfolio data with user info
+        setPortfolioData(prev => ({
+          ...prev,
+          name: response.data.name,
+          title: response.data.jobTitle
+        }));
+      } else {
+        showNotification('Failed to fetch profile data', 'error');
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      showNotification('Error loading profile: ' + error.message, 'error');
+    }
+  };
+
   // Load data on mount
   useEffect(() => {
     try {
-      // Load personal info
-      const storedPersonalInfo = portfolioService.getSectionData('personalInfo');
-      if (storedPersonalInfo) {
-        setPersonalInfo(storedPersonalInfo);
-      }
-      
       // Load education entries
       const storedEducation = portfolioService.getSectionData('education');
       if (storedEducation) {
@@ -291,15 +302,15 @@ const AdminDashboard = () => {
       
       // Update portfolio data for dashboard
       setPortfolioData({
-        name: storedPersonalInfo?.name || 'Fahim Faysal',
-        title: storedPersonalInfo?.jobTitle || 'Web Developer',
+        name: personalInfo.name || 'Fahim Faysal',
+        title: personalInfo.jobTitle || 'Web Developer',
         projectsCount: 0, // Will be updated separately
         educationCount: storedEducation?.length || 0,
         skillsCount: 
           (storedSkills?.technical?.length || 0) + 
           (storedSkills?.soft?.length || 0) + 
           (storedSkills?.languages?.length || 0),
-        portfolioViews: portfolioService.getPortfolioViews?.() || 0
+        portfolioViews: portfolioService.getPortfolioViews() || 0
       });
       
       // Setup listener for data changes
@@ -366,86 +377,26 @@ const AdminDashboard = () => {
     }
   }, []);
 
-  // Function to show notification
+  // Show notification message
   const showNotification = (message, type = 'success') => {
     setNotification({ show: true, message, type });
     setTimeout(() => {
-      setNotification({ show: false, message: '', type: '' });
-    }, 3000);
+      setNotification({ ...notification, show: false });
+    }, 5000);
   };
 
-  // Function to toggle sidebar
+  // Toggle sidebar collapse
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
   };
 
-  // Function to change active section
+  // Change active section
   const changeSection = (section) => {
-    console.log(`Changing section to: ${section}`);
-    
-    // Consistency check for section naming
-    if (section === 'personal') {
-      section = 'personalInfo';
-      console.log('Converting "personal" to "personalInfo" for consistency');
-    }
-    
     setActiveSection(section);
+    window.location.hash = section;
     
-    // Load section-specific data
-    try {
-      if (section === 'personalInfo') {
-        console.log('Loading personal info data');
-        const personalData = portfolioService.getSectionData('personalInfo');
-        console.log('Personal data from service:', personalData);
-        
-        // Make sure we have data
-        if (personalData) {
-          console.log('Setting personal info state with data');
-          setPersonalInfo(personalData);
-        } else {
-          console.warn('No personal info data returned from service');
-        }
-      } else if (section === 'education') {
-        console.log('Loading education data');
-        const educationData = portfolioService.getSectionData('education');
-        console.log('Education data from service:', educationData);
-        if (educationData) {
-          setEducationEntries(educationData);
-        }
-      } else if (section === 'experience') {
-        const experienceData = portfolioService.getSectionData('experience');
-        if (experienceData) {
-          setExperienceEntries(experienceData);
-        }
-      } else if (section === 'skills') {
-        const skillsData = portfolioService.getSectionData('skills');
-        if (skillsData) {
-          setSkillsData(skillsData);
-        }
-      } else if (section === 'pictures') {
-        const picturesData = portfolioService.getSectionData('pictures');
-        if (picturesData) {
-          setPictures(picturesData);
-        }
-      } else if (section === 'projects') {
-        const projectsData = portfolioService.getSectionData('projects');
-        if (projectsData) {
-          setProjects(projectsData);
-        }
-      } else if (section === 'highlights') {
-        const highlightsData = portfolioService.getSectionData('highlights');
-        if (highlightsData) {
-          setHighlights(highlightsData);
-        }
-      } else if (section === 'references') {
-        const referencesData = portfolioService.getSectionData('references');
-        if (referencesData) {
-          setReferences(referencesData);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading section data:', error);
-    }
+    // Scroll to top when changing section
+    window.scrollTo(0, 0);
   };
 
   // Function to toggle user dropdown
@@ -456,12 +407,12 @@ const AdminDashboard = () => {
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (userDropdownOpen && !event.target.closest(`.${styles['user-profile']}`)) {
+      if (userDropdownOpen && !event.target.closest(`.user-profile`)) {
         setUserDropdownOpen(false);
       }
       
       // Close search results if clicking outside
-      if (showSearchResults && !event.target.closest(`.${styles['search-container']}`)) {
+      if (showSearchResults && !event.target.closest(`.search-container`)) {
         setShowSearchResults(false);
       }
     };
@@ -499,19 +450,33 @@ const AdminDashboard = () => {
     });
   };
 
-  const savePersonalInfoChanges = () => {
-    // Save to service with the correct section name
-    portfolioService.saveSectionData('personalInfo', personalInfo);
-    
-    // Log activity
-    logActivity('edit', 'Personal Information');
-    
-    showNotification('Personal information saved successfully!');
-    setPortfolioData(prev => ({
-      ...prev,
-      name: personalInfo.name,
-      title: personalInfo.jobTitle
-    }));
+  const savePersonalInfoChanges = async () => {
+    try {
+      // Save to API
+      const response = await apiService.updateUserProfile(1, personalInfo);
+      
+      if (response.success) {
+        // Log activity
+        logActivity('edit', 'Personal Information');
+        
+        showNotification('Personal information saved successfully!');
+        
+        // Update local state with the response data
+        setPersonalInfo(response.data);
+        
+        // Update portfolio data display
+        setPortfolioData(prev => ({
+          ...prev,
+          name: response.data.name,
+          title: response.data.jobTitle
+        }));
+      } else {
+        throw new Error(response.message || 'Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Error saving personal info:', error);
+      showNotification('Error saving changes: ' + error.message, 'error');
+    }
   };
 
   // Education Section Functions
@@ -693,7 +658,7 @@ const AdminDashboard = () => {
     showNotification('Skill deleted');
   };
 
-  // Function to log activity
+  // Log activity
   const logActivity = (type, section, name = null) => {
     const newActivity = {
       type,
@@ -701,27 +666,20 @@ const AdminDashboard = () => {
       name,
       timestamp: new Date().toISOString()
     };
-    const updatedActivity = [newActivity, ...recentActivity.slice(0, 9)]; // Keep only the 10 most recent activities
-    setRecentActivity(updatedActivity);
-    localStorage.setItem('portfolio_recent_activity', JSON.stringify(updatedActivity));
+    
+    setRecentActivity(prev => [newActivity, ...prev]);
   };
 
   // Format relative date
   const formatRelativeDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const diffInSeconds = Math.floor((now - date) / 1000);
     
-    if (diffDays === 0) {
-      return 'Today, ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } else if (diffDays === 1) {
-      return 'Yesterday, ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } else if (diffDays < 7) {
-      return `${diffDays} days ago, ` + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } else {
-      return date.toLocaleDateString() + ', ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
+    if (diffInSeconds < 60) return 'just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    return `${Math.floor(diffInSeconds / 86400)} days ago`;
   };
 
   // Handle search function

@@ -7,7 +7,10 @@
     "start:backend": "cd backend && npm start",
     "start:frontend": "cd frontend && npm run dev",
     "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
-    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "dev": "node start-dev.js",
+    "backend:setup": "cd backend && node setup-db.js",
+    "backend:test": "cd backend && node utils/testConnection.js"
   },
   "dependencies": {
     "concurrently": "^8.2.0",
