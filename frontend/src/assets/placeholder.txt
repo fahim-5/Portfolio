@@ -1,0 +1,42 @@
+This file contains placeholder information for required images.
+
+Images folder structure:
+- /images
+  - /highlights
+  - /projects
+  - /pictures
+  - /references
+  
+Images required for profile:
+- profile.jpg (square, high quality portrait photo)
+
+Images required for highlights section:
+- highlights/cybersecurity.jpg (research or cybersecurity themed image)
+- highlights/cannabis-analytics.jpg (analytics or lab themed image)
+- highlights/placeholder.jpg (generic placeholder for new highlights)
+
+Images required for projects section:
+- projects/portfolio.jpg (website or coding themed image)
+- projects/crypto-research.jpg (cybersecurity themed image)
+- projects/database-optimization.jpg (database or computer themed image)
+- projects/placeholder.jpg (generic placeholder for new projects)
+
+Images required for pictures section:
+- pictures/research-lab.jpg (lab or research environment)
+- pictures/conference.jpg (conference or presentation setting)
+- pictures/graduation.jpg (graduation or academic setting)
+- pictures/placeholder.jpg (generic placeholder for new pictures)
+
+Images required for references section:
+- references/professor.jpg (professional headshot of male or female professor)
+- references/manager.jpg (professional headshot of male or female manager)
+- references/placeholder.jpg (generic placeholder for new references)
+
+For best results, all images should be:
+- High resolution (minimum 800x600 pixels)
+- Professional quality
+- Well-lit and clear
+- Relevant to their context
+- Properly cropped and composed
+
+Note: You can use free stock images from sites like Unsplash, Pexels, or Pixabay if needed. 

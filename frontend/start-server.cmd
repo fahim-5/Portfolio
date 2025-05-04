@@ -1,0 +1,3 @@
+@echo off
+echo Starting Vite development server...
+call npm run dev 

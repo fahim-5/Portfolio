@@ -1,0 +1,254 @@
+.portfolio {
+  padding: 80px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.sectionTitle {
+  font-size: 30px;
+  position: relative;
+  margin-bottom: 30px;
+  color: var(--text-color);
+  display: inline-block;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 40px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  border-radius: 2px;
+}
+
+.portfolioGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+.projectCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  transform: translateY(15px);
+  will-change: opacity, transform;
+}
+
+.projectCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.projectCard.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.projectImage {
+  position: relative;
+  overflow: hidden;
+  height: 200px;
+}
+
+.projectImage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.8));
+  z-index: 1;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.projectCard:hover .projectImage::before {
+  opacity: 0.5;
+}
+
+.projectImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.projectCard:hover .projectImage img {
+  transform: scale(1.05);
+}
+
+.projectContent {
+  padding: 25px;
+  flex-grow: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.projectTag {
+  display: inline-block;
+  padding: 5px 12px;
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.projectContent h3 {
+  font-size: 20px;
+  color: var(--text-color);
+  margin-bottom: 10px;
+}
+
+.projectContent p {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.projectTools {
+  margin-bottom: 20px;
+}
+
+.projectTools h4 {
+  font-size: 14px;
+  color: var(--text-color);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.toolsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.toolTag {
+  display: inline-block;
+  padding: 3px 8px;
+  background: rgba(0, 188, 212, 0.1);
+  border: 1px solid rgba(0, 188, 212, 0.3);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--primary-color);
+  transition: all 0.2s ease;
+}
+
+.toolTag:hover {
+  background: rgba(0, 188, 212, 0.2);
+  transform: translateY(-2px);
+}
+
+.viewProject {
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary-color);
+  font-size: 15px;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 5px;
+  z-index: 1;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.viewProject::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  transition: width 0.3s ease;
+}
+
+.viewProject i {
+  margin-left: 5px;
+  transition: transform 0.3s ease;
+}
+
+.viewProject:hover {
+  color: var(--accent-color);
+}
+
+.viewProject:hover::before {
+  width: 100%;
+}
+
+.viewProject:hover i {
+  transform: translateX(5px);
+}
+
+/* Media Queries */
+@media (max-width: 992px) {
+  .container {
+    max-width: 100%;
+    padding: 0 20px;
+  }
+  
+  .portfolioGrid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .sectionTitle {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+  
+  .sectionTitle::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .toolsContainer {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .portfolioGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .projectTools h4 {
+    font-size: 13px;
+    text-align: center;
+  }
+  
+  .toolTag {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+} 

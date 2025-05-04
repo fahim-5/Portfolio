@@ -1,0 +1,386 @@
+.pictures {
+  padding: 60px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.sectionTitle {
+  font-size: 24px;
+  position: relative;
+  margin-bottom: 25px;
+  color: var(--text-color);
+  display: inline-block;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 40px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  border-radius: 2px;
+}
+
+.picturesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.pictureCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  transform: translateY(15px);
+  will-change: opacity, transform;
+}
+
+.pictureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.pictureCard.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pictureImage {
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  padding: 0;
+}
+
+/* Remove the gradient overlay as it may interfere with the upload component */
+.pictureImage::after {
+  content: none;
+}
+
+/* Update styles for the ImageUpload component inside pictureImage */
+.pictureImage > div {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  border: none !important;
+}
+
+.pictureImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Remove button styles */
+.removeBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.pictureCard:hover .removeBtn {
+  opacity: 1;
+}
+
+.removeBtn:hover {
+  background-color: rgba(255, 0, 0, 0.7);
+}
+
+.removeBtn i {
+  font-size: 14px;
+}
+
+.pictureContent {
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.pictureTag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 12px;
+}
+
+.pictureContent h3 {
+  font-size: 18px;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.pictureContent p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.viewPicture {
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary-color);
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 5px;
+  z-index: 1;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.viewPicture::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  transition: width 0.3s ease;
+}
+
+.viewPicture i {
+  margin-left: 5px;
+  transition: transform 0.3s ease;
+}
+
+.viewPicture:hover {
+  color: var(--accent-color);
+}
+
+.viewPicture:hover::before {
+  width: 100%;
+}
+
+.viewPicture:hover i {
+  transform: translateX(5px);
+}
+
+/* Add Picture Card styles */
+.addPictureCard {
+  position: relative;
+  border-radius: 12px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(5px);
+  border: 2px dashed var(--border-color);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.addPictureCard:hover {
+  transform: translateY(-5px);
+  opacity: 1;
+  border-color: var(--primary-color);
+}
+
+.addPictureIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.addPictureCard:hover .addPictureIcon {
+  transform: scale(1.1);
+}
+
+.addPictureIcon i {
+  color: white;
+  font-size: 24px;
+}
+
+.addPictureCard p {
+  font-size: 16px;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+/* Edit button styles */
+.editBtn {
+  margin-top: 10px;
+  background: transparent;
+  border: none;
+  color: var(--primary-color);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.editBtn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  opacity: 1;
+}
+
+.editBtn i {
+  margin-right: 5px;
+  font-size: 11px;
+}
+
+/* Edit form styles */
+.editForm {
+  width: 100%;
+}
+
+.editInput, .editTextarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  margin-bottom: 10px;
+  font-size: 13px;
+  transition: border-color 0.2s ease;
+}
+
+.editInput:focus, .editTextarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.editTextarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.editBtns {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.saveBtn, .cancelBtn {
+  padding: 7px 15px;
+  border-radius: 4px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saveBtn {
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+  color: white;
+}
+
+.saveBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.cancelBtn {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.cancelBtn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Add styles for regular images in the picture card */
+.pictureImg {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.pictureCard:hover .pictureImg {
+  transform: scale(1.05);
+}
+
+/* Media Queries */
+@media (max-width: 992px) {
+  .container {
+    max-width: 100%;
+    padding: 0 20px;
+  }
+  
+  .picturesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .sectionTitle {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+  
+  .sectionTitle::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 576px) {
+  .picturesGrid {
+    grid-template-columns: 1fr;
+  }
+} 
