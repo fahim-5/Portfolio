@@ -5,7 +5,7 @@ import portfolioService from './services/portfolioService';
 import './pages/admin/adminDashboard.css';
 
 // Initialize storage on application startup
-portfolioService.initializeStorage();
+
 
 // Create a global backup function to preserve data
 window.backupPortfolioData = () => {

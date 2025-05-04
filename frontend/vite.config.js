@@ -10,9 +10,17 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,        // Changed from 3000 to Vite's default 5173
-    open: false,       // Don't open browser automatically
-    host: true,        // Expose to all network interfaces 
-    strictPort: false, // Allow fallback to another port if this one is in use
+    port: 5173,
+    open: false,
+    host: true,
+    strictPort: false,
   },
-}); 
+  // Add these configurations for environment variables
+  define: {
+    'process.env': {},
+    // Optional: If you need to expose specific env variables
+    __APP_ENV__: JSON.stringify(process.env.npm_config_env || 'development'),
+  },
+  // Environment variable handling
+  envPrefix: 'VITE_', // Only variables prefixed with VITE_ will be exposed
+});

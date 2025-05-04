@@ -1,95 +1,131 @@
-// This is a simple fallback service that uses localStorage
-// It will be gradually replaced by API calls to the backend
-
-const storagePrefix = 'portfolio_';
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const portfolioService = {
-  // Initialize storage
-  initializeStorage: () => {
-    // Check if storage is initialized
-    if (!localStorage.getItem(`${storagePrefix}initialized`)) {
-      console.log('Initializing portfolio storage');
-      localStorage.setItem(`${storagePrefix}initialized`, 'true');
-      
-      // Initialize empty sections
-      const sections = [
-        'personalInfo',
-        'education',
-        'experience',
-        'skills',
-        'projects',
-        'highlights',
-        'references',
-        'pictures'
-      ];
-      
-      sections.forEach(section => {
-        if (!localStorage.getItem(`${storagePrefix}${section}`)) {
-          localStorage.setItem(`${storagePrefix}${section}`, JSON.stringify({}));
+  // Generic method to fetch section data
+  getSectionData: async (section) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/${section}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
       
-      // Initialize recent activity
-      if (!localStorage.getItem(`${storagePrefix}recent_activity`)) {
-        localStorage.setItem(`${storagePrefix}recent_activity`, JSON.stringify([]));
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      // Initialize portfolio views counter
-      if (!localStorage.getItem(`${storagePrefix}views`)) {
-        localStorage.setItem(`${storagePrefix}views`, '0');
-      }
+      return await response.json();
+    } catch (error) {
+      console.error(`Error fetching ${section} data:`, error);
+      throw error;
     }
   },
-  
-  // Save section data
-  saveSectionData: (section, data) => {
-    localStorage.setItem(`${storagePrefix}${section}`, JSON.stringify(data));
-    return true;
-  },
-  
-  // Get section data
-  getSectionData: (section) => {
-    const data = localStorage.getItem(`${storagePrefix}${section}`);
-    if (data) {
-      try {
-        return JSON.parse(data);
-      } catch (error) {
-        console.error(`Error parsing ${section} data:`, error);
-        return null;
+
+  // Generic method to save/update an entry
+  saveEntry: async (section, entry) => {
+    const isUpdate = entry.id;
+    const url = isUpdate 
+      ? `${API_BASE_URL}/api/${section}/${entry.id}`
+      : `${API_BASE_URL}/api/${section}`;
+
+    try {
+      const response = await fetch(url, {
+        method: isUpdate ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(entry)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      return await response.json();
+    } catch (error) {
+      console.error(`Error saving ${section} entry:`, error);
+      throw error;
     }
-    return null;
   },
-  
-  // Delete section data
-  deleteSectionData: (section) => {
-    localStorage.removeItem(`${storagePrefix}${section}`);
-    return true;
-  },
-  
-  // Clear all portfolio data
-  clearAllData: () => {
-    Object.keys(localStorage).forEach(key => {
-      if (key.startsWith(storagePrefix)) {
-        localStorage.removeItem(key);
+
+  // Generic method to delete an entry
+  deleteEntry: async (section, id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/${section}/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    });
-    return true;
+
+      return await response.json();
+    } catch (error) {
+      console.error(`Error deleting ${section} entry:`, error);
+      throw error;
+    }
   },
-  
-  // Increment portfolio views counter
-  incrementPortfolioViews: () => {
-    const views = localStorage.getItem(`${storagePrefix}views`) || '0';
-    const newViews = parseInt(views, 10) + 1;
-    localStorage.setItem(`${storagePrefix}views`, newViews.toString());
-    return newViews;
+
+  // Education-specific methods
+  getEducation: async () => {
+    return this.getSectionData('education');
   },
-  
-  // Get portfolio views count
-  getPortfolioViews: () => {
-    const views = localStorage.getItem(`${storagePrefix}views`) || '0';
-    return parseInt(views, 10);
+
+  saveEducation: async (education) => {
+    return this.saveEntry('education', education);
+  },
+
+  deleteEducation: async (id) => {
+    return this.deleteEntry('education', id);
+  },
+
+  // Add similar methods for other sections as needed
+  // (experience, skills, projects, etc.)
+
+  // Views tracking (if implemented in backend)
+  incrementPortfolioViews: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/analytics/views`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error incrementing views:', error);
+      throw error;
+    }
+  },
+
+  getPortfolioViews: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/analytics/views`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data.views;
+    } catch (error) {
+      console.error('Error fetching views:', error);
+      throw error;
+    }
   }
 };
 
-export default portfolioService; 
+export default portfolioService;
