@@ -1,31 +1,26 @@
-const { connectDB } = require('./config/db');
-const config = require('./config/config');
-const app = require('./app');
+require("dotenv").config();
+const app = require("./app");
+const pool = require("./config/db");
 
-console.log('🚀 Starting Portfolio Application...');
-console.log('------------------------------------------');
+const PORT = process.env.PORT || 5001;
 
-const startServer = async () => {
+async function startServer() {
   try {
-    await connectDB();
-    
-    app.listen(config.PORT, () => {
-      console.log(`✅ Server running in ${config.NODE_ENV} mode on port ${config.PORT}`);
-      console.log('------------------------------------------');
-      console.log('📁 API Routes:');
-      console.log(`  • Root: http://localhost:${config.PORT}/`);
-      console.log(`  • Health Check: http://localhost:${config.PORT}/api/health`);
-      console.log(`  • Database Test: http://localhost:${config.PORT}/api/db/test`);
-      console.log('------------------------------------------');
-      console.log('📱 Portfolio application is now fully operational!');
+    // Test database connection
+    const connection = await pool.getConnection();
+    console.log("✅ Connected to MySQL database");
+    connection.release();
+
+    // Start server
+    app.listen(PORT, () => {
+      console.log(
+        `🚀 Backend server running in ${process.env.NODE_ENV} mode on port ${PORT}`
+      );
     });
-  } catch (err) {
-    console.error('❌ SERVER STARTUP ERROR ❌');
-    console.error('------------------------------------------');
-    console.error(`Error details: ${err.message}`);
-    console.error('------------------------------------------');
+  } catch (error) {
+    console.error("❌ Failed to connect to MySQL database:", error.message);
     process.exit(1);
   }
-};
+}
 
 startServer();
