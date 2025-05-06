@@ -6,47 +6,8 @@ import portfolioService from '../../services/portfolioService';
 
 
 const About = () => {
-  const [aboutData, setAboutData] = useState({
-    name: "John Doe",
-    bio: "I am a passionate Full Stack Developer with 5+ years of experience in building web applications. My expertise spans across frontend and backend technologies, with a focus on creating responsive, user-friendly interfaces and robust server-side applications.",
-    socialLinks: {
-      linkedin: "https://www.linkedin.com/",
-      github: "https://github.com/",
-      twitter: "https://twitter.com/",
-      instagram: "https://www.instagram.com/"
-    },
-    aboutImageUrl: null
-  });
-
-  useEffect(() => {
-    const loadAboutData = () => {
-      const personalInfo = portfolioService.getSectionData('personal');
-      if (personalInfo) {
-        setAboutData({
-          name: personalInfo.name || aboutData.name,
-          bio: personalInfo.bio || aboutData.bio,
-          socialLinks: personalInfo.socialLinks || aboutData.socialLinks,
-          aboutImageUrl: personalInfo.aboutImageUrl || null
-        });
-      }
-    };
-
-    loadAboutData();
-
-    // Listen for storage updates
-    const handleStorageChange = (e) => {
-      if (e.key === 'portfolio_personal_info' || e.key === 'lastUpdate') {
-        loadAboutData();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  // Convert bio text to paragraphs
-  const bioParagraphs = aboutData.bio.split('\n\n').filter(para => para.trim() !== '');
-
+ 
+ 
   return (
     <section id="about" className={styles.about}>
       <div className={styles.container}>

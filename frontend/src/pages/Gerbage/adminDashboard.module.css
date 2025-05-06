@@ -396,8 +396,7 @@
     align-items: center;
     padding: 15px 25px;
     background: rgba(10, 10, 25, 0.9);
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px);
+   
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     z-index: 99;
@@ -481,8 +480,6 @@
     overflow-y: auto;
     z-index: 1000;
     border: 1px solid var(--border-color);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 
 .search-result-item {
