@@ -8,6 +8,7 @@
   --text-muted: #8a8a9a;
   --danger-color: #ff5252;
   --accent-color: #7986cb;
+  --modal-bg: rgba(10, 10, 20, 0.95);
 }
 
 .loginPage {
@@ -135,6 +136,41 @@
   background-color: rgba(40, 40, 60, 0.5);
 }
 
+.formOptions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.formCheckbox {
+  display: flex;
+  align-items: center;
+}
+
+.formCheckbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.forgotPasswordBtn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 5px;
+  transition: all 0.3s ease;
+}
+
+.forgotPasswordBtn:hover {
+  text-decoration: underline;
+}
+
 .loginBtn {
   width: 100%;
   background-color: var(--primary-color);
@@ -156,14 +192,6 @@
   box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
 }
 
-.errorMessage {
-  color: var(--danger-color);
-  font-size: 14px;
-  margin-top: 15px;
-  min-height: 20px;
-  text-align: center;
-}
-
 .backToPortfolio {
   margin-top: 15px;
   text-align: center;
@@ -181,21 +209,6 @@
 
 .backToPortfolio a:hover {
   color: var(--primary-color);
-}
-
-.formCheckbox {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.formCheckbox label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--text-muted);
-  cursor: pointer;
 }
 
 .warningContainer {
@@ -265,6 +278,104 @@
   margin-top: 25px;
 }
 
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: var(--modal-bg);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-color);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modalHeader h3 {
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.closeBtn:hover {
+  color: var(--text-color);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modalActions button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modalActions button:first-child {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+}
+
+.modalActions button:first-child:hover {
+  color: var(--text-color);
+  border-color: var(--text-color);
+}
+
+.primaryBtn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.primaryBtn:hover {
+  background-color: var(--primary-darker);
+}
+
+.message {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.message {
+  background-color: rgba(255, 82, 82, 0.1);
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+}
+
 @media (max-width: 768px) {
   .loginLayout {
     flex-direction: column;
@@ -298,5 +409,16 @@
   
   .warningContent {
     font-size: 14px;
+  }
+
+  .formOptions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .modal {
+    padding: 20px;
+    margin: 0 15px;
   }
 }
