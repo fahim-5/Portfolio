@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AdminLogin from "./components/AdminLogin";
 import Dashboard from "./pages/admin/Dashboard";
 import Settings from "./pages/admin/Settings";
-import Hero from "./pages/admin/Hero";
+import HeroAdmin from "./pages/admin/HeroAdmin";
 import ProtectedRoute from "./components/ProtectedRoute";
 // import PortfolioHome from './pages/protfolio/PortfolioHome';
 
@@ -37,7 +37,7 @@ const App = () => {
           path="/admin/hero"
           element={
             
-              <Hero />
+              <HeroAdmin />
            
           }
         />
