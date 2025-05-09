@@ -24,11 +24,13 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const heroRoutes = require("./routes/heroRoutes");
 const educationRoutes = require("./routes/educationRoutes");
+const experienceRoutes = require("./routes/experienceRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use('/api/admin/hero', heroRoutes);
 app.use('/api/admin/education', educationRoutes);
+app.use('/api/admin/experience', experienceRoutes);
 
 // Test route
 app.get("/", (req, res) => {

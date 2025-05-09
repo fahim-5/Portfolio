@@ -11,6 +11,8 @@ const HeroAdmin = () => {
     job_title: '',
     button_text: 'Get In Touch',
     profile_image_url: '',
+    bio: '',
+    aboutImageUrl: '',
     email: '',
     phone: '',
     location: '',
@@ -81,7 +83,33 @@ const HeroAdmin = () => {
     setNotification({ type: '', message: '' });
 
     try {
-      await axios.put('/api/admin/hero', hero);
+      // Log the data being submitted
+      console.log('Submitting hero data:', hero);
+      console.log('About fields:', {
+        bio: hero.bio,
+        aboutImageUrl: hero.aboutImageUrl
+      });
+      
+      // Ensure fields are not undefined
+      const dataToSubmit = {
+        ...hero,
+        bio: hero.bio || '',
+        aboutImageUrl: hero.aboutImageUrl || ''
+      };
+      
+      console.log('Final data for submission:', dataToSubmit);
+      
+      // Use explicit axios call with full configuration
+      const response = await axios({
+        method: 'put',
+        url: '/api/admin/hero',
+        data: dataToSubmit,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('Update response:', response.data);
       setNotification({ type: 'success', message: 'Hero section updated successfully!' });
     } catch (error) {
       console.error('Update error:', error);
@@ -198,6 +226,32 @@ const HeroAdmin = () => {
                   placeholder="https://example.com/image.jpg"
                 />
               </div>
+            </div>
+          </section>
+
+          <section className={styles.section}>
+            <h3>About Information</h3>
+            <div className={styles.formGroup}>
+              <label>Bio (About Me) *</label>
+              <textarea
+                name="bio"
+                value={hero.bio || ''}
+                onChange={handleChange}
+                rows={6}
+                placeholder="Share your professional background, skills, and what makes you unique..."
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>About Section Image URL</label>
+              <input
+                type="url"
+                name="aboutImageUrl"
+                value={hero.aboutImageUrl || ''}
+                onChange={handleChange}
+                placeholder="https://example.com/about-image.jpg"
+              />
+              <p className={styles.inputHint}>This image will be displayed in the About section</p>
             </div>
           </section>
 

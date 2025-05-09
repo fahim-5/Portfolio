@@ -117,11 +117,20 @@ const portfolioService = {
     return parseInt(localStorage.getItem(STORAGE_KEYS.VIEWS) || '0', 10);
   },
 
-  // API methods for backend integration
+  // Fetch hero data from API
   async fetchHeroData() {
     try {
+      console.log('portfolioService: Fetching hero data from API...');
       const response = await api.get('/api/admin/hero');
+      console.log('portfolioService: Hero API response:', response.data);
+      
       if (response.data) {
+        // Check if bio and aboutImageUrl exist in the response
+        console.log('portfolioService: About fields in API response:', {
+          bio: response.data.bio,
+          aboutImageUrl: response.data.aboutImageUrl
+        });
+        
         // Transform backend data to frontend format
         const heroData = {
           greeting: response.data.greeting || "Hello, I'm",
@@ -132,6 +141,9 @@ const portfolioService = {
           stats: response.data.stats || [],
           buttonText: response.data.button_text || "Get In Touch",
           profileImageUrl: response.data.profile_image_url || null,
+          // Add new about fields
+          bio: response.data.bio || "",
+          aboutImageUrl: response.data.aboutImageUrl || "",
           email: response.data.email || "",
           phone: response.data.phone || "",
           location: response.data.location || "",
@@ -142,6 +154,12 @@ const portfolioService = {
             instagram: response.data.instagram_url || ""
           }
         };
+
+        console.log('portfolioService: Transformed hero data:', heroData);
+        console.log('portfolioService: About fields in transformed data:', {
+          bio: heroData.bio,
+          aboutImageUrl: heroData.aboutImageUrl
+        });
 
         // Save to localStorage
         this.saveSectionData('personalInfo', heroData);
@@ -157,6 +175,12 @@ const portfolioService = {
   // Update hero data via API
   async updateHeroData(heroData) {
     try {
+      console.log('portfolioService: Updating hero data:', heroData);
+      console.log('portfolioService: About fields in update:', {
+        bio: heroData.bio,
+        aboutImageUrl: heroData.aboutImageUrl
+      });
+      
       // Transform frontend data to backend format
       const backendData = {
         greeting: heroData.greeting,
@@ -166,6 +190,9 @@ const portfolioService = {
         job_title: heroData.jobTitle,
         button_text: heroData.buttonText,
         profile_image_url: heroData.profileImageUrl,
+        // Add new about fields
+        bio: heroData.bio,
+        aboutImageUrl: heroData.aboutImageUrl,
         email: heroData.email,
         phone: heroData.phone,
         location: heroData.location,
@@ -176,7 +203,11 @@ const portfolioService = {
         stats: heroData.stats
       };
 
+      console.log('portfolioService: Transformed backend data for update:', backendData);
+
       const response = await api.put('/api/admin/hero', backendData);
+      console.log('portfolioService: Update hero response:', response.data);
+      
       if (response.data.success) {
         // Save to localStorage
         this.saveSectionData('personalInfo', heroData);
@@ -255,6 +286,109 @@ const portfolioService = {
     }
   },
 
+  // Fetch experience data from API
+  async fetchExperienceData() {
+    try {
+      console.log('Fetching experience data from API...');
+      
+      // Log the API URL
+      console.log('API URL:', api.defaults.baseURL + '/api/admin/experience');
+      
+      try {
+        // First check if the API endpoint is accessible
+        console.log('Testing API connection...');
+        const testResponse = await api.get('/api/admin/experience/check');
+        console.log('API test response:', testResponse.data);
+      } catch (testError) {
+        console.error('API test connection failed:', testError);
+      }
+      
+      // Make the actual request
+      console.log('Making main API request for experience data...');
+      const response = await api.get('/api/admin/experience');
+      
+      console.log('Experience API response status:', response.status);
+      console.log('Experience API response data:', response.data);
+      
+      if (response.data) {
+        // Check the data structure
+        console.log('Data type:', typeof response.data);
+        console.log('Is array:', Array.isArray(response.data));
+        console.log('Data length:', Array.isArray(response.data) ? response.data.length : 'N/A');
+        
+        // Save to localStorage
+        this.saveSectionData('experience', response.data);
+        return response.data;
+      } else {
+        console.log('No data received from API');
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching experience data:', error);
+      console.error('Error details:', error.message);
+      
+      if (error.response) {
+        // The request was made and the server responded with an error status
+        console.error('Error status:', error.response.status);
+        console.error('Error headers:', error.response.headers);
+        console.error('Error data:', error.response.data);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received:', error.request);
+      }
+      
+      return null;
+    }
+  },
+
+  // Create a new experience entry
+  async createExperience(experienceData) {
+    try {
+      const response = await api.post('/api/admin/experience', experienceData);
+      if (response.data.success) {
+        // Fetch updated data after creation
+        await this.fetchExperienceData();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error creating experience entry:', error);
+      return false;
+    }
+  },
+
+  // Update an experience entry
+  async updateExperience(id, experienceData) {
+    try {
+      const response = await api.put(`/api/admin/experience/${id}`, experienceData);
+      if (response.data.success) {
+        // Fetch updated data after update
+        await this.fetchExperienceData();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(`Error updating experience entry with ID ${id}:`, error);
+      return false;
+    }
+  },
+
+  // Delete an experience entry
+  async deleteExperience(id) {
+    try {
+      const response = await api.delete(`/api/admin/experience/${id}`);
+      if (response.data.success) {
+        // Fetch updated data after deletion
+        await this.fetchExperienceData();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(`Error deleting experience entry with ID ${id}:`, error);
+      return false;
+    }
+  },
+
   // Authentication methods
   async login(email, password) {
     try {
@@ -277,6 +411,161 @@ const portfolioService = {
 
   isAuthenticated() {
     return !!localStorage.getItem('authToken');
+  },
+
+  // Fetch about data from API with improved error handling
+  async fetchAboutData() {
+    try {
+      console.log('Fetching about data from API...');
+      
+      // Log the API URL
+      console.log('API URL:', api.defaults.baseURL + '/api/admin/about');
+      
+      // Before making the actual request, check if the server is responding
+      try {
+        console.log('Testing if server is alive...');
+        const serverCheckResponse = await fetch('http://localhost:5000/api', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        console.log('Server check status:', serverCheckResponse.status);
+        if (!serverCheckResponse.ok) {
+          console.warn('Server check failed with status:', serverCheckResponse.status);
+        }
+      } catch (serverCheckError) {
+        console.error('Server is not responding properly:', serverCheckError);
+        throw new Error('Backend server may not be running. Please start the server.');
+      }
+      
+      // Enhanced error handling for API calls
+      try {
+        console.log('Making main API request for about data...');
+        const response = await api.get('/api/admin/about', {
+          validateStatus: function (status) {
+            return status < 500; // Accept all non-500 responses for diagnosis
+          }
+        });
+        
+        console.log('About API response status:', response.status);
+        
+        if (response.status === 200 && response.data) {
+          // Check the data structure
+          console.log('Data type:', typeof response.data);
+          console.log('Is array:', Array.isArray(response.data));
+          console.log('Data length:', Array.isArray(response.data) ? response.data.length : 'N/A');
+          
+          // Save to localStorage
+          this.saveSectionData('about', response.data);
+          return response.data;
+        } else {
+          console.warn('Non-success response:', response.status, response.data);
+          return [];
+        }
+      } catch (error) {
+        if (error.response) {
+          // The request was made and the server responded with an error status
+          console.error('Error status:', error.response.status);
+          
+          // Log the data if it's not JSON
+          if (error.response.data && typeof error.response.data === 'string' && 
+              error.response.data.includes('<!DOCTYPE')) {
+            console.error('Received HTML instead of JSON. Server may have crashed.');
+            throw new Error('Server returned HTML instead of JSON. Backend may have an error.');
+          }
+          
+          console.error('Error data:', error.response.data);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('No response received:', error.request);
+          throw new Error('No response from server. Backend may not be running.');
+        }
+        
+        throw error; // Rethrow to handle in component
+      }
+    } catch (error) {
+      console.error('Error fetching about data:', error);
+      console.error('Error details:', error.message);
+      
+      throw error; // Allow component to handle the error
+    }
+  },
+
+  // Create a new about entry with improved logging
+  async createAbout(aboutData) {
+    try {
+      console.log('Creating about entry with data:', aboutData);
+      const response = await api.post('/api/admin/about', aboutData);
+      console.log('Create about response:', response);
+      
+      if (response.data && response.data.success) {
+        // Fetch updated data after creation
+        await this.fetchAboutData();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error creating about entry:', error);
+      console.error('Error details:', error.message);
+      
+      if (error.response) {
+        console.error('Server responded with:', error.response.data);
+      }
+      
+      throw error; // Rethrow to allow handling in the component
+    }
+  },
+
+  // Update an about entry with improved logging
+  async updateAbout(id, aboutData) {
+    try {
+      console.log(`Updating about entry with ID ${id}:`, aboutData);
+      const response = await api.put(`/api/admin/about/${id}`, aboutData);
+      console.log('Update about response:', response);
+      
+      if (response.data && response.data.success) {
+        // Fetch updated data after update
+        await this.fetchAboutData();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(`Error updating about entry with ID ${id}:`, error);
+      console.error('Error details:', error.message);
+      
+      if (error.response) {
+        console.error('Server responded with:', error.response.data);
+      }
+      
+      throw error; // Rethrow to allow handling in the component
+    }
+  },
+
+  // Delete an about entry with improved logging
+  async deleteAbout(id) {
+    try {
+      console.log(`Deleting about entry with ID ${id}`);
+      const response = await api.delete(`/api/admin/about/${id}`);
+      console.log('Delete about response:', response);
+      
+      if (response.data && response.data.success) {
+        // Fetch updated data after deletion
+        await this.fetchAboutData();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(`Error deleting about entry with ID ${id}:`, error);
+      console.error('Error details:', error.message);
+      
+      if (error.response) {
+        console.error('Server responded with:', error.response.data);
+      }
+      
+      throw error; // Rethrow to allow handling in the component
+    }
   }
 };
 

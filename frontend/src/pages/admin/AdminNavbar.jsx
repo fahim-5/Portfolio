@@ -30,12 +30,7 @@ const AdminNavbar = () => {
             </li>
             <li className={styles.navItem}>
               <Link to="/admin/hero" className={styles.navLink}>
-                Hero Section
-              </Link>
-            </li>
-            <li className={styles.navItem}>
-              <Link to="/admin/about" className={styles.navLink}>
-                About
+                Hero & About
               </Link>
             </li>
             <li className={styles.navItem}>

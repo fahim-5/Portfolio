@@ -8,7 +8,6 @@ import Settings from "./pages/admin/Settings";
 import HeroAdmin from "./pages/admin/HeroAdmin";
 import AdminNavbar from "./pages/admin/AdminNavbar";
 import AdminSkillsManager from "./pages/admin/AdminSkillsManager";
-import AdminAbout from "./pages/admin/AdminAbout";
 
 import AdminPictures from "./pages/admin/AdminPictures";
 import AdminExperience from "./pages/admin/AdminExperience";
@@ -37,7 +36,6 @@ const App = () => {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="hero" element={<HeroAdmin />} />
-                <Route path="about" element={<AdminAbout />} />
                 <Route path="education" element={<AdminEducation />} />
                 <Route path="experience" element={<AdminExperience />} />
                 <Route path="skills" element={<AdminSkillsManager />} />
