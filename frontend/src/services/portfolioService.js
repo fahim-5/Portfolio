@@ -1104,6 +1104,158 @@ const portfolioService = {
       console.error('Error deleting picture:', error);
       throw error;
     }
+  },
+
+  // Fetch references data from API
+  async fetchReferencesData() {
+    try {
+      console.log('portfolioService: Fetching references data from API...');
+      
+      // Use only port 5000 as specified
+      const baseURL = 'http://localhost:5000';
+      console.log(`Fetching references from ${baseURL}/api/references`);
+      
+      const response = await fetch(`${baseURL}/api/references`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log(`Response status from ${baseURL}/api/references:`, response.status);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch references: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log('References data received from server:', data);
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching references data:', error);
+      throw error;
+    }
+  },
+  
+  // Create new reference
+  async createReference(referenceData) {
+    try {
+      console.log('Creating reference:', referenceData);
+      
+      // Use only port 5000 as specified
+      const baseURL = 'http://localhost:5000';
+      console.log(`Creating reference at ${baseURL}/api/references`);
+      
+      const response = await fetch(`${baseURL}/api/references`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+          // Removed auth token for testing
+        },
+        body: JSON.stringify(referenceData)
+      });
+      
+      console.log(`Response status from ${baseURL}/api/references:`, response.status);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to create reference: ${response.status} ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      console.log('Reference created successfully:', result);
+      
+      return result;
+    } catch (error) {
+      console.error('Error creating reference:', error);
+      throw error;
+    }
+  },
+  
+  // Update reference
+  async updateReference(id, referenceData) {
+    try {
+      console.log(`Updating reference ${id}:`, referenceData);
+      
+      // Use only port 5000 as specified
+      const baseURL = 'http://localhost:5000';
+      console.log(`Updating reference at ${baseURL}/api/references/${id}`);
+      
+      // Convert ID to number if it's a string
+      const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
+      
+      if (isNaN(numericId)) {
+        throw new Error(`Invalid reference ID: ${id}`);
+      }
+      
+      const response = await fetch(`${baseURL}/api/references/${numericId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+          // Removed auth token for testing
+        },
+        body: JSON.stringify(referenceData)
+      });
+      
+      console.log(`Response status from ${baseURL}/api/references/${numericId}:`, response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Error response:', errorData);
+        throw new Error(`Failed to update reference: ${response.status} ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      console.log('Reference updated successfully:', result);
+      
+      return result;
+    } catch (error) {
+      console.error('Error updating reference:', error);
+      throw error;
+    }
+  },
+  
+  // Delete reference
+  async deleteReference(id) {
+    try {
+      console.log(`Deleting reference ${id}`);
+      
+      // Use only port 5000 as specified
+      const baseURL = 'http://localhost:5000';
+      console.log(`Deleting reference at ${baseURL}/api/references/${id}`);
+      
+      // Convert ID to number if it's a string
+      const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
+      
+      if (isNaN(numericId)) {
+        throw new Error(`Invalid reference ID: ${id}`);
+      }
+      
+      const response = await fetch(`${baseURL}/api/references/${numericId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+          // Removed auth token for testing
+        }
+      });
+      
+      console.log(`Response status from ${baseURL}/api/references/${numericId}:`, response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Error response:', errorData);
+        throw new Error(`Failed to delete reference: ${response.status} ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      console.log('Reference deleted successfully:', result);
+      
+      return result;
+    } catch (error) {
+      console.error('Error deleting reference:', error);
+      throw error;
+    }
   }
 };
 

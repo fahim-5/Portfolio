@@ -28,6 +28,7 @@ const experienceRoutes = require("./routes/experienceRoutes");
 const skillsRoutes = require("./routes/skillsRoutes");
 const projectsRoutes = require("./routes/projectsRoutes");
 const picturesRoutes = require("./routes/picturesRoutes");
+const referencesRoutes = require("./routes/referencesRoutes");
 
 // Log available routes for debugging
 console.log("Available routes:");
@@ -39,6 +40,7 @@ console.log("- /api/admin/experience (experienceRoutes)");
 console.log("- /api/admin/skills (skillsRoutes)");
 console.log("- /api/admin/projects (projectsRoutes)");
 console.log("- /api/admin/pictures (picturesRoutes)");
+console.log("- /api/admin/references (referencesRoutes)");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
@@ -48,6 +50,7 @@ app.use('/api/admin/experience', experienceRoutes);
 app.use('/api/admin/skills', skillsRoutes);
 app.use('/api/admin/projects', projectsRoutes);
 app.use('/api/admin/pictures', picturesRoutes);
+app.use('/api/admin/references', referencesRoutes);
 
 // Test route
 app.get("/", (req, res) => {
@@ -94,6 +97,9 @@ app.use('/api/projects', require('./routes/projectsRoutes'));
 
 // Additional non-admin pictures route for public access
 app.use('/api/pictures', require('./routes/picturesRoutes'));
+
+// Additional non-admin references route for public access
+app.use('/api/references', require('./routes/referencesRoutes'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
