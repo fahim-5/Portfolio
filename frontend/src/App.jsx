@@ -3,7 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Component Imports
 import AdminLogin from "./components/AdminLogin";
-import AdminNavbar from "./pages/admin/AdminNavbar";
+import Dashboard from "./pages/admin/Dashboard";
+import Settings from "./pages/admin/Settings";
+import Hero from "./pages/admin/Hero";
+import ProtectedRoute from "./components/ProtectedRoute";
 // import PortfolioHome from './pages/protfolio/PortfolioHome';
 
 // Global Styles
@@ -15,7 +18,29 @@ const App = () => {
       <Routes>
         {/* <Route path="/" element={<PortfolioHome />} /> */}
         <Route path="/" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminNavbar />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            
+              <Dashboard />
+          }
+        />
+        <Route
+          path="/admin/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/hero"
+          element={
+            
+              <Hero />
+           
+          }
+        />
       </Routes>
     </Router>
   );

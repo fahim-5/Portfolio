@@ -1,29 +1,40 @@
-const express = require('express');
+const express = require("express");
 const app = express();
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Your frontend URL
+    credentials: true,
+  })
+);
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Morgan logging in development
-if (process.env.NODE_ENV === 'development') {
-  const morgan = require('morgan');
-  app.use(morgan('dev'));
+if (process.env.NODE_ENV === "development") {
+  const morgan = require("morgan");
+  app.use(morgan("dev"));
 }
 
 // Routes
-const authRoutes = require('./routes/authRoutes');
-app.use('/api/auth', authRoutes);
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 // Test route
-app.get('/', (req, res) => {
-  res.send('Hello from Express!');
+app.get("/", (req, res) => {
+  res.send("Hello from Express!");
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ success: false, message: 'Internal server error' });
+  res.status(500).json({ success: false, message: "Internal server error" });
 });
 
 module.exports = app;

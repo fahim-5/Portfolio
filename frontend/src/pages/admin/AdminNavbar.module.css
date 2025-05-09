@@ -82,6 +82,22 @@
   width: 100%;
 }
 
+.logoutBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+  color: #ff6b6b;
+  /* Red color for logout */
+  transition: color 0.3s;
+}
+
+.logoutBtn:hover {
+  color: #ff4757;
+}
+
 @media (max-width: 768px) {
   .container {
     flex-direction: column;

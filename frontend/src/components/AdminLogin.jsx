@@ -1,24 +1,50 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import styles from "./adminLogin.module.css";
 
 const AdminLogin = () => {
-  const [loginId, setLoginId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [resetEmail, setResetEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const portfolioName = "Fahim Faysal";
 
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    navigate("/admin/dashboard");
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(`${API_URL}/auth/login`, {
+        email,
+        password,
+      });
+
+      if (response.data.success) {
+        // Store token and user data
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        navigate("/admin/dashboard");
+      } else {
+        setMessage(response.data.message || "Login failed");
+      }
+    } catch (error) {
+      setMessage(
+        error.response?.data?.message || "Login failed. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleForgotPassword = (e) => {
@@ -26,34 +52,73 @@ const AdminLogin = () => {
     setShowForgotPassword(true);
   };
 
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    if (email === "admin@gmail.com") {
-      setShowForgotPassword(false);
-      setShowResetPassword(true);
-      setMessage("");
-    } else {
-      setMessage("Email not found");
+    setIsLoading(true);
+    setMessage("");
+
+    try {
+      const response = await axios.post(`${API_URL}/auth/forgot-password`, {
+        email: resetEmail,
+      });
+
+      if (response.data.success) {
+        // Store the token from the response if available
+        if (response.data.token) {
+          localStorage.setItem("resetToken", response.data.token);
+        }
+        setMessage("Reset instructions sent to your email");
+        setShowForgotPassword(false);
+        setShowResetPassword(true);
+      } else {
+        setMessage(response.data.message);
+      }
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Failed to send reset email");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleResetSubmit = (e) => {
+  const handleResetSubmit = async (e) => {
     e.preventDefault();
+
     if (newPassword !== confirmPassword) {
       setMessage("Passwords don't match");
       return;
     }
-    setMessage("Password changed");
-    setTimeout(() => {
-      setShowResetPassword(false);
-      setMessage("");
-    }, 1500);
+
+    setIsLoading(true);
+    setMessage("");
+
+    try {
+      const response = await axios.post(`${API_URL}/auth/reset-password`, {
+        email: resetEmail,
+        newPassword,
+      });
+
+      if (response.data.success) {
+        setMessage("Password changed successfully");
+        // Remove the reset token from localStorage
+        localStorage.removeItem("resetToken");
+        setTimeout(() => {
+          setShowResetPassword(false);
+          setMessage("");
+        }, 1500);
+      } else {
+        setMessage(response.data.message);
+      }
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Failed to reset password");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const closeModals = () => {
     setShowForgotPassword(false);
     setShowResetPassword(false);
-    setEmail("");
+    setResetEmail("");
     setNewPassword("");
     setConfirmPassword("");
     setMessage("");
@@ -61,9 +126,7 @@ const AdminLogin = () => {
 
   return (
     <div className={styles.loginPage}>
-      <div className={`${styles.floatingElement} ${styles.float1}`}></div>
-      <div className={`${styles.floatingElement} ${styles.float2}`}></div>
-      <div className={`${styles.floatingElement} ${styles.float3}`}></div>
+      {/* ... (keep your existing floating elements and styling) ... */}
 
       <div className={styles.loginLayout}>
         <div className={styles.loginContainer}>
@@ -73,14 +136,18 @@ const AdminLogin = () => {
               <p>Sign in to manage your portfolio</p>
             </div>
 
-            <form className={styles.loginForm} onSubmit={handleSubmit}>
+            {message && !showForgotPassword && !showResetPassword && (
+              <div className={styles.message}>{message}</div>
+            )}
+
+            <form className={styles.loginForm} onSubmit={handleLogin}>
               <div className={styles.formGroup}>
-                <label htmlFor="loginId">Username or Email</label>
+                <label htmlFor="email">Email</label>
                 <input
-                  type="text"
-                  id="loginId"
-                  value={loginId}
-                  onChange={(e) => setLoginId(e.target.value)}
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   required
                 />
@@ -109,7 +176,8 @@ const AdminLogin = () => {
                     Remember me
                   </label>
                 </div>
-                <button 
+                <button
+                  type="button"
                   className={styles.forgotPasswordBtn}
                   onClick={handleForgotPassword}
                 >
@@ -117,8 +185,12 @@ const AdminLogin = () => {
                 </button>
               </div>
 
-              <button type="submit" className={styles.loginBtn}>
-                Login
+              <button
+                type="submit"
+                className={styles.loginBtn}
+                disabled={isLoading}
+              >
+                {isLoading ? "Logging in..." : "Login"}
               </button>
             </form>
 
@@ -130,35 +202,10 @@ const AdminLogin = () => {
           </div>
         </div>
 
-        <div className={styles.warningContainer}>
-          <div className={styles.warningBox}>
-            <div className={styles.warningHeader}>
-              <i className={`fas fa-exclamation-triangle ${styles.warningIcon}`}></i>
-              <h2>Ethical Risk Indicator</h2>
-            </div>
-            <div className={styles.warningContent}>
-              <p>
-                Accessing <strong>{portfolioName}'s</strong> administrative
-                interface:
-              </p>
-              <p>Authorized use only. Unauthorized access may result in:</p>
-              <ul className={styles.warningList}>
-                <li>Privacy rights violation</li>
-                <li>Computer security law breaches</li>
-                <li>Professional misconduct</li>
-              </ul>
-              <p className={styles.finalWarning}>
-                If not {portfolioName} or authorized administrator, close this
-                interface immediately.
-              </p>
-            </div>
-            <div className={styles.legalDisclaimer}>
-              Proceeding acknowledges acceptance of these terms
-            </div>
-          </div>
-        </div>
+        {/* ... (keep your existing warning container) ... */}
       </div>
 
+      {/* Forgot Password Modal */}
       {showForgotPassword && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -173,19 +220,27 @@ const AdminLogin = () => {
                 <label>Enter your email</label>
                 <input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
                   placeholder="admin@gmail.com"
                   required
                 />
               </div>
               {message && <div className={styles.message}>{message}</div>}
               <div className={styles.modalActions}>
-                <button type="button" onClick={closeModals}>
+                <button
+                  type="button"
+                  onClick={closeModals}
+                  disabled={isLoading}
+                >
                   Cancel
                 </button>
-                <button type="submit" className={styles.primaryBtn}>
-                  Submit
+                <button
+                  type="submit"
+                  className={styles.primaryBtn}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Sending..." : "Submit"}
                 </button>
               </div>
             </form>
@@ -193,6 +248,7 @@ const AdminLogin = () => {
         </div>
       )}
 
+      {/* Reset Password Modal */}
       {showResetPassword && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -211,6 +267,7 @@ const AdminLogin = () => {
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter new password"
                   required
+                  minLength="6"
                 />
               </div>
               <div className={styles.formGroup}>
@@ -221,15 +278,24 @@ const AdminLogin = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm new password"
                   required
+                  minLength="6"
                 />
               </div>
               {message && <div className={styles.message}>{message}</div>}
               <div className={styles.modalActions}>
-                <button type="button" onClick={closeModals}>
+                <button
+                  type="button"
+                  onClick={closeModals}
+                  disabled={isLoading}
+                >
                   Cancel
                 </button>
-                <button type="submit" className={styles.primaryBtn}>
-                  Save
+                <button
+                  type="submit"
+                  className={styles.primaryBtn}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Updating..." : "Save"}
                 </button>
               </div>
             </form>
