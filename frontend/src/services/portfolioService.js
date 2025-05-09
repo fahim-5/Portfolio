@@ -566,6 +566,94 @@ const portfolioService = {
       
       throw error; // Rethrow to allow handling in the component
     }
+  },
+
+  // Fetch skills data from API
+  async fetchSkillsData() {
+    try {
+      console.log('Fetching skills data from API...');
+      const response = await api.get('/api/admin/skills');
+      console.log('Skills API response:', response.data);
+      
+      if (response.data) {
+        // Save to localStorage
+        this.saveSectionData('skills', response.data);
+        return response.data;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching skills data:', error);
+      return null;
+    }
+  },
+
+  // Create a new skill
+  async createSkill(skillData) {
+    try {
+      console.log('portfolioService: Creating skill with data:', skillData);
+      const response = await api.post('/api/admin/skills', skillData);
+      console.log('portfolioService: Create skill response:', response.data);
+      
+      if (response.data && response.data.success) {
+        // Fetch updated data after creation
+        await this.fetchSkillsData();
+        return true;
+      }
+      console.log('portfolioService: Create skill failed - success flag not true');
+      return false;
+    } catch (error) {
+      console.error('portfolioService: Error creating skill:', error);
+      if (error.response) {
+        console.error('portfolioService: Server responded with error:', error.response.data);
+      }
+      return false;
+    }
+  },
+
+  // Update a skill
+  async updateSkill(id, skillData) {
+    try {
+      console.log(`portfolioService: Updating skill ${id} with data:`, skillData);
+      const response = await api.put(`/api/admin/skills/${id}`, skillData);
+      console.log('portfolioService: Update skill response:', response.data);
+      
+      if (response.data && response.data.success) {
+        // Fetch updated data after update
+        await this.fetchSkillsData();
+        return true;
+      }
+      console.log('portfolioService: Update skill failed - success flag not true');
+      return false;
+    } catch (error) {
+      console.error(`portfolioService: Error updating skill ${id}:`, error);
+      if (error.response) {
+        console.error('portfolioService: Server responded with error:', error.response.data);
+      }
+      return false;
+    }
+  },
+
+  // Delete a skill
+  async deleteSkill(id) {
+    try {
+      console.log(`portfolioService: Deleting skill ${id}`);
+      const response = await api.delete(`/api/admin/skills/${id}`);
+      console.log('portfolioService: Delete skill response:', response.data);
+      
+      if (response.data && response.data.success) {
+        // Fetch updated data after deletion
+        await this.fetchSkillsData();
+        return true;
+      }
+      console.log('portfolioService: Delete skill failed - success flag not true');
+      return false;
+    } catch (error) {
+      console.error(`portfolioService: Error deleting skill ${id}:`, error);
+      if (error.response) {
+        console.error('portfolioService: Server responded with error:', error.response.data);
+      }
+      return false;
+    }
   }
 };
 

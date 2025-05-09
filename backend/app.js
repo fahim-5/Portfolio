@@ -25,16 +25,32 @@ const userRoutes = require("./routes/userRoutes");
 const heroRoutes = require("./routes/heroRoutes");
 const educationRoutes = require("./routes/educationRoutes");
 const experienceRoutes = require("./routes/experienceRoutes");
+const skillsRoutes = require("./routes/skillsRoutes");
+
+// Log available routes for debugging
+console.log("Available routes:");
+console.log("- /api/auth (authRoutes)");
+console.log("- /api/user (userRoutes)");
+console.log("- /api/admin/hero (heroRoutes)");
+console.log("- /api/admin/education (educationRoutes)");
+console.log("- /api/admin/experience (experienceRoutes)");
+console.log("- /api/admin/skills (skillsRoutes)");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use('/api/admin/hero', heroRoutes);
 app.use('/api/admin/education', educationRoutes);
 app.use('/api/admin/experience', experienceRoutes);
+app.use('/api/admin/skills', skillsRoutes);
 
 // Test route
 app.get("/", (req, res) => {
   res.send("Hello from Express!");
+});
+
+// Debug route to check server is running
+app.get("/api/status", (req, res) => {
+  res.json({ status: "OK", time: new Date().toISOString() });
 });
 
 // Error handling middleware

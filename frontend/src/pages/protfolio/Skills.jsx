@@ -5,14 +5,34 @@ import portfolioService from '../../services/portfolioService';
 const Skills = () => {
   const [activeTab, setActiveTab] = useState('technical');
   const [skillsData, setSkillsData] = useState({ technical: [], soft: [], languages: [] });
+  const [loading, setLoading] = useState(true);
   const skillItems = useRef([]);
   
   useEffect(() => {
-    // Fetch skills data from localStorage
-    const fetchData = () => {
-      const data = portfolioService.getSectionData('skills');
-      if (data) {
-        setSkillsData(data);
+    // Fetch skills data from API
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // First try to fetch from API
+        const apiData = await portfolioService.fetchSkillsData();
+        if (apiData) {
+          setSkillsData(apiData);
+        } else {
+          // Fall back to localStorage if API fails
+          const localData = portfolioService.getSectionData('skills');
+          if (localData) {
+            setSkillsData(localData);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching skills:', error);
+        // Try localStorage as fallback
+        const localData = portfolioService.getSectionData('skills');
+        if (localData) {
+          setSkillsData(localData);
+        }
+      } finally {
+        setLoading(false);
       }
     };
     
@@ -22,14 +42,19 @@ const Skills = () => {
     // Listen for changes to localStorage
     const handleStorageChange = (e) => {
       if (e.key === 'portfolio_skills' || e.key === 'lastUpdate') {
-        fetchData();
+        const localData = portfolioService.getSectionData('skills');
+        if (localData) {
+          setSkillsData(localData);
+        }
       }
     };
     
     window.addEventListener('storage', handleStorageChange);
     
     // Also check periodically for changes
-    const interval = setInterval(fetchData, 5000);
+    const interval = setInterval(() => {
+      fetchData();
+    }, 30000); // Check every 30 seconds for updates
     
     // Make sure all skill items are initially visible
     setTimeout(() => {
@@ -67,7 +92,7 @@ const Skills = () => {
       window.removeEventListener('storage', handleStorageChange);
       clearInterval(interval);
     };
-  }, [activeTab]);
+  }, []);
 
   // Helper function to get icon based on skill name
   const getIconForSkill = (skillName) => {
@@ -137,11 +162,22 @@ const Skills = () => {
   
   // Check if we have skills data
   const hasSkills = Object.values(skillsData).some(category => category.length > 0);
-  if (!hasSkills) {
-    return null; // Don't render the section if no data
+  if (!hasSkills && !loading) {
+    return null; // Don't render the section if no data and not loading
   }
   
   const hasLanguages = skillsData.languages && skillsData.languages.length > 0;
+  
+  if (loading) {
+    return (
+      <section id="skills" className={styles.skills}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Skills & Expertise</h2>
+          <p>Loading skills...</p>
+        </div>
+      </section>
+    );
+  }
   
   return (
     <section id="skills" className={styles.skills}>

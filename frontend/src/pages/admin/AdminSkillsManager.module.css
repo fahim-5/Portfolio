@@ -422,4 +422,223 @@
   .skillsGrid {
     grid-template-columns: 1fr;
   }
+}
+
+.adminSkillsManager {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.adminSkillsManager h2 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #3498db;
+}
+
+.categorySection {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.categorySection h3 {
+  color: #3498db;
+  margin-bottom: 1rem;
+}
+
+.skillList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.skillItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.skillItem:hover {
+  background-color: #f5f5f5;
+}
+
+.skillItem:last-child {
+  border-bottom: none;
+}
+
+.skillInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.skillLevel {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background-color: #ecf0f1;
+  font-size: 0.8rem;
+  color: #7f8c8d;
+}
+
+.skillActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editBtn, .deleteBtn {
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.editBtn {
+  background-color: #3498db;
+  color: white;
+}
+
+.editBtn:hover {
+  background-color: #2980b9;
+}
+
+.deleteBtn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.deleteBtn:hover {
+  background-color: #c0392b;
+}
+
+.addButton {
+  display: block;
+  margin: 0 0 1.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.addButton:hover {
+  background-color: #27ae60;
+}
+
+.hideForm {
+  display: none;
+}
+
+.formContainer {
+  background-color: white;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.formContainer h3 {
+  margin-top: 0;
+  color: #3498db;
+  margin-bottom: 1.2rem;
+}
+
+.formGroup {
+  margin-bottom: 1.2rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.formGroup input, .formGroup select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.formGroup input:focus, .formGroup select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.formActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.submitButton, .cancelButton {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.submitButton {
+  background-color: #3498db;
+  color: white;
+}
+
+.submitButton:hover {
+  background-color: #2980b9;
+}
+
+.cancelButton {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.cancelButton:hover {
+  background-color: #7f8c8d;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 1.2rem;
+  color: #7f8c8d;
+}
+
+.error {
+  padding: 1rem;
+  background-color: #fcecec;
+  border-left: 4px solid #e74c3c;
+  color: #c0392b;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+.noSkills {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  color: #7f8c8d;
+  text-align: center;
 } 
