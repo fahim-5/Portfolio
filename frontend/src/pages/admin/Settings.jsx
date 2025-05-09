@@ -16,38 +16,83 @@ const Settings = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+  // Use consistent API URL
+  const API_URL = "http://localhost:5000/api";
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-
+        console.log("Fetching user profile data...");
+        
+        // Get token from localStorage
+        const token = localStorage.getItem("authToken");
+        
+        console.log("Authentication token exists:", !!token);
+        
         if (!token) {
-          setError("You are not logged in");
+          setError("You are not logged in. Please log in again.");
           setLoading(false);
           return;
         }
 
+        // Test API connection first
+        try {
+          console.log("Testing API connection...");
+          const testResponse = await fetch(`${API_URL}/status`);
+          console.log("API status check response:", testResponse.status);
+          
+          if (!testResponse.ok) {
+            throw new Error(`API server not responding properly: ${testResponse.status}`);
+          }
+        } catch (connectionError) {
+          console.error("API connection test failed:", connectionError);
+          setError("Cannot connect to the API server. Please check your connection.");
+          setLoading(false);
+          return;
+        }
+
+        // Make the actual API request
+        console.log("Making request to /user/profile endpoint");
         const response = await axios.get(`${API_URL}/user/profile`, {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         });
 
-        if (response.data.success) {
+        console.log("Profile API response:", response.data);
+        
+        if (response.data && response.data.success) {
           setUser(response.data.user);
-          setEmail(response.data.user.email);
-          setName(response.data.user.name);
+          setEmail(response.data.user.email || "");
+          setName(response.data.user.name || "");
+          console.log("User data loaded successfully");
         } else {
-          setError("Failed to load user data");
+          console.error("Failed to load user data:", response.data);
+          setError("Failed to load user data. " + (response.data?.message || ""));
         }
       } catch (error) {
-        setError(
-          "Error loading user data: " +
-            (error.response?.data?.message || error.message)
-        );
+        console.error("Error in fetchUserData:", error);
+        
+        if (error.response) {
+          // The request was made and the server responded with an error status
+          console.error("Server error response:", error.response.status, error.response.data);
+          
+          if (error.response.status === 401) {
+            setError("Authentication failed. Please log in again.");
+            localStorage.removeItem("authToken"); // Clear invalid token
+          } else {
+            setError("Error loading user data: " + (error.response.data?.message || error.message));
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error("No response received:", error.request);
+          setError("No response from server. Please try again later.");
+        } else {
+          // Something happened in setting up the request
+          console.error("Request setup error:", error.message);
+          setError("Error setting up request: " + error.message);
+        }
       } finally {
         setLoading(false);
       }
@@ -62,36 +107,57 @@ const Settings = () => {
     setSuccess("");
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
+      
+      if (!token) {
+        setError("You are not logged in. Please log in again.");
+        return;
+      }
 
+      console.log("Updating profile with data:", { name, email });
+      
       const response = await axios.put(
         `${API_URL}/user/profile`,
         { name, email },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         }
       );
 
-      if (response.data.success) {
+      console.log("Update profile response:", response.data);
+      
+      if (response.data && response.data.success) {
         setSuccess("Profile updated successfully");
-        setUser({ ...user, name, email });
+        setUser(response.data.user || { ...user, name, email });
 
-        // Update local storage
-        const userData = JSON.parse(localStorage.getItem("user"));
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ ...userData, name, email })
-        );
+        // Update local storage if needed
+        try {
+          const userData = JSON.parse(localStorage.getItem("user"));
+          if (userData) {
+            localStorage.setItem(
+              "user",
+              JSON.stringify({ ...userData, name, email })
+            );
+          }
+        } catch (storageError) {
+          console.warn("Error updating localStorage:", storageError);
+          // Non-critical error, don't show to user
+        }
       } else {
-        setError(response.data.message || "Failed to update profile");
+        setError(response.data?.message || "Failed to update profile");
       }
     } catch (error) {
-      setError(
-        "Error updating profile: " +
-          (error.response?.data?.message || error.message)
-      );
+      console.error("Error updating profile:", error);
+      
+      if (error.response) {
+        setError("Error updating profile: " + (error.response.data?.message || error.message));
+      } else if (error.request) {
+        setError("No response from server. Please try again later.");
+      } else {
+        setError("Error: " + error.message);
+      }
     }
   };
 
@@ -112,41 +178,62 @@ const Settings = () => {
     }
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
+      
+      if (!token) {
+        setError("You are not logged in. Please log in again.");
+        return;
+      }
 
+      console.log("Changing password");
+      
       const response = await axios.put(
         `${API_URL}/user/password`,
         { currentPassword, newPassword },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         }
       );
 
-      if (response.data.success) {
+      console.log("Change password response:", response.data);
+      
+      if (response.data && response.data.success) {
         setSuccess("Password changed successfully");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
       } else {
-        setError(response.data.message || "Failed to change password");
+        setError(response.data?.message || "Failed to change password");
       }
     } catch (error) {
-      setError(
-        "Error changing password: " +
-          (error.response?.data?.message || error.message)
-      );
+      console.error("Error changing password:", error);
+      
+      if (error.response) {
+        // Special handling for incorrect password
+        if (error.response.status === 401) {
+          setError("Current password is incorrect");
+        } else {
+          setError("Error changing password: " + (error.response.data?.message || error.message));
+        }
+      } else if (error.request) {
+        setError("No response from server. Please try again later.");
+      } else {
+        setError("Error: " + error.message);
+      }
     }
   };
 
   if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return <div className={styles.loading}>Loading user data...</div>;
   }
 
-  if (!user) {
+  if (!user && !error) {
     return (
-      <div className={styles.error}>User not found. Please log in again.</div>
+      <div className={styles.error}>
+        User not found. Please <a href="/admin/login">log in</a> again.
+      </div>
     );
   }
 
@@ -154,6 +241,9 @@ const Settings = () => {
     <div className={styles.settingsPage}>
       <div className={styles.container}>
         <h1 className={styles.title}>Account Settings</h1>
+
+        {error && <div className={styles.error}>{error}</div>}
+        {success && <div className={styles.success}>{success}</div>}
 
         <div className={styles.tabs}>
           <button
@@ -173,9 +263,6 @@ const Settings = () => {
             Password
           </button>
         </div>
-
-        {error && <div className={styles.error}>{error}</div>}
-        {success && <div className={styles.success}>{success}</div>}
 
         <div className={styles.tabContent}>
           {activeTab === "profile" && (
