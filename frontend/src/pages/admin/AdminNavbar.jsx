@@ -23,11 +23,54 @@ const AdminNavbar = () => {
         </div>
         <nav>
           <ul className={styles.navList}>
-            
-
+            <li className={styles.navItem}>
+              <Link to="/admin/dashboard" className={styles.navLink}>
+                Dashboard
+              </Link>
+            </li>
             <li className={styles.navItem}>
               <Link to="/admin/hero" className={styles.navLink}>
-                Hero-secion
+                Hero Section
+              </Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link to="/admin/about" className={styles.navLink}>
+                About
+              </Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link to="/admin/education" className={styles.navLink}>
+                Education
+              </Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link to="/admin/experience" className={styles.navLink}>
+                Experience
+              </Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link to="/admin/skills" className={styles.navLink}>
+                Skills
+              </Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link to="/admin/projects" className={styles.navLink}>
+                Projects
+              </Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link to="/admin/pictures" className={styles.navLink}>
+                Pictures
+              </Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link to="/admin/portfolio" className={styles.navLink}>
+                Portfolio
+              </Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link to="/admin/references" className={styles.navLink}>
+                References
               </Link>
             </li>
             <li className={styles.navItem}>
@@ -35,14 +78,6 @@ const AdminNavbar = () => {
                 Settings
               </Link>
             </li>
-            <li className={styles.navItem}>
-              <Link to="/admin/settings" className={styles.navLink}>
-                Education
-              </Link>
-            </li>
-
-
-            
             <li className={styles.navItem}>
               <button
                 onClick={handleLogout}

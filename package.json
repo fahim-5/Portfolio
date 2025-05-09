@@ -13,6 +13,7 @@
     "backend:test": "cd backend && node utils/testConnection.js"
   },
   "dependencies": {
+    "axios": "^1.9.0",
     "concurrently": "^8.2.0",
     "date-fns": "^4.1.0"
   }

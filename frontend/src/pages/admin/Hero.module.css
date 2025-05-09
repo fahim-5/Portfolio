@@ -22,8 +22,8 @@
 
 /* Base Container */
 .adminContainer {
+  margin-top: 70px;
   max-width: 1200px;
-  margin: 2rem auto;
   padding: 2.5rem;
   background-color: var(--surface);
   border-radius: var(--radius-lg);

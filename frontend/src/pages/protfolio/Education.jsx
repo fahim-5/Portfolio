@@ -5,16 +5,35 @@ import portfolioService from '../../services/portfolioService';
 const Education = () => {
   const educationItems = useRef([]);
   const [educationData, setEducationData] = useState([]);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     // Initialize localStorage if needed
     portfolioService.initializeStorage();
     
-    // Fetch education data from localStorage
-    const fetchData = () => {
-      const data = portfolioService.getSectionData('education');
-      setEducationData(data || []);
-      console.log("Education data loaded:", data);
+    // Fetch education data from API first, then fall back to localStorage if API fails
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Try to fetch from API first
+        const apiData = await portfolioService.fetchEducationData();
+        if (apiData) {
+          setEducationData(apiData);
+          console.log("Education data loaded from API:", apiData);
+        } else {
+          // Fall back to localStorage if API fails
+          const localData = portfolioService.getSectionData('education');
+          setEducationData(localData || []);
+          console.log("Education data loaded from localStorage:", localData);
+        }
+      } catch (error) {
+        console.error("Error fetching education data:", error);
+        // Fall back to localStorage on error
+        const localData = portfolioService.getSectionData('education');
+        setEducationData(localData || []);
+      } finally {
+        setLoading(false);
+      }
     };
     
     // Initial data fetch
@@ -24,14 +43,12 @@ const Education = () => {
     const handleStorageChange = (e) => {
       if (e.key === 'portfolio_education' || e.key === 'lastUpdate') {
         console.log("Storage change detected for education");
-        fetchData();
+        const localData = portfolioService.getSectionData('education');
+        setEducationData(localData || []);
       }
     };
     
     window.addEventListener('storage', handleStorageChange);
-    
-    // Also check periodically for changes
-    const interval = setInterval(fetchData, 3000);
     
     const observer = new IntersectionObserver(
       (entries) => {
@@ -70,15 +87,16 @@ const Education = () => {
       }
       
       window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
     };
   }, [educationData.length]);
   
   // Manually force an update to the component when localStorage is changed from this window
   useEffect(() => {
-    const handleLocalChange = () => {
-      const data = portfolioService.getSectionData('education');
-      setEducationData(data || []);
+    const handleLocalChange = (e) => {
+      if (e.detail && e.detail.key === 'portfolio_education') {
+        const data = portfolioService.getSectionData('education');
+        setEducationData(data || []);
+      }
     };
     
     window.addEventListener('localDataChanged', handleLocalChange);
@@ -94,11 +112,25 @@ const Education = () => {
     
     try {
       const [year, month] = dateString.split('-');
-      return `${year}`;
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const monthIndex = parseInt(month, 10) - 1;
+      return `${monthNames[monthIndex]} ${year}`;
     } catch (error) {
       return dateString;
     }
   };
+  
+  // If loading, show a loading indicator
+  if (loading) {
+    return (
+      <section id="education" className={styles.education}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Education</h2>
+          <div className={styles.loading}>Loading education data...</div>
+        </div>
+      </section>
+    );
+  }
   
   // Check if we have education data
   if (educationData.length === 0) {
@@ -113,7 +145,7 @@ const Education = () => {
         <div className={styles.educationGrid}>
           {educationData.map((edu, index) => (
             <div 
-              key={index} 
+              key={edu.id || index} 
               className={`${styles.eduItem} ${styles.glassCard}`}
               ref={el => educationItems.current[index] = el}
             >

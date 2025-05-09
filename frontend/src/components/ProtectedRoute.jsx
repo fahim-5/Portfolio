@@ -1,29 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+import portfolioService from "../services/portfolioService";
 
 const ProtectedRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
-
-    if (token && user) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
+    // Check authentication status
+    const authStatus = portfolioService.isAuthenticated();
+    setIsAuthenticated(authStatus);
   }, []);
 
-  // Show loading while checking auth
+  // Show loading while checking authentication
   if (isAuthenticated === null) {
     return <div>Loading...</div>;
   }
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
 
   // Render children if authenticated

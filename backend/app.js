@@ -4,7 +4,7 @@ const cors = require("cors");
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Your frontend URL
+    origin: "http://localhost:5173", // Your frontend URLs
     credentials: true,
   })
 );
@@ -22,9 +22,13 @@ if (process.env.NODE_ENV === "development") {
 // Routes
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const heroRoutes = require("./routes/heroRoutes");
+const educationRoutes = require("./routes/educationRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use('/api/admin/hero', heroRoutes);
+app.use('/api/admin/education', educationRoutes);
 
 // Test route
 app.get("/", (req, res) => {

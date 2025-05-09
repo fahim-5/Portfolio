@@ -1,6 +1,5 @@
 // AdminSkillsManager.jsx
 import React, { useState, useEffect } from 'react';
-import portfolioService from '../../services/portfolioService';
 import styles from './AdminSkillsManager.module.css';
 
 const AdminSkillsManager = () => {

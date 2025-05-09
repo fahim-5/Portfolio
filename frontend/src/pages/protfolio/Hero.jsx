@@ -34,26 +34,38 @@ const Hero = () => {
 
   // Load hero data on component mount
   useEffect(() => {
-    const loadHeroData = () => {
+    const loadHeroData = async () => {
       console.log('Loading hero data...');
-      // Try both 'personal' and 'personalInfo' section names for backward compatibility
+      
+      // First try to fetch from backend
+      try {
+        const backendData = await portfolioService.fetchHeroData();
+        if (backendData) {
+          console.log('Hero data fetched from backend:', backendData);
+          return; // Data is already saved to localStorage by the service
+        }
+      } catch (error) {
+        console.error('Error fetching from backend, falling back to localStorage:', error);
+      }
+      
+      // Fallback to localStorage if backend fetch fails
       const personalInfo = portfolioService.getSectionData('personalInfo') || portfolioService.getSectionData('personal');
       
       if (personalInfo) {
-        console.log('Personal info loaded:', personalInfo);
+        console.log('Personal info loaded from localStorage:', personalInfo);
         setPersonalInfo(personalInfo);
         
-        // Check if hero object and profileImageUrl exist
-        const heroImageUrl = personalInfo.hero?.profileImageUrl;
+        // Check if profileImageUrl exists directly in personalInfo or in hero object
+        const heroImageUrl = personalInfo.profileImageUrl || personalInfo.hero?.profileImageUrl;
         console.log('Hero image URL:', heroImageUrl);
         
         setHeroData({
-          greeting: personalInfo.hero?.greeting || heroData.greeting,
+          greeting: personalInfo.greeting || personalInfo.hero?.greeting || heroData.greeting,
           name: personalInfo.name || heroData.name,
-          description: personalInfo.hero?.description || personalInfo.introText || heroData.description,
+          description: personalInfo.description || personalInfo.hero?.description || personalInfo.introText || heroData.description,
           jobTitle: personalInfo.jobTitle || heroData.jobTitle,
-          stats: personalInfo.hero?.stats || heroData.stats,
-          buttonText: personalInfo.hero?.buttonText || heroData.buttonText,
+          stats: personalInfo.stats || personalInfo.hero?.stats || heroData.stats,
+          buttonText: personalInfo.buttonText || personalInfo.hero?.buttonText || heroData.buttonText,
           // Use provided image URL or fallback to default
           profileImageUrl: heroImageUrl || profileImage
         });
