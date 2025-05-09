@@ -654,6 +654,456 @@ const portfolioService = {
       }
       return false;
     }
+  },
+
+  // Fetch projects data from API
+  async fetchProjectsData() {
+    try {
+      console.log('portfolioService: Fetching projects data from API...');
+      
+      // First try direct connection to check DB availability
+      try {
+        console.log('Checking database status via /api/db-check endpoint');
+        const dbCheckRes = await fetch('http://localhost:5000/api/db-check', {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store'
+        });
+        
+        if (dbCheckRes.ok) {
+          const dbStatus = await dbCheckRes.json();
+          console.log('Database status:', dbStatus);
+          
+          if (!dbStatus.dbConnected) {
+            console.error('Database is not connected. Will use cached data.');
+            throw new Error('Database connection failed: ' + dbStatus.error);
+          }
+          
+          if (!dbStatus.projectsTableExists) {
+            console.error('Projects table does not exist');
+            throw new Error('Projects table does not exist in the database');
+          }
+        }
+      } catch (dbCheckError) {
+        console.error('Error checking database status:', dbCheckError);
+      }
+      
+      // Try both API endpoints - first the non-admin route
+      let projectsData = null;
+      let usingAdminRoute = false;
+      
+      try {
+        console.log('Trying public projects endpoint: /api/projects');
+        const publicRes = await fetch('http://localhost:5000/api/projects', {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store'
+        });
+        
+        if (publicRes.ok) {
+          projectsData = await publicRes.json();
+          console.log('Successfully fetched projects from public endpoint:', projectsData);
+        } else {
+          console.log('Public endpoint returned status:', publicRes.status);
+        }
+      } catch (publicError) {
+        console.error('Error fetching from public endpoint:', publicError);
+      }
+      
+      // If public endpoint failed, try admin endpoint
+      if (!projectsData) {
+        try {
+          usingAdminRoute = true;
+          console.log('Trying admin projects endpoint: /api/admin/projects');
+          
+          // Check for auth token
+          const token = localStorage.getItem('authToken');
+          const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          };
+          
+          if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+          }
+          
+          const adminRes = await fetch('http://localhost:5000/api/admin/projects', {
+            method: 'GET',
+            headers,
+            credentials: 'include',
+            cache: 'no-store'
+          });
+          
+          if (adminRes.ok) {
+            projectsData = await adminRes.json();
+            console.log('Successfully fetched projects from admin endpoint:', projectsData);
+          } else {
+            console.log('Admin endpoint returned status:', adminRes.status);
+          }
+        } catch (adminError) {
+          console.error('Error fetching from admin endpoint:', adminError);
+        }
+      }
+      
+      // If we got data from either endpoint, process and save it
+      if (projectsData && Array.isArray(projectsData)) {
+        // Normalize data format - fix image field if needed
+        const normalizedData = projectsData.map(project => ({
+          id: project.id || Date.now() + Math.floor(Math.random() * 1000),
+          title: project.title || 'Untitled Project',
+          category: project.category || 'Uncategorized',
+          description: project.description || '',
+          // Handle both image and imageUrl fields
+          image: project.image || project.imageUrl || 'https://placehold.co/800x600/gray/white?text=No+Image',
+          technologies: project.technologies || '',
+          demoUrl: project.demoUrl || '',
+          repoUrl: project.repoUrl || ''
+        }));
+        
+        // Save to localStorage
+        this.saveSectionData('projects', normalizedData);
+        return normalizedData;
+      }
+      
+      // If all API attempts failed, try loading from localStorage
+      console.log('All API attempts failed, checking localStorage...');
+      const cachedData = this.getSectionData('projects');
+      if (cachedData && Array.isArray(cachedData)) {
+        console.log('Using cached projects data from localStorage:', cachedData);
+        
+        // Normalize cached data too for consistency
+        const normalizedCache = cachedData.map(project => ({
+          id: project.id || Date.now() + Math.floor(Math.random() * 1000),
+          title: project.title || 'Untitled Project',
+          category: project.category || 'Uncategorized',
+          description: project.description || '',
+          // Handle both image and imageUrl fields
+          image: project.image || project.imageUrl || 'https://placehold.co/800x600/gray/white?text=No+Image',
+          technologies: project.technologies || '',
+          demoUrl: project.demoUrl || '',
+          repoUrl: project.repoUrl || ''
+        }));
+        
+        return normalizedCache;
+      }
+      
+      // Last resort - return empty array
+      console.warn('No projects data available from API or cache');
+      return [];
+    } catch (error) {
+      console.error('Error fetching projects data:', error);
+      
+      // Try to load from localStorage as fallback
+      try {
+        const cachedData = this.getSectionData('projects');
+        if (cachedData && Array.isArray(cachedData)) {
+          console.log('Using cached projects data from localStorage due to error:', cachedData);
+          return cachedData;
+        }
+      } catch (cacheError) {
+        console.error('Error loading cached projects data:', cacheError);
+      }
+      
+      // Return empty array as last resort
+      return [];
+    }
+  },
+
+  // Create a new project
+  async createProject(projectData) {
+    try {
+      const response = await api.post('/api/admin/projects', projectData);
+      if (response.data.success) {
+        // Fetch updated data after creation
+        await this.fetchProjectsData();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error creating project:', error);
+      return false;
+    }
+  },
+
+  // Update a project
+  async updateProject(id, projectData) {
+    try {
+      console.log(`Attempting to update project with ID: ${id}`, projectData);
+      
+      // Check if we have an auth token
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error('No authentication token found for update operation');
+        return false;
+      }
+      
+      // Use fetch API for better control
+      const response = await fetch(`http://localhost:5000/api/admin/projects/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'Cache-Control': 'no-cache'
+        },
+        credentials: 'include',
+        body: JSON.stringify(projectData)
+      });
+      
+      console.log(`Update project response status: ${response.status}`);
+      
+      if (!response.ok) {
+        // Try to get error details
+        try {
+          const errorData = await response.json();
+          console.error('Update project failed:', errorData);
+          throw new Error(errorData.message || `Failed to update project. Status: ${response.status}`);
+        } catch (parseError) {
+          console.error('Error parsing update project response:', parseError);
+          throw new Error(`Failed to update project. Status: ${response.status}`);
+        }
+      }
+      
+      const data = await response.json();
+      console.log('Update project response data:', data);
+      
+      if (data.success) {
+        // Fetch updated data after update
+        await this.fetchProjectsData();
+        return true;
+      } else {
+        console.error('Update operation returned success: false', data.message);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error updating project:', error);
+      
+      if (error.response) {
+        console.error('Server responded with error:', error.response.data);
+        console.error('Status code:', error.response.status);
+      } else if (error.request) {
+        console.error('No response received from server');
+      } else {
+        console.error('Error message:', error.message);
+      }
+      
+      throw error; // Rethrow to allow component to handle it
+    }
+  },
+
+  // Delete a project
+  async deleteProject(id) {
+    try {
+      console.log(`Attempting to delete project with ID: ${id}`);
+      
+      // Check if we have an auth token
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error('No authentication token found for delete operation');
+        return false;
+      }
+      
+      // Use fetch API for better control
+      const response = await fetch(`http://localhost:5000/api/admin/projects/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'Cache-Control': 'no-cache'
+        },
+        credentials: 'include'
+      });
+      
+      console.log(`Delete project response status: ${response.status}`);
+      
+      if (!response.ok) {
+        // Try to get error details
+        try {
+          const errorData = await response.json();
+          console.error('Delete project failed:', errorData);
+          throw new Error(errorData.message || `Failed to delete project. Status: ${response.status}`);
+        } catch (parseError) {
+          console.error('Error parsing delete project response:', parseError);
+          throw new Error(`Failed to delete project. Status: ${response.status}`);
+        }
+      }
+      
+      const data = await response.json();
+      console.log('Delete project response data:', data);
+      
+      if (data.success) {
+        // Fetch updated data after deletion
+        await this.fetchProjectsData();
+        return true;
+      } else {
+        console.error('Delete operation returned success: false', data.message);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      
+      if (error.response) {
+        console.error('Server responded with error:', error.response.data);
+        console.error('Status code:', error.response.status);
+      } else if (error.request) {
+        console.error('No response received from server');
+      } else {
+        console.error('Error message:', error.message);
+      }
+      
+      throw error; // Rethrow to allow component to handle it
+    }
+  },
+
+  // Fetch pictures data from API
+  async fetchPicturesData() {
+    try {
+      console.log('portfolioService: Fetching pictures data from API...');
+      
+      // Use only port 5000 as specified
+      const baseURL = 'http://localhost:5000';
+      console.log(`Fetching pictures from ${baseURL}/api/pictures`);
+      
+      const response = await fetch(`${baseURL}/api/pictures`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log(`Response status from ${baseURL}/api/pictures:`, response.status);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch pictures: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log('Pictures data received from server:', data);
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching pictures data:', error);
+      throw error;
+    }
+  },
+  
+  // Create new picture
+  async createPicture(pictureData) {
+    try {
+      console.log('Creating picture:', pictureData);
+      
+      // Use only port 5000 as specified
+      const baseURL = 'http://localhost:5000';
+      console.log(`Creating picture at ${baseURL}/api/pictures`);
+      
+      const response = await fetch(`${baseURL}/api/pictures`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+          // Removed auth token for testing
+        },
+        body: JSON.stringify(pictureData)
+      });
+      
+      console.log(`Response status from ${baseURL}/api/pictures:`, response.status);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to create picture: ${response.status} ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      console.log('Picture created successfully:', result);
+      
+      return result;
+    } catch (error) {
+      console.error('Error creating picture:', error);
+      throw error;
+    }
+  },
+  
+  // Update picture
+  async updatePicture(id, pictureData) {
+    try {
+      console.log(`Updating picture ${id}:`, pictureData);
+      
+      // Use only port 5000 as specified
+      const baseURL = 'http://localhost:5000';
+      console.log(`Updating picture at ${baseURL}/api/pictures/${id}`);
+      
+      // Convert ID to number if it's a string
+      const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
+      
+      if (isNaN(numericId)) {
+        throw new Error(`Invalid picture ID: ${id}`);
+      }
+      
+      const response = await fetch(`${baseURL}/api/pictures/${numericId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+          // Removed auth token for testing
+        },
+        body: JSON.stringify(pictureData)
+      });
+      
+      console.log(`Response status from ${baseURL}/api/pictures/${numericId}:`, response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Error response:', errorData);
+        throw new Error(`Failed to update picture: ${response.status} ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      console.log('Picture updated successfully:', result);
+      
+      return result;
+    } catch (error) {
+      console.error('Error updating picture:', error);
+      throw error;
+    }
+  },
+  
+  // Delete picture
+  async deletePicture(id) {
+    try {
+      console.log(`Deleting picture ${id}`);
+      
+      // Use only port 5000 as specified
+      const baseURL = 'http://localhost:5000';
+      console.log(`Deleting picture at ${baseURL}/api/pictures/${id}`);
+      
+      // Convert ID to number if it's a string
+      const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
+      
+      if (isNaN(numericId)) {
+        throw new Error(`Invalid picture ID: ${id}`);
+      }
+      
+      const response = await fetch(`${baseURL}/api/pictures/${numericId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+          // Removed auth token for testing
+        }
+      });
+      
+      console.log(`Response status from ${baseURL}/api/pictures/${numericId}:`, response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Error response:', errorData);
+        throw new Error(`Failed to delete picture: ${response.status} ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      console.log('Picture deleted successfully:', result);
+      
+      return result;
+    } catch (error) {
+      console.error('Error deleting picture:', error);
+      throw error;
+    }
   }
 };
 

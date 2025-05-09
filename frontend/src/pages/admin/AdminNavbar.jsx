@@ -59,11 +59,6 @@ const AdminNavbar = () => {
               </Link>
             </li>
             <li className={styles.navItem}>
-              <Link to="/admin/portfolio" className={styles.navLink}>
-                Portfolio
-              </Link>
-            </li>
-            <li className={styles.navItem}>
               <Link to="/admin/references" className={styles.navLink}>
                 References
               </Link>

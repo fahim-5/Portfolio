@@ -40,7 +40,7 @@ const App = () => {
                 <Route path="experience" element={<AdminExperience />} />
                 <Route path="skills" element={<AdminSkillsManager />} />
                 <Route path="pictures" element={<AdminPictures />} />
-                <Route path="portfolio" element={<AdminPortfolio />} />
+                <Route path="projects" element={<AdminPortfolio />} />
                 <Route path="references" element={<AdminReferences />} />
               </Routes>
             </ProtectedRoute>

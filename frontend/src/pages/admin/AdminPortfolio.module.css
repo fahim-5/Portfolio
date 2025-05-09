@@ -357,7 +357,96 @@
 .error {
   background-color: rgba(255, 82, 82, 0.1);
   color: var(--danger-color);
+  padding: 1rem;
   border-left: 4px solid var(--danger-color);
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+.errorActions {
+  display: flex;
+  margin-top: 0.75rem;
+  gap: 0.5rem;
+}
+
+.retryButton, 
+.reloadButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.retryButton {
+  background-color: rgba(0, 188, 212, 0.15);
+  color: var(--primary-color);
+}
+
+.retryButton:hover {
+  background-color: rgba(0, 188, 212, 0.3);
+}
+
+.reloadButton {
+  background-color: rgba(255, 152, 0, 0.15);
+  color: #ff9800;
+}
+
+.reloadButton:hover {
+  background-color: rgba(255, 152, 0, 0.3);
+}
+
+.errorHelp {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.errorHelp ul {
+  margin-top: 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.errorHelp li {
+  margin-bottom: 0.25rem;
+}
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+}
+
+.loadingIcon {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+.loadingHint {
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
 @media (max-width: 768px) {
@@ -387,4 +476,305 @@
   .portfolioGrid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Add these styles for the project list items */
+
+.projectItem {
+  display: flex;
+  background-color: rgba(15, 15, 25, 0.7);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.projectItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-color: var(--primary-color);
+}
+
+.projectImage {
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  height: 150px;
+  position: relative;
+  overflow: hidden;
+}
+
+.projectImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.projectItem:hover .projectImage img {
+  transform: scale(1.05);
+}
+
+.projectDetails {
+  padding: 1.25rem;
+  flex-grow: 1;
+}
+
+.projectDetails h4 {
+  color: var(--primary-color);
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+.category {
+  display: inline-block;
+  background-color: rgba(0, 188, 212, 0.1);
+  color: var(--primary-color);
+  font-size: 0.85rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 30px;
+  margin-bottom: 0.75rem;
+}
+
+.description {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.projectActions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+  gap: 0.5rem;
+  border-left: 1px solid var(--border-color);
+}
+
+.editBtn,
+.deleteBtn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editBtn {
+  background-color: rgba(0, 188, 212, 0.15);
+  color: var(--primary-color);
+}
+
+.editBtn:hover {
+  background-color: rgba(0, 188, 212, 0.3);
+}
+
+.deleteBtn {
+  background-color: rgba(255, 82, 82, 0.15);
+  color: var(--danger-color);
+}
+
+.deleteBtn:hover {
+  background-color: rgba(255, 82, 82, 0.3);
+}
+
+/* Style for the buttons */
+.saveButton {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.saveButton:hover {
+  background-color: var(--primary-darker);
+}
+
+.cancelButton {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-left: 1rem;
+}
+
+.cancelButton:hover {
+  color: var(--text-color);
+  border-color: var(--text-color);
+}
+
+/* Style for the form actions container */
+.formActions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 2rem;
+}
+
+/* Style for the project list heading */
+.projectsHeading {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin: 2rem 0 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Style for the admin portfolio container */
+.adminPortfolio {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.adminPortfolio h2 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+}
+
+.projectList {
+  margin-top: 1.5rem;
+}
+
+/* Add these styles for the form layout and elements */
+
+.formContainer {
+  background-color: rgba(15, 15, 25, 0.7);
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.formFullWidth {
+  grid-column: span 3;
+}
+
+.labelIcon {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
+.techList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.techTag {
+  background-color: rgba(121, 134, 203, 0.15);
+  color: var(--accent-color);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.headerIcon {
+  margin-right: 0.5rem;
+}
+
+.projectCount {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-left: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.75rem;
+  border-radius: 15px;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem;
+  background-color: rgba(15, 15, 25, 0.5);
+  border-radius: 8px;
+  border: 1px dashed var(--border-color);
+}
+
+.emptyState p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 992px) {
+  .formGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .formFullWidth {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .formFullWidth {
+    grid-column: span 1;
+  }
+  
+  .projectItem {
+    flex-direction: column;
+  }
+  
+  .projectImage {
+    width: 100%;
+    max-width: 100%;
+    height: 200px;
+  }
+  
+  .projectActions {
+    flex-direction: row;
+    justify-content: flex-end;
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    padding: 1rem;
+  }
+}
+
+/* Add styles for the clear cache button */
+.clearCacheButton {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.clearCacheButton:hover {
+  background-color: rgba(255, 193, 7, 0.3);
 } 

@@ -41,11 +41,26 @@ const Portfolio = () => {
     // Increment portfolio views count
     portfolioService.incrementPortfolioViews();
     
-    // Fetch projects data from localStorage
-    const fetchData = () => {
-      const data = portfolioService.getSectionData('projects');
-      setProjectsData(data || []);
-      console.log("Projects data loaded:", data);
+    // Fetch projects data from API first, then fall back to localStorage if needed
+    const fetchData = async () => {
+      try {
+        // First try API
+        const apiData = await portfolioService.fetchProjectsData();
+        if (apiData) {
+          setProjectsData(apiData);
+          console.log("Projects data loaded from API:", apiData);
+        } else {
+          // Fall back to localStorage if API fails
+          const localData = portfolioService.getSectionData('projects');
+          setProjectsData(localData || []);
+          console.log("Projects data loaded from localStorage:", localData);
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+        // Fall back to localStorage on error
+        const localData = portfolioService.getSectionData('projects');
+        setProjectsData(localData || []);
+      }
     };
     
     // Initial data fetch
@@ -55,14 +70,15 @@ const Portfolio = () => {
     const handleStorageChange = (e) => {
       if (e.key === 'portfolio_projects' || e.key === 'lastUpdate') {
         console.log("Storage change detected for projects");
-        fetchData();
+        const localData = portfolioService.getSectionData('projects');
+        setProjectsData(localData || []);
       }
     };
     
     window.addEventListener('storage', handleStorageChange);
     
     // Also check periodically for changes
-    const interval = setInterval(fetchData, 3000);
+    const interval = setInterval(fetchData, 30000); // Check every 30 seconds
     
     const observer = new IntersectionObserver(
       (entries) => {
