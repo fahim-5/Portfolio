@@ -7,7 +7,15 @@ import Dashboard from "./pages/admin/Dashboard";
 import Settings from "./pages/admin/Settings";
 import HeroAdmin from "./pages/admin/HeroAdmin";
 import ProtectedRoute from "./components/ProtectedRoute";
-// import PortfolioHome from './pages/protfolio/PortfolioHome';
+import AdminNavbar from "./pages/admin/AdminNavbar";
+import AdminSkillsManager from "./pages/admin/AdminSkillsManager";
+import AdminAbout from "./pages/admin/AdminAbout";
+import AdminProjects from "./pages/admin/AdminProjects";
+import AdminPictures from "./pages/admin/AdminPictures";
+import AdminExperience from "./pages/admin/AdminExperience";
+import AdminEducation from "./pages/admin/AdminEducation";
+import AdminPortfolio from "./pages/admin/AdminPortfolio";
+import AdminReferences from "./pages/admin/AdminReferences";
 
 // Global Styles
 import "./styles/globals.css";
@@ -41,6 +49,43 @@ const App = () => {
            
           }
         />
+
+        <Route
+          path="/admin/hero"
+          element={
+            
+              <AdminAbout />
+           
+          }
+        />
+        <Route
+          path="/admin/hero"
+          element={
+            
+              <AdminEducation />
+           
+          }
+        />
+
+        <Route
+          path="/admin/hero"
+          element={
+            
+              <AdminPictures />
+           
+          }
+        />
+
+        <Route
+          path="/admin/hero"
+          element={
+            
+              <AdminPortfolio />
+           
+          }
+        />
+
+        
       </Routes>
     </Router>
   );
