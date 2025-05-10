@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import portfolioService from "./services/portfolioService";
 
 // Component Imports
 import Login from "./pages/admin/Login";
@@ -16,14 +17,24 @@ import AdminPortfolio from "./pages/admin/AdminPortfolio";
 import AdminReferences from "./pages/admin/AdminReferences";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+import PortfolioHome from "./pages/PortfolioHome";
+
 // Global Styles
 import "./styles/globals.css";
 
 const App = () => {
+  // Clear localStorage on app startup to ensure we only use database data
+  useEffect(() => {
+    console.log("App mounted - clearing localStorage to use only database data");
+    portfolioService.clearLocalStorage();
+  }, []);
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+
+        <Route path="/" element={<PortfolioHome />} />
+        {/* <Route path="/" element={<Login />} /> */}
         <Route path="/admin/login" element={<Login />} />
         
         {/* Admin Routes */}

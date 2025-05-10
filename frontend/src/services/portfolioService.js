@@ -58,6 +58,18 @@ const portfolioService = {
     });
   },
 
+  // Clear all portfolio data from localStorage
+  clearLocalStorage() {
+    console.log('Clearing all portfolio data from localStorage...');
+    
+    // Remove all portfolio-related items
+    Object.values(STORAGE_KEYS).forEach(key => {
+      localStorage.removeItem(key);
+    });
+    
+    console.log('localStorage cleared for portfolio data');
+  },
+
   // Get section data from localStorage
   getSectionData(section) {
     try {
@@ -120,8 +132,22 @@ const portfolioService = {
   // Fetch hero data from API
   async fetchHeroData() {
     try {
+      // Clear localStorage to ensure we only use database data
+      this.clearLocalStorage();
+      
       console.log('portfolioService: Fetching hero data from API...');
-      const response = await api.get('/api/admin/hero');
+      
+      // First try the public endpoint
+      let response;
+      try {
+        console.log('Trying public hero endpoint...');
+        response = await api.get('/api/hero');
+      } catch (publicError) {
+        console.error('Error fetching from public endpoint, trying admin endpoint:', publicError);
+        // Fallback to admin endpoint
+        response = await api.get('/api/admin/hero');
+      }
+      
       console.log('portfolioService: Hero API response:', response.data);
       
       if (response.data) {
@@ -161,8 +187,7 @@ const portfolioService = {
           aboutImageUrl: heroData.aboutImageUrl
         });
 
-        // Save to localStorage
-        this.saveSectionData('personalInfo', heroData);
+        // No localStorage saving, return data directly
         return heroData;
       }
       return null;
@@ -227,8 +252,7 @@ const portfolioService = {
       const response = await api.get('/api/admin/education');
       console.log('Education API response:', response);
       if (response.data) {
-        // Save to localStorage
-        this.saveSectionData('education', response.data);
+        // Return data directly without saving to localStorage
         return response.data;
       }
       return null;
@@ -316,8 +340,7 @@ const portfolioService = {
         console.log('Is array:', Array.isArray(response.data));
         console.log('Data length:', Array.isArray(response.data) ? response.data.length : 'N/A');
         
-        // Save to localStorage
-        this.saveSectionData('experience', response.data);
+        // Return data directly without saving to localStorage
         return response.data;
       } else {
         console.log('No data received from API');
@@ -576,8 +599,7 @@ const portfolioService = {
       console.log('Skills API response:', response.data);
       
       if (response.data) {
-        // Save to localStorage
-        this.saveSectionData('skills', response.data);
+        // Return data directly without saving to localStorage
         return response.data;
       }
       return null;
@@ -675,7 +697,7 @@ const portfolioService = {
           console.log('Database status:', dbStatus);
           
           if (!dbStatus.dbConnected) {
-            console.error('Database is not connected. Will use cached data.');
+            console.error('Database is not connected.');
             throw new Error('Database connection failed: ' + dbStatus.error);
           }
           
@@ -686,11 +708,11 @@ const portfolioService = {
         }
       } catch (dbCheckError) {
         console.error('Error checking database status:', dbCheckError);
+        throw dbCheckError; // Re-throw to abort the process
       }
       
       // Try both API endpoints - first the non-admin route
       let projectsData = null;
-      let usingAdminRoute = false;
       
       try {
         console.log('Trying public projects endpoint: /api/projects');
@@ -705,15 +727,12 @@ const portfolioService = {
           console.log('Successfully fetched projects from public endpoint:', projectsData);
         } else {
           console.log('Public endpoint returned status:', publicRes.status);
+          throw new Error(`Public endpoint returned status: ${publicRes.status}`);
         }
       } catch (publicError) {
         console.error('Error fetching from public endpoint:', publicError);
-      }
-      
-      // If public endpoint failed, try admin endpoint
-      if (!projectsData) {
+        
         try {
-          usingAdminRoute = true;
           console.log('Trying admin projects endpoint: /api/admin/projects');
           
           // Check for auth token
@@ -739,13 +758,15 @@ const portfolioService = {
             console.log('Successfully fetched projects from admin endpoint:', projectsData);
           } else {
             console.log('Admin endpoint returned status:', adminRes.status);
+            throw new Error(`Admin endpoint returned status: ${adminRes.status}`);
           }
         } catch (adminError) {
           console.error('Error fetching from admin endpoint:', adminError);
+          throw adminError; // Re-throw to abort the process
         }
       }
       
-      // If we got data from either endpoint, process and save it
+      // If we got data from either endpoint, process it
       if (projectsData && Array.isArray(projectsData)) {
         // Normalize data format - fix image field if needed
         const normalizedData = projectsData.map(project => ({
@@ -760,52 +781,15 @@ const portfolioService = {
           repoUrl: project.repoUrl || ''
         }));
         
-        // Save to localStorage
-        this.saveSectionData('projects', normalizedData);
         return normalizedData;
       }
       
-      // If all API attempts failed, try loading from localStorage
-      console.log('All API attempts failed, checking localStorage...');
-      const cachedData = this.getSectionData('projects');
-      if (cachedData && Array.isArray(cachedData)) {
-        console.log('Using cached projects data from localStorage:', cachedData);
-        
-        // Normalize cached data too for consistency
-        const normalizedCache = cachedData.map(project => ({
-          id: project.id || Date.now() + Math.floor(Math.random() * 1000),
-          title: project.title || 'Untitled Project',
-          category: project.category || 'Uncategorized',
-          description: project.description || '',
-          // Handle both image and imageUrl fields
-          image: project.image || project.imageUrl || 'https://placehold.co/800x600/gray/white?text=No+Image',
-          technologies: project.technologies || '',
-          demoUrl: project.demoUrl || '',
-          repoUrl: project.repoUrl || ''
-        }));
-        
-        return normalizedCache;
-      }
-      
-      // Last resort - return empty array
-      console.warn('No projects data available from API or cache');
+      // If no data was retrieved, return empty array
+      console.warn('No projects data available from API');
       return [];
     } catch (error) {
       console.error('Error fetching projects data:', error);
-      
-      // Try to load from localStorage as fallback
-      try {
-        const cachedData = this.getSectionData('projects');
-        if (cachedData && Array.isArray(cachedData)) {
-          console.log('Using cached projects data from localStorage due to error:', cachedData);
-          return cachedData;
-        }
-      } catch (cacheError) {
-        console.error('Error loading cached projects data:', cacheError);
-      }
-      
-      // Return empty array as last resort
-      return [];
+      throw error; // Re-throw the error to be handled by the component
     }
   },
 

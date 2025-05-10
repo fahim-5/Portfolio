@@ -16,59 +16,32 @@ const About = () => {
   });
   
   const [loading, setLoading] = useState(true);
-  const [debugInfo, setDebugInfo] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Load hero data for the about section
+  // Load hero data for the about section directly from the database
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('About component: Fetching hero data...');
+        console.log('About component: Fetching hero data from database...');
+        setLoading(true);
         
-        // Try to get hero data from API
+        // Use the portfolioService to fetch data from API only
         const data = await portfolioService.fetchHeroData();
         console.log('About component: Received hero data:', data);
         
         if (data) {
-          // Debug check for bio and aboutImageUrl
           console.log('About section fields:', {
             bio: data.bio,
             aboutImageUrl: data.aboutImageUrl
           });
           
           setHeroData(data);
-          setDebugInfo({
-            dataSource: 'API',
-            hasBio: !!data.bio,
-            hasAboutImage: !!data.aboutImageUrl,
-            bioLength: data.bio ? data.bio.length : 0
-          });
         } else {
-          // Fallback to localStorage
-          console.log('About component: Falling back to localStorage');
-          const localData = portfolioService.getSectionData('personalInfo');
-          
-          if (localData) {
-            console.log('About component: Local data:', localData);
-            console.log('About section local fields:', {
-              bio: localData.bio,
-              aboutImageUrl: localData.aboutImageUrl
-            });
-            
-            setHeroData(localData);
-            setDebugInfo({
-              dataSource: 'localStorage',
-              hasBio: !!localData.bio,
-              hasAboutImage: !!localData.aboutImageUrl,
-              bioLength: localData.bio ? localData.bio.length : 0
-            });
-          }
+          setError('Failed to fetch data from database');
         }
       } catch (error) {
         console.error('Error loading about data:', error);
-        setDebugInfo({
-          dataSource: 'error',
-          error: error.message
-        });
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -86,10 +59,6 @@ const About = () => {
         <div className={styles.profileSidebar}>
           <div className={styles.profileImage}>
             <img src={heroData.aboutImageUrl || profileImage} alt="Profile" />
-            {debugInfo && debugInfo.hasAboutImage ? 
-              <small style={{color: 'green'}}>Using aboutImageUrl</small> : 
-              <small style={{color: 'red'}}>Using fallback image</small>
-            }
           </div>
           
           <div className={styles.socialLinks}>
@@ -119,14 +88,10 @@ const About = () => {
         <div className={styles.aboutContent}>
           <h2 className={styles.sectionTitle}>About Me</h2>
           
-          {debugInfo && (
-            <div style={{fontSize: '12px', background: '#f0f0f0', padding: '5px', margin: '5px 0'}}>
-              <p>Debug: Source={debugInfo.dataSource}, Has Bio={debugInfo.hasBio ? 'Yes' : 'No'}, Length={debugInfo.bioLength}</p>
-            </div>
-          )}
-          
           {loading ? (
-            <p>Loading about information...</p>
+            <p>Loading about information from database...</p>
+          ) : error ? (
+            <p>Error loading data: {error}</p>
           ) : bioParagraphs.length > 0 ? (
             bioParagraphs.map((paragraph, index) => (
               <p key={index}>{paragraph}</p>

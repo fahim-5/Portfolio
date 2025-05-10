@@ -31,70 +31,55 @@ const Hero = () => {
       instagram: 'https://instagram.com/example'
     }
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Load hero data on component mount
+  // Load hero data directly from database
   useEffect(() => {
     const loadHeroData = async () => {
-      console.log('Loading hero data...');
+      console.log('Loading hero data from database...');
+      setLoading(true);
       
-      // First try to fetch from backend
       try {
-        const backendData = await portfolioService.fetchHeroData();
-        if (backendData) {
-          console.log('Hero data fetched from backend:', backendData);
-          return; // Data is already saved to localStorage by the service
+        // Fetch directly from database via API
+        const data = await portfolioService.fetchHeroData();
+        
+        if (data) {
+          console.log('Hero data fetched successfully from database:', data);
+          setHeroData({
+            greeting: data.greeting || "Hello, I'm",
+            name: data.name || "John",
+            lastName: data.lastName || "Doe",
+            description: data.description || heroData.description,
+            jobTitle: data.jobTitle || "Full Stack Developer",
+            stats: data.stats || heroData.stats,
+            buttonText: data.buttonText || "Get In Touch",
+            profileImageUrl: data.profileImageUrl || null
+          });
+          
+          setPersonalInfo({
+            email: data.email || 'example@example.com',
+            phone: data.phone || '+1234567890',
+            location: data.location || 'Dhaka, Bangladesh',
+            socialLinks: data.socialLinks || {
+              linkedin: 'https://linkedin.com/in/example',
+              github: 'https://github.com/example',
+              twitter: 'https://twitter.com/example',
+              instagram: 'https://instagram.com/example'
+            }
+          });
+        } else {
+          setError('Failed to fetch data from database');
         }
       } catch (error) {
-        console.error('Error fetching from backend, falling back to localStorage:', error);
-      }
-      
-      // Fallback to localStorage if backend fetch fails
-      const personalInfo = portfolioService.getSectionData('personalInfo') || portfolioService.getSectionData('personal');
-      
-      if (personalInfo) {
-        console.log('Personal info loaded from localStorage:', personalInfo);
-        setPersonalInfo(personalInfo);
-        
-        // Check if profileImageUrl exists directly in personalInfo or in hero object
-        const heroImageUrl = personalInfo.profileImageUrl || personalInfo.hero?.profileImageUrl;
-        console.log('Hero image URL:', heroImageUrl);
-        
-        setHeroData({
-          greeting: personalInfo.greeting || personalInfo.hero?.greeting || heroData.greeting,
-          name: personalInfo.name || heroData.name,
-          description: personalInfo.description || personalInfo.hero?.description || personalInfo.introText || heroData.description,
-          jobTitle: personalInfo.jobTitle || heroData.jobTitle,
-          stats: personalInfo.stats || personalInfo.hero?.stats || heroData.stats,
-          buttonText: personalInfo.buttonText || personalInfo.hero?.buttonText || heroData.buttonText,
-          // Use provided image URL or fallback to default
-          profileImageUrl: heroImageUrl || profileImage
-        });
+        console.error('Error fetching hero data from database:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadHeroData();
-
-    // Listen for storage updates
-    const handleStorageChange = (e) => {
-      if (e.key === 'portfolio_personal_info' || e.key === 'lastUpdate') {
-        loadHeroData();
-      }
-    };
-    
-    // Also listen for custom local data changed events
-    const handleLocalDataChanged = (e) => {
-      if (e.detail?.key === 'portfolio_personal_info') {
-        loadHeroData();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('localDataChanged', handleLocalDataChanged);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('localDataChanged', handleLocalDataChanged);
-    };
   }, []);
 
   // Close modal when clicking outside
@@ -111,6 +96,26 @@ const Hero = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showContactModal]);
+
+  if (loading) {
+    return (
+      <section id="home" className={styles.hero}>
+        <div className={styles.container}>
+          <p>Loading hero information from database...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="home" className={styles.hero}>
+        <div className={styles.container}>
+          <p>Error loading data: {error}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="home" className={styles.hero}>
