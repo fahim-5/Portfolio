@@ -104,67 +104,104 @@ const AdminEducation = () => {
   };
 
   return (
-    <div className={styles.adminEducation}>
-      <h2>{editMode ? 'Edit' : 'Add'} Education Entry</h2>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <input 
-          type="text" 
-          name="degree" 
-          value={formData.degree} 
-          onChange={handleChange} 
-          placeholder="Degree" 
-          required 
-        />
-        <input 
-          type="text" 
-          name="institution" 
-          value={formData.institution} 
-          onChange={handleChange} 
-          placeholder="Institution" 
-          required 
-        />
-        <input 
-          type="text" 
-          name="location" 
-          value={formData.location} 
-          onChange={handleChange} 
-          placeholder="Location" 
-        />
-        <input 
-          type="month" 
-          name="startDate" 
-          value={formData.startDate} 
-          onChange={handleChange} 
-          placeholder="Start Date" 
-        />
-        {!formData.current && (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h2>Education Management</h2>
+        <p>Add, edit or remove your education history</p>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <h2>{editMode ? 'Edit Education' : 'Add New Education'}</h2>
+        
+        <div className={styles.formGroup}>
+          <label htmlFor="degree">Degree</label>
+          <input 
+            type="text" 
+            id="degree"
+            name="degree" 
+            value={formData.degree} 
+            onChange={handleChange} 
+            placeholder="e.g. Master of Science in Computer Science" 
+            required 
+          />
+        </div>
+        
+        <div className={styles.formGroup}>
+          <label htmlFor="institution">Institution</label>
+          <input 
+            type="text" 
+            id="institution"
+            name="institution" 
+            value={formData.institution} 
+            onChange={handleChange} 
+            placeholder="e.g. Stanford University" 
+            required 
+          />
+        </div>
+        
+        <div className={styles.formGroup}>
+          <label htmlFor="location">Location</label>
+          <input 
+            type="text" 
+            id="location"
+            name="location" 
+            value={formData.location} 
+            onChange={handleChange} 
+            placeholder="e.g. California, USA" 
+          />
+        </div>
+        
+        <div className={styles.formGroup}>
+          <label htmlFor="startDate">Start Date</label>
           <input 
             type="month" 
-            name="endDate" 
-            value={formData.endDate} 
-            onChange={handleChange} 
-            placeholder="End Date" 
+            id="startDate"
+            name="startDate" 
+            value={formData.startDate} 
+            onChange={handleChange}
           />
+        </div>
+        
+        {!formData.current && (
+          <div className={styles.formGroup}>
+            <label htmlFor="endDate">End Date</label>
+            <input 
+              type="month" 
+              id="endDate"
+              name="endDate" 
+              value={formData.endDate} 
+              onChange={handleChange}
+            />
+          </div>
         )}
-        <label className={styles.checkboxLabel}>
-          <input 
-            type="checkbox" 
-            name="current" 
-            checked={formData.current} 
+        
+        <div className={styles.formGroup}>
+          <label className={styles.checkboxLabel}>
+            <input 
+              type="checkbox" 
+              name="current" 
+              checked={formData.current} 
+              onChange={handleChange} 
+            />
+            <span>Currently Studying</span>
+          </label>
+        </div>
+        
+        <div className={styles.formGroup}>
+          <label htmlFor="description">Description</label>
+          <textarea 
+            id="description"
+            name="description" 
+            value={formData.description} 
             onChange={handleChange} 
-          />
-          <span>Currently Studying</span>
-        </label>
-        <textarea 
-          name="description" 
-          value={formData.description} 
-          onChange={handleChange} 
-          placeholder="Description"
-          rows="4"
-        ></textarea>
+            placeholder="Describe your education experience, achievements, etc."
+            rows="4"
+          ></textarea>
+        </div>
+        
         <div className={styles.formButtons}>
           <button type="submit" className={styles.submitButton}>
-            {editMode ? 'Update' : 'Submit'}
+            {editMode ? 'Update Education' : 'Add Education'}
           </button>
           {editMode && (
             <button 

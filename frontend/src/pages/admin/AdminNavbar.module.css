@@ -7,14 +7,14 @@
   --accent-color: #7c3aed;
   --text-color: #f1f1f3;
   --text-muted: rgba(255, 255, 255, 0.6);
-  --border-color: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.08);
   --bg-dark: #131620;
   --bg-darker: #0a0c14;
   --bg-light: #1d2130;
   --danger-color: #ff5252;
   --success-color: #41d7a7;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --box-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  --box-shadow-lg: 0 15px 40px rgba(0, 0, 0, 0.3);
   --transition: all 0.3s ease;
 }
 

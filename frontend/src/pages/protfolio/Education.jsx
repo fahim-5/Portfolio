@@ -135,7 +135,7 @@ const Education = () => {
           {educationData.map((edu, index) => (
             <div 
               key={edu.id || index} 
-              className={`${styles.eduItem} ${styles.glassCard}`}
+              className={styles.eduItem}
               ref={el => educationItems.current[index] = el}
             >
               <h3>{edu.degree}</h3>
@@ -143,7 +143,7 @@ const Education = () => {
               <h5>
                 {edu.location} | {
                   edu.current 
-                    ? 'Current' 
+                    ? <>Current <span className={styles.current}>Active</span></> 
                     : `${formatDate(edu.startDate)}${edu.endDate ? ` - ${formatDate(edu.endDate)}` : ''}`
                 }
               </h5>
@@ -152,6 +152,10 @@ const Education = () => {
           ))}
         </div>
       </div>
+      
+      {/* Decorative elements */}
+      <div className={`${styles.floatingDot} ${styles.dot1}`}></div>
+      <div className={`${styles.floatingDot} ${styles.dot2}`}></div>
     </section>
   );
 };
