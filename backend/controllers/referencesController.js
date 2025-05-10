@@ -3,10 +3,33 @@ const db = require('../config/db');
 // Get all references
 exports.getAllReferences = async (req, res) => {
   try {
-    const [rows] = await db.execute('SELECT * FROM `references` ORDER BY createdAt DESC');
+    console.log('referencesController: getAllReferences called');
+    
+    // Check database connection
+    try {
+      await db.execute('SELECT 1');
+      console.log('referencesController: Database connection successful');
+    } catch (dbError) {
+      console.error('referencesController: Database connection error:', dbError);
+      return res.status(500).json({ 
+        message: 'Database connection error', 
+        error: dbError.message 
+      });
+    }
+    
+    console.log('referencesController: Executing query to get all references');
+    const [rows] = await db.execute('SELECT * FROM `references`');
+    
+    console.log(`referencesController: Query returned ${rows.length} references`);
+    console.log('referencesController: First reference (if any):', rows[0]);
+    
+    // Set CORS headers explicitly
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
     res.status(200).json(rows);
   } catch (error) {
-    console.error('Error fetching references:', error);
+    console.error('referencesController: Error fetching references:', error);
     res.status(500).json({ message: 'Error fetching references', error: error.message });
   }
 };

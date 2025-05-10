@@ -6,31 +6,25 @@ const Skills = () => {
   const [activeTab, setActiveTab] = useState('technical');
   const [skillsData, setSkillsData] = useState({ technical: [], soft: [], languages: [] });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const skillItems = useRef([]);
   
   useEffect(() => {
     // Fetch skills data from API
     const fetchData = async () => {
       setLoading(true);
+      setError(null);
       try {
-        // First try to fetch from API
+        // Fetch from API only, no localStorage fallback
         const apiData = await portfolioService.fetchSkillsData();
         if (apiData) {
           setSkillsData(apiData);
         } else {
-          // Fall back to localStorage if API fails
-          const localData = portfolioService.getSectionData('skills');
-          if (localData) {
-            setSkillsData(localData);
-          }
+          setError('No skills data returned from API');
         }
       } catch (error) {
         console.error('Error fetching skills:', error);
-        // Try localStorage as fallback
-        const localData = portfolioService.getSectionData('skills');
-        if (localData) {
-          setSkillsData(localData);
-        }
+        setError('Failed to fetch skills data from the database');
       } finally {
         setLoading(false);
       }
@@ -39,22 +33,17 @@ const Skills = () => {
     // Initial data fetch
     fetchData();
     
-    // Listen for changes to localStorage
-    const handleStorageChange = (e) => {
-      if (e.key === 'portfolio_skills' || e.key === 'lastUpdate') {
-        const localData = portfolioService.getSectionData('skills');
-        if (localData) {
-          setSkillsData(localData);
-        }
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also check periodically for changes
-    const interval = setInterval(() => {
-      fetchData();
-    }, 30000); // Check every 30 seconds for updates
+    // Set up intersection observer for animation on scroll
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(styles.revealed);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
     
     // Make sure all skill items are initially visible
     setTimeout(() => {
@@ -63,20 +52,6 @@ const Skills = () => {
         if (item) item.classList.add(styles.revealed);
       });
     }, 100);
-    
-    // Set up intersection observer for animation on scroll
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          // Items already have revealed class from above, this just ensures
-          // they stay revealed when scrolled into view
-          if (entry.isIntersecting) {
-            entry.target.classList.add(styles.revealed);
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
     
     const currentItems = skillItems.current;
     
@@ -88,9 +63,6 @@ const Skills = () => {
       currentItems.forEach((item) => {
         if (item) observer.unobserve(item);
       });
-      
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
     };
   }, []);
 
@@ -162,7 +134,7 @@ const Skills = () => {
   
   // Check if we have skills data
   const hasSkills = Object.values(skillsData).some(category => category.length > 0);
-  if (!hasSkills && !loading) {
+  if (!hasSkills && !loading && !error) {
     return null; // Don't render the section if no data and not loading
   }
   
@@ -174,6 +146,17 @@ const Skills = () => {
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Skills & Expertise</h2>
           <p>Loading skills...</p>
+        </div>
+      </section>
+    );
+  }
+  
+  if (error) {
+    return (
+      <section id="skills" className={styles.skills}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Skills & Expertise</h2>
+          <p className={styles.errorMessage}>Error: {error}</p>
         </div>
       </section>
     );

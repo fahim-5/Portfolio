@@ -101,6 +101,9 @@ app.use('/api/pictures', require('./routes/picturesRoutes'));
 // Additional non-admin references route for public access
 app.use('/api/references', require('./routes/referencesRoutes'));
 
+// Additional non-admin skills route for public access
+app.use('/api/skills', require('./routes/skillsRoutes'));
+
 // Additional non-admin hero route for public access
 app.use('/api/hero', heroRoutes);
 

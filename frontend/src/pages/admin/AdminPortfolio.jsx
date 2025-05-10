@@ -423,6 +423,7 @@ const AdminPortfolio = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null); // Clear any previous errors
     
     try {
       // Make sure image URL is a valid URL or use a reliable fallback
@@ -434,36 +435,28 @@ const AdminPortfolio = () => {
       // Clear localStorage cache to ensure fresh data is loaded
       localStorage.removeItem('portfolio_projects');
       
-      let success;
-      
       if (editMode) {
-        try {
-          success = await portfolioService.updateProject(editId, project);
-          console.log('Update project result:', success);
-        } catch (updateError) {
-          console.error('Error updating project:', updateError);
-          throw new Error(`Failed to update project: ${updateError.message}`);
-        }
+        await portfolioService.updateProject(editId, project);
+        console.log('Project updated successfully');
       } else {
-        try {
-          success = await portfolioService.createProject(project);
-          console.log('Create project result:', success);
-        } catch (createError) {
-          console.error('Error creating project:', createError);
-          throw new Error(`Failed to create project: ${createError.message}`);
-        }
+        await portfolioService.createProject(project);
+        console.log('Project created successfully');
       }
       
-      if (success) {
-        resetForm();
-        await fetchProjects();
-        setError(null);
-      } else {
-        throw new Error('Operation failed. Server returned success: false');
-      }
+      // If we get here, the operation was successful
+      resetForm();
+      await fetchProjects();
+      
     } catch (err) {
       console.error('Error saving project:', err);
-      setError(`Failed to save project: ${err.message}`);
+      
+      // Display the error message
+      setError(err.message || 'Failed to save project');
+      
+      // If it's an authentication error, show a more helpful message
+      if (err.message.includes('session has expired') || err.message.includes('Authentication required')) {
+        setError(`${err.message} Redirecting to login page...`);
+      }
     } finally {
       setLoading(false);
     }

@@ -9,11 +9,41 @@ const api = axios.create({
   withCredentials: true
 });
 
+// Helper function to check if token is expired
+const isTokenExpired = (token) => {
+  try {
+    // Get the expiration time from the token
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    
+    const { exp } = JSON.parse(jsonPayload);
+    const currentTime = Math.floor(Date.now() / 1000);
+    
+    // Token is expired if the expiration time is less than current time
+    return exp < currentTime;
+  } catch (error) {
+    console.error('Error checking token expiration:', error);
+    return true; // Assume token is expired if we can't parse it
+  }
+};
+
 // Add request interceptor to include auth token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken');
     if (token) {
+      // Check if token is expired
+      if (isTokenExpired(token)) {
+        console.log('Token is expired, attempting to refresh...');
+        // You could implement a refresh token mechanism here
+        // For now, we'll just clear the token and redirect to login
+        localStorage.removeItem('authToken');
+        window.location.href = '/admin/login';
+        return Promise.reject(new Error('Token expired'));
+      }
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -595,17 +625,71 @@ const portfolioService = {
   async fetchSkillsData() {
     try {
       console.log('Fetching skills data from API...');
-      const response = await api.get('/api/admin/skills');
-      console.log('Skills API response:', response.data);
       
-      if (response.data) {
-        // Return data directly without saving to localStorage
-        return response.data;
+      // Try both API endpoints - first the non-admin route
+      let skillsData = null;
+      
+      try {
+        console.log('Trying public skills endpoint: /api/skills');
+        const publicRes = await fetch('http://localhost:5000/api/skills', {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store'
+        });
+        
+        if (publicRes.ok) {
+          skillsData = await publicRes.json();
+          console.log('Successfully fetched skills from public endpoint:', skillsData);
+        } else {
+          console.log('Public endpoint returned status:', publicRes.status);
+          throw new Error(`Public endpoint returned status: ${publicRes.status}`);
+        }
+      } catch (publicError) {
+        console.error('Error fetching from public endpoint:', publicError);
+        
+        try {
+          console.log('Trying admin skills endpoint: /api/admin/skills');
+          
+          // Check for auth token
+          const token = localStorage.getItem('authToken');
+          const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          };
+          
+          if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+          }
+          
+          const adminRes = await fetch('http://localhost:5000/api/admin/skills', {
+            method: 'GET',
+            headers,
+            credentials: 'include',
+            cache: 'no-store'
+          });
+          
+          if (adminRes.ok) {
+            skillsData = await adminRes.json();
+            console.log('Successfully fetched skills from admin endpoint:', skillsData);
+          } else {
+            console.log('Admin endpoint returned status:', adminRes.status);
+            throw new Error(`Admin endpoint returned status: ${adminRes.status}`);
+          }
+        } catch (adminError) {
+          console.error('Error fetching from admin endpoint:', adminError);
+          throw adminError; // Re-throw to abort the process
+        }
       }
-      return null;
+      
+      if (skillsData) {
+        return skillsData;
+      }
+      
+      console.warn('No skills data available from API');
+      return { technical: [], soft: [], languages: [] };
     } catch (error) {
       console.error('Error fetching skills data:', error);
-      return null;
+      throw error; // Re-throw the error to be handled by the component
     }
   },
 
@@ -796,16 +880,88 @@ const portfolioService = {
   // Create a new project
   async createProject(projectData) {
     try {
-      const response = await api.post('/api/admin/projects', projectData);
-      if (response.data.success) {
+      console.log('Creating project:', projectData);
+      
+      // Check if we have an auth token
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error('No authentication token found for create operation');
+        // Redirect to login page
+        window.location.href = '/admin/login?redirect=admin/portfolio';
+        throw new Error('Authentication required. Please log in.');
+      }
+      
+      // Use fetch API for better control
+      const response = await fetch('http://localhost:5000/api/admin/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'Cache-Control': 'no-cache'
+        },
+        credentials: 'include',
+        body: JSON.stringify(projectData)
+      });
+      
+      console.log(`Create project response status: ${response.status}`);
+      
+      if (!response.ok) {
+        // Try to get error details
+        let errorMessage = `Failed to create project. Status: ${response.status}`;
+        
+        try {
+          const errorData = await response.json();
+          console.error('Create project failed:', errorData);
+          
+          if (response.status === 403) {
+            // Handle forbidden error specifically
+            localStorage.removeItem('authToken'); // Clear invalid token
+            errorMessage = 'Your session has expired. Please log in again.';
+            // Redirect to login after a short delay
+            setTimeout(() => {
+              window.location.href = '/admin/login?redirect=admin/portfolio';
+            }, 500);
+          } else if (response.status === 401) {
+            errorMessage = 'Authentication required. Please log in.';
+            localStorage.removeItem('authToken'); // Clear invalid token
+            // Redirect to login after a short delay
+            setTimeout(() => {
+              window.location.href = '/admin/login?redirect=admin/portfolio';
+            }, 500);
+          } else {
+            errorMessage = errorData.message || errorMessage;
+          }
+        } catch (parseError) {
+          console.error('Error parsing create project response:', parseError);
+        }
+        
+        throw new Error(errorMessage);
+      }
+      
+      const data = await response.json();
+      console.log('Create project response data:', data);
+      
+      if (data.success) {
         // Fetch updated data after creation
         await this.fetchProjectsData();
         return true;
+      } else {
+        console.error('Create operation returned success: false', data.message);
+        throw new Error(data.message || 'Failed to create project');
       }
-      return false;
     } catch (error) {
       console.error('Error creating project:', error);
-      return false;
+      
+      if (error.response) {
+        console.error('Server responded with error:', error.response.data);
+        console.error('Status code:', error.response.status);
+      } else if (error.request) {
+        console.error('No response received from server');
+      } else {
+        console.error('Error message:', error.message);
+      }
+      
+      throw error; // Rethrow to allow component to handle it
     }
   },
 
@@ -818,7 +974,9 @@ const portfolioService = {
       const token = localStorage.getItem('authToken');
       if (!token) {
         console.error('No authentication token found for update operation');
-        return false;
+        // Redirect to login page
+        window.location.href = '/admin/login?redirect=admin/portfolio';
+        throw new Error('Authentication required. Please log in.');
       }
       
       // Use fetch API for better control
@@ -837,14 +995,35 @@ const portfolioService = {
       
       if (!response.ok) {
         // Try to get error details
+        let errorMessage = `Failed to update project. Status: ${response.status}`;
+        
         try {
           const errorData = await response.json();
           console.error('Update project failed:', errorData);
-          throw new Error(errorData.message || `Failed to update project. Status: ${response.status}`);
+          
+          if (response.status === 403) {
+            // Handle forbidden error specifically
+            localStorage.removeItem('authToken'); // Clear invalid token
+            errorMessage = 'Your session has expired. Please log in again.';
+            // Redirect to login after a short delay
+            setTimeout(() => {
+              window.location.href = '/admin/login?redirect=admin/portfolio';
+            }, 500);
+          } else if (response.status === 401) {
+            errorMessage = 'Authentication required. Please log in.';
+            localStorage.removeItem('authToken'); // Clear invalid token
+            // Redirect to login after a short delay
+            setTimeout(() => {
+              window.location.href = '/admin/login?redirect=admin/portfolio';
+            }, 500);
+          } else {
+            errorMessage = errorData.message || errorMessage;
+          }
         } catch (parseError) {
           console.error('Error parsing update project response:', parseError);
-          throw new Error(`Failed to update project. Status: ${response.status}`);
         }
+        
+        throw new Error(errorMessage);
       }
       
       const data = await response.json();
@@ -856,7 +1035,7 @@ const portfolioService = {
         return true;
       } else {
         console.error('Update operation returned success: false', data.message);
-        return false;
+        throw new Error(data.message || 'Failed to update project');
       }
     } catch (error) {
       console.error('Error updating project:', error);
@@ -1097,28 +1276,56 @@ const portfolioService = {
       
       // Use only port 5000 as specified
       const baseURL = 'http://localhost:5000';
-      console.log(`Fetching references from ${baseURL}/api/references`);
+      const endpoint = '/api/references';
+      console.log(`portfolioService: Fetching references from ${baseURL}${endpoint}`);
       
-      const response = await fetch(`${baseURL}/api/references`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+      // Try with fetch API first for better debugging
+      try {
+        const response = await fetch(`${baseURL}${endpoint}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache'
+          },
+          cache: 'no-store'
+        });
+        
+        console.log(`portfolioService: Response status from ${endpoint}:`, response.status);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch references: ${response.status} ${response.statusText}`);
         }
-      });
-      
-      console.log(`Response status from ${baseURL}/api/references:`, response.status);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch references: ${response.status} ${response.statusText}`);
+        
+        const data = await response.json();
+        console.log('portfolioService: References data received from server:', data);
+        
+        if (!data || !Array.isArray(data)) {
+          console.error('portfolioService: Received non-array data:', data);
+          return [];
+        }
+        
+        return data;
+      } catch (fetchError) {
+        console.error('portfolioService: Fetch API error:', fetchError);
+        
+        // Try axios as fallback
+        console.log('portfolioService: Trying axios as fallback...');
+        const axiosResponse = await axios.get(`${baseURL}${endpoint}`, {
+          headers: { 'Accept': 'application/json' },
+          withCredentials: true
+        });
+        
+        console.log('portfolioService: Axios response:', axiosResponse);
+        
+        if (axiosResponse.data) {
+          return axiosResponse.data;
+        } else {
+          return [];
+        }
       }
-      
-      const data = await response.json();
-      console.log('References data received from server:', data);
-      
-      return data;
     } catch (error) {
-      console.error('Error fetching references data:', error);
+      console.error('portfolioService: Error fetching references data:', error);
       throw error;
     }
   },
@@ -1240,7 +1447,10 @@ const portfolioService = {
       console.error('Error deleting reference:', error);
       throw error;
     }
-  }
+  },
+
+  // Use the external helper function
+  isTokenExpired,
 };
 
 export default portfolioService; 
