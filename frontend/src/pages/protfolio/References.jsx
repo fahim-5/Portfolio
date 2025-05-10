@@ -33,49 +33,30 @@ const References = () => {
   ];
   
   useEffect(() => {
-    // Fetch references data from API
+    // Initialize localStorage if needed
+    portfolioService.initializeStorage();
+    
+    // Fetch references data from API first, then fall back to localStorage if needed
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        console.log('References component: Starting to fetch references data...');
-        
-        // Direct fetch to test API endpoint
-        try {
-          console.log('References component: Testing direct fetch to API endpoint...');
-          const directResponse = await fetch('http://localhost:5000/api/references', {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-          });
-          
-          console.log('References component: Direct fetch status:', directResponse.status);
-          if (directResponse.ok) {
-            const directData = await directResponse.json();
-            console.log('References component: Direct fetch data:', directData);
-          } else {
-            console.error('References component: Direct fetch failed with status:', directResponse.status);
-          }
-        } catch (directError) {
-          console.error('References component: Direct fetch error:', directError);
-        }
-        
-        // Fetch from service
-        console.log('References component: Calling portfolioService.fetchReferencesData()...');
+        // First try API
         const apiData = await portfolioService.fetchReferencesData();
-        console.log('References component: API data received:', apiData);
-        
         if (apiData && Array.isArray(apiData)) {
-          console.log('References component: Setting references data with array of length:', apiData.length);
           setReferencesData(apiData);
+          console.log("References data loaded from API:", apiData);
         } else {
-          console.error('References component: API data is not an array or is empty:', apiData);
-          setError('No references data returned from API');
-          setReferencesData([]);
+          // Fall back to localStorage if API fails
+          const localData = portfolioService.getSectionData('references');
+          setReferencesData(localData || []);
+          console.log("References data loaded from localStorage:", localData);
         }
       } catch (error) {
-        console.error('References component: Error fetching references:', error);
-        setError('Failed to fetch references data from the database');
-        setReferencesData([]);
+        console.error("Error fetching references:", error);
+        // Fall back to localStorage on error
+        const localData = portfolioService.getSectionData('references');
+        setReferencesData(localData || []);
       } finally {
         setLoading(false);
       }
@@ -83,6 +64,20 @@ const References = () => {
     
     // Initial data fetch
     fetchData();
+    
+    // Listen for changes to localStorage
+    const handleStorageChange = (e) => {
+      if (e.key === 'portfolio_references' || e.key === 'lastUpdate') {
+        console.log("Storage change detected for references");
+        const localData = portfolioService.getSectionData('references');
+        setReferencesData(localData || []);
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check periodically for changes
+    const interval = setInterval(fetchData, 30000); // Check every 30 seconds
     
     const observer = new IntersectionObserver(
       (entries) => {
@@ -119,6 +114,23 @@ const References = () => {
           if (item) observer.unobserve(item);
         });
       }
+      
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [referencesData.length]);
+  
+  // Manually force an update to the component when localStorage is changed from this window
+  useEffect(() => {
+    const handleLocalChange = () => {
+      const data = portfolioService.getSectionData('references');
+      setReferencesData(data || []);
+    };
+    
+    window.addEventListener('localDataChanged', handleLocalChange);
+    
+    return () => {
+      window.removeEventListener('localDataChanged', handleLocalChange);
     };
   }, []);
   
