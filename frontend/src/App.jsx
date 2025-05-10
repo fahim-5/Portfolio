@@ -32,31 +32,28 @@ const App = () => {
   return (
     <Router>
       <Routes>
-
         <Route path="/" element={<PortfolioHome />} />
-        {/* <Route path="/" element={<Login />} /> */}
         <Route path="/admin/login" element={<Login />} />
         
-        {/* Admin Routes */}
+        {/* Admin Routes with Shared Layout */}
         <Route
-          path="/admin/*"
+          path="/admin"
           element={
             <ProtectedRoute>
               <AdminNavbar />
-              <Routes>
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="hero" element={<HeroAdmin />} />
-                <Route path="education" element={<AdminEducation />} />
-                <Route path="experience" element={<AdminExperience />} />
-                <Route path="skills" element={<AdminSkillsManager />} />
-                <Route path="pictures" element={<AdminPictures />} />
-                <Route path="projects" element={<AdminPortfolio />} />
-                <Route path="references" element={<AdminReferences />} />
-              </Routes>
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="hero" element={<HeroAdmin />} />
+          <Route path="education" element={<AdminEducation />} />
+          <Route path="experience" element={<AdminExperience />} />
+          <Route path="skills" element={<AdminSkillsManager />} />
+          <Route path="pictures" element={<AdminPictures />} />
+          <Route path="projects" element={<AdminPortfolio />} />
+          <Route path="references" element={<AdminReferences />} />
+        </Route>
       </Routes>
     </Router>
   );
