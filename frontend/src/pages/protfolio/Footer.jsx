@@ -10,31 +10,77 @@ const Footer = () => {
     twitter: 'https://twitter.com/',
     instagram: 'https://www.instagram.com/'
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const loadSocialLinks = () => {
-      const personalInfo = portfolioService.getSectionData('personalInfo') || portfolioService.getSectionData('personal');
-      if (personalInfo && personalInfo.socialLinks) {
-        setSocialLinks({
-          ...socialLinks,
-          ...personalInfo.socialLinks
-        });
+    const loadFooterData = async () => {
+      console.log('Loading footer data from database...');
+      setLoading(true);
+      
+      try {
+        // Fetch directly from database via API using the same method as Hero
+        const data = await portfolioService.fetchHeroData();
+        
+        if (data && data.socialLinks) {
+          console.log('Footer data fetched successfully from database:', data.socialLinks);
+          setSocialLinks({
+            ...socialLinks,
+            ...data.socialLinks
+          });
+        } else {
+          console.log('No social links data returned from database, falling back to localStorage');
+          // Fall back to localStorage if API fails
+          const localData = portfolioService.getSectionData('personalInfo') || portfolioService.getSectionData('personal');
+          if (localData && localData.socialLinks) {
+            setSocialLinks({
+              ...socialLinks,
+              ...localData.socialLinks
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching footer data from database:', error);
+        setError(error.message);
+        
+        // Fall back to localStorage on error
+        const localData = portfolioService.getSectionData('personalInfo') || portfolioService.getSectionData('personal');
+        if (localData && localData.socialLinks) {
+          setSocialLinks({
+            ...socialLinks,
+            ...localData.socialLinks
+          });
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
-    loadSocialLinks();
+    loadFooterData();
 
-    // Listen for storage updates
+    // Listen for storage updates (for backward compatibility)
     const handleStorageChange = (e) => {
       if (e.key === 'portfolio_personal_info' || e.key === 'lastUpdate') {
-        loadSocialLinks();
+        const localData = portfolioService.getSectionData('personalInfo') || portfolioService.getSectionData('personal');
+        if (localData && localData.socialLinks) {
+          setSocialLinks({
+            ...socialLinks,
+            ...localData.socialLinks
+          });
+        }
       }
     };
     
     // Also listen for custom local data changed events
     const handleLocalDataChanged = (e) => {
       if (e.detail?.key === 'portfolio_personal_info') {
-        loadSocialLinks();
+        const localData = portfolioService.getSectionData('personalInfo') || portfolioService.getSectionData('personal');
+        if (localData && localData.socialLinks) {
+          setSocialLinks({
+            ...socialLinks,
+            ...localData.socialLinks
+          });
+        }
       }
     };
 
@@ -46,6 +92,23 @@ const Footer = () => {
       window.removeEventListener('localDataChanged', handleLocalDataChanged);
     };
   }, []);
+
+  if (loading) {
+    return (
+      <footer className={styles.footer}>
+        <div className={styles.container}>
+          <div className={styles.footerContent}>
+            <p className={styles.copyright}>
+              &copy; {new Date().getFullYear()} <span className={styles.adminLink}><Link to="/admin/login">Bafu</Link></span> All rights reserved.
+            </p>
+            <div className={styles.footerSocial}>
+              <span>Loading social links...</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    );
+  }
 
   return (
     <footer className={styles.footer}>
