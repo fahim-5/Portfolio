@@ -5,34 +5,39 @@ import portfolioService from '../../services/portfolioService';
 const Experience = () => {
   const experienceItems = useRef([]);
   const [experienceData, setExperienceData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   useEffect(() => {
-    // Initialize localStorage if needed
-    portfolioService.initializeStorage();
-    
-    // Fetch experience data from localStorage
-    const fetchData = () => {
-      const data = portfolioService.getSectionData('experience');
-      setExperienceData(data || []);
-      console.log("Experience data loaded:", data);
+    // Fetch experience data directly from the database
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        console.log("Fetching experience data from database...");
+        
+        // Use the portfolioService to fetch data from API only
+        const data = await portfolioService.fetchExperienceData();
+        
+        if (data) {
+          console.log("Experience data loaded from database:", data);
+          setExperienceData(data);
+        } else {
+          console.log("No experience data returned from database");
+          setExperienceData([]);
+        }
+      } catch (err) {
+        console.error("Error fetching experience data:", err);
+        setError(err.message);
+        setExperienceData([]);
+      } finally {
+        setLoading(false);
+      }
     };
     
     // Initial data fetch
     fetchData();
     
-    // Listen for changes to localStorage
-    const handleStorageChange = (e) => {
-      if (e.key === 'portfolio_experience' || e.key === 'lastUpdate') {
-        console.log("Storage change detected for experience");
-        fetchData();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also check periodically for changes
-    const interval = setInterval(fetchData, 3000);
-    
+    // Set up intersection observer for animations
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -68,29 +73,41 @@ const Experience = () => {
           if (item) observer.unobserve(item);
         });
       }
-      
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
     };
   }, [experienceData.length]);
   
-  // Manually force an update to the component when localStorage is changed from this window
-  useEffect(() => {
-    const handleLocalChange = () => {
-      const data = portfolioService.getSectionData('experience');
-      setExperienceData(data || []);
-    };
-    
-    window.addEventListener('localDataChanged', handleLocalChange);
-    
-    return () => {
-      window.removeEventListener('localDataChanged', handleLocalChange);
-    };
-  }, []);
+  if (loading) {
+    return (
+      <section id="experience" className={styles.experience}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Work Experience</h2>
+          <p className={styles.loadingText}>Loading experience data from database...</p>
+        </div>
+      </section>
+    );
+  }
+  
+  if (error) {
+    return (
+      <section id="experience" className={styles.experience}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Work Experience</h2>
+          <p className={styles.errorText}>Error loading data: {error}</p>
+        </div>
+      </section>
+    );
+  }
   
   // Check if we have experience data
   if (experienceData.length === 0) {
-    return null; // Don't render the section if no data
+    return (
+      <section id="experience" className={styles.experience}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Work Experience</h2>
+          <p className={styles.emptyText}>No experience data available.</p>
+        </div>
+      </section>
+    );
   }
   
   return (

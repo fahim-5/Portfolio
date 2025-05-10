@@ -6,31 +6,29 @@ const Education = () => {
   const educationItems = useRef([]);
   const [educationData, setEducationData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   useEffect(() => {
-    // Initialize localStorage if needed
-    portfolioService.initializeStorage();
-    
-    // Fetch education data from API first, then fall back to localStorage if API fails
+    // Fetch education data directly from the database
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Try to fetch from API first
-        const apiData = await portfolioService.fetchEducationData();
-        if (apiData) {
-          setEducationData(apiData);
-          console.log("Education data loaded from API:", apiData);
+        console.log("Fetching education data from database...");
+        
+        // Use the portfolioService to fetch data from API only
+        const data = await portfolioService.fetchEducationData();
+        
+        if (data) {
+          console.log("Education data loaded from database:", data);
+          setEducationData(data);
         } else {
-          // Fall back to localStorage if API fails
-          const localData = portfolioService.getSectionData('education');
-          setEducationData(localData || []);
-          console.log("Education data loaded from localStorage:", localData);
+          console.log("No education data returned from database");
+          setEducationData([]);
         }
-      } catch (error) {
-        console.error("Error fetching education data:", error);
-        // Fall back to localStorage on error
-        const localData = portfolioService.getSectionData('education');
-        setEducationData(localData || []);
+      } catch (err) {
+        console.error("Error fetching education data:", err);
+        setError(err.message);
+        setEducationData([]);
       } finally {
         setLoading(false);
       }
@@ -39,17 +37,7 @@ const Education = () => {
     // Initial data fetch
     fetchData();
     
-    // Listen for changes to localStorage
-    const handleStorageChange = (e) => {
-      if (e.key === 'portfolio_education' || e.key === 'lastUpdate') {
-        console.log("Storage change detected for education");
-        const localData = portfolioService.getSectionData('education');
-        setEducationData(localData || []);
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
+    // Set up intersection observer for animations
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -85,26 +73,8 @@ const Education = () => {
           if (item) observer.unobserve(item);
         });
       }
-      
-      window.removeEventListener('storage', handleStorageChange);
     };
   }, [educationData.length]);
-  
-  // Manually force an update to the component when localStorage is changed from this window
-  useEffect(() => {
-    const handleLocalChange = (e) => {
-      if (e.detail && e.detail.key === 'portfolio_education') {
-        const data = portfolioService.getSectionData('education');
-        setEducationData(data || []);
-      }
-    };
-    
-    window.addEventListener('localDataChanged', handleLocalChange);
-    
-    return () => {
-      window.removeEventListener('localDataChanged', handleLocalChange);
-    };
-  }, []);
   
   // Format a date from YYYY-MM to a readable format
   const formatDate = (dateString) => {
@@ -126,7 +96,19 @@ const Education = () => {
       <section id="education" className={styles.education}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Education</h2>
-          <div className={styles.loading}>Loading education data...</div>
+          <div className={styles.loading}>Loading education data from database...</div>
+        </div>
+      </section>
+    );
+  }
+  
+  // If error, show error message
+  if (error) {
+    return (
+      <section id="education" className={styles.education}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Education</h2>
+          <div className={styles.error}>Error loading data: {error}</div>
         </div>
       </section>
     );
@@ -134,7 +116,14 @@ const Education = () => {
   
   // Check if we have education data
   if (educationData.length === 0) {
-    return null; // Don't render the section if no data
+    return (
+      <section id="education" className={styles.education}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Education</h2>
+          <div className={styles.empty}>No education data available.</div>
+        </div>
+      </section>
+    );
   }
   
   return (

@@ -33,6 +33,27 @@
   border-radius: 2px;
 }
 
+.loadingText, .errorText, .emptyText {
+  text-align: center;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  background-color: var(--glass-bg);
+  border: 1px solid var(--border-color);
+}
+
+.loadingText {
+  color: var(--text-muted);
+}
+
+.errorText {
+  color: #ff6b6b;
+}
+
+.emptyText {
+  color: var(--text-muted);
+}
+
 .experienceGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styles from './About.module.css';
-import profileImage from '../../assets/profile.jpg';
 import portfolioService from '../../services/portfolioService';
 
 const About = () => {
@@ -58,7 +57,11 @@ const About = () => {
       <div className={styles.container}>
         <div className={styles.profileSidebar}>
           <div className={styles.profileImage}>
-            <img src={heroData.aboutImageUrl || profileImage} alt="Profile" />
+            {heroData.aboutImageUrl ? (
+              <img src={heroData.aboutImageUrl} alt="Profile" />
+            ) : (
+              <div className={styles.placeholderImage}></div>
+            )}
           </div>
           
           <div className={styles.socialLinks}>
@@ -97,11 +100,7 @@ const About = () => {
               <p key={index}>{paragraph}</p>
             ))
           ) : (
-            <p>
-              I am a passionate Full Stack Developer with expertise in building web applications. 
-              My skills span across frontend and backend technologies, focusing on creating 
-              responsive, user-friendly interfaces and robust server-side applications.
-            </p>
+            <p>No about information available.</p>
           )}
         </div>
       </div>

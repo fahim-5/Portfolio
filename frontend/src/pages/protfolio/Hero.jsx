@@ -1,34 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Hero.module.css';
-import profileImage from '../../assets/profile.jpg';
 import portfolioService from '../../services/portfolioService';
 
 const Hero = () => {
   const [heroData, setHeroData] = useState({
     greeting: "Hello, I'm",
-    name: "John",
-    lastName: "Doe",
-    description: "I am a passionate developer with expertise in creating modern and responsive web applications. I specialize in frontend development with React, backend with Node.js, and database management.",
-    jobTitle: "Full Stack Developer",
-    stats: [
-      { value: "5+", label: "Years Experience" },
-      { value: "100+", label: "Projects Completed" },
-      { value: "50+", label: "Happy Clients" }
-    ],
+    name: "",
+    lastName: "",
+    description: "",
+    jobTitle: "",
+    stats: [],
     buttonText: "Get In Touch",
     profileImageUrl: null
   });
   
   const [showContactModal, setShowContactModal] = useState(false);
   const [personalInfo, setPersonalInfo] = useState({
-    email: 'example@example.com',
-    phone: '+1234567890',
-    location: 'Dhaka, Bangladesh',
+    email: '',
+    phone: '',
+    location: '',
     socialLinks: {
-      linkedin: 'https://linkedin.com/in/example',
-      github: 'https://github.com/example',
-      twitter: 'https://twitter.com/example',
-      instagram: 'https://instagram.com/example'
+      linkedin: '',
+      github: '',
+      twitter: '',
+      instagram: ''
     }
   });
   const [loading, setLoading] = useState(true);
@@ -48,24 +43,24 @@ const Hero = () => {
           console.log('Hero data fetched successfully from database:', data);
           setHeroData({
             greeting: data.greeting || "Hello, I'm",
-            name: data.name || "John",
-            lastName: data.lastName || "Doe",
-            description: data.description || heroData.description,
-            jobTitle: data.jobTitle || "Full Stack Developer",
-            stats: data.stats || heroData.stats,
+            name: data.name || "",
+            lastName: data.lastName || "",
+            description: data.description || "",
+            jobTitle: data.jobTitle || "",
+            stats: data.stats || [],
             buttonText: data.buttonText || "Get In Touch",
             profileImageUrl: data.profileImageUrl || null
           });
           
           setPersonalInfo({
-            email: data.email || 'example@example.com',
-            phone: data.phone || '+1234567890',
-            location: data.location || 'Dhaka, Bangladesh',
+            email: data.email || '',
+            phone: data.phone || '',
+            location: data.location || '',
             socialLinks: data.socialLinks || {
-              linkedin: 'https://linkedin.com/in/example',
-              github: 'https://github.com/example',
-              twitter: 'https://twitter.com/example',
-              instagram: 'https://instagram.com/example'
+              linkedin: '',
+              github: '',
+              twitter: '',
+              instagram: ''
             }
           });
         } else {
@@ -144,15 +139,15 @@ const Hero = () => {
           </div>
           
           <div className={styles.heroImage}>
-            <img 
-              src={heroData.profileImageUrl} 
-              alt={heroData.name} 
-              onError={(e) => {
-                console.log('Hero image failed to load, using default');
-                e.target.src = profileImage;
-              }}
-            />
-            <div className={styles.caption}>{heroData.jobTitle}</div>
+            {heroData.profileImageUrl ? (
+              <img 
+                src={heroData.profileImageUrl} 
+                alt={heroData.name} 
+              />
+            ) : (
+              <div className={styles.placeholderImage}></div>
+            )}
+            {heroData.jobTitle && <div className={styles.caption}>{heroData.jobTitle}</div>}
           </div>
         </div>
       </div>
