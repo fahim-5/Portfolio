@@ -114,18 +114,7 @@ const Skills = () => {
   };
   
   // Get level description for display
-  const getLevelDescription = (level) => {
-    const descriptions = {
-      'beginner': 'Basic knowledge with some practical experience',
-      'elementary': 'Good working knowledge with limited experience',
-      'intermediate': 'Solid understanding with regular application',
-      'advanced': 'Deep knowledge with extensive practical experience',
-      'expert': 'Mastery level with the ability to teach others',
-      'native': 'Native proficiency'
-    };
-    
-    return descriptions[level] || '';
-  };
+  
   
   // Function to render the appropriate active skills
   const getActiveSkills = () => {
@@ -168,8 +157,7 @@ const Skills = () => {
         <h2 className={styles.sectionTitle}>Skills & Expertise</h2>
         
         <p className={styles.skillsIntro}>
-          With a diverse set of skills spanning technical and soft competencies, I bring a well-rounded approach to every project.
-          My passion for continuous learning keeps my skills current with the latest technologies and best practices.
+        With strong technical and soft skills, I bring a balanced approach to projects and stay current through continuous learning.
         </p>
         
         <div className={styles.skillsHeader}>

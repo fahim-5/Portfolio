@@ -221,11 +221,7 @@ const References = () => {
         
         <div className={styles.referencesIntro}>
           Here's what my clients and colleagues have to say about working with me.
-          {lastUpdate && (
-            <span className={styles.lastUpdated}>
-              Last updated: {new Date(lastUpdate).toLocaleTimeString()}
-            </span>
-          )}
+          
         </div>
         
         <div className={styles.referencesGrid}>
@@ -235,28 +231,27 @@ const References = () => {
               className={`${styles.referenceCard} ${styles.glassCard}`}
               ref={el => (referenceItems.current[index] = el)}
             >
-              <div className={styles.referenceImage}>
-                <img 
-                  src={getImageSource(reference, index)}
-                  alt={reference.name}
-                  onError={() => handleImageError(reference.name)}
-                  loading="lazy"
-                />
-              </div>
-              <div className={styles.referenceContent}>
-                <h3>{reference.name}</h3>
-                <h4>{reference.position}</h4>
-                <h5>{reference.company}</h5>
-                
-                <div className={styles.quote}>
-                  <blockquote>"{reference.quote}"</blockquote>
+              <div className={styles.referenceHeader}>
+                <div className={styles.referenceImage}>
+                  <img 
+                    src={getImageSource(reference, index)}
+                    alt={reference.name}
+                    onError={() => handleImageError(reference.name)}
+                    loading="lazy"
+                  />
                 </div>
+                <div className={styles.referenceInfo}>
+                  <h3>{reference.name}</h3>
+                  <h4>{reference.position}</h4>
+                  <h5>@ {reference.company}</h5>
+                </div>
+              </div>
+              <div className={styles.referenceQuote}>
+                <p>"{reference.quote}"</p>
               </div>
             </div>
           ))}
         </div>
-        
-        
       </div>
     </section>
   );
