@@ -48,6 +48,7 @@
   flex-direction: column;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   background-color: var(--glass-bg);
+  -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
   border: 1px solid var(--border-color);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -213,7 +214,7 @@
     max-width: 100%;
     padding: 0 20px;
   }
-  
+
   .portfolioGrid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
@@ -226,12 +227,12 @@
     margin-right: auto;
     display: block;
   }
-  
+
   .sectionTitle::after {
     left: 50%;
     transform: translateX(-50%);
   }
-  
+
   .toolsContainer {
     justify-content: center;
   }
@@ -241,14 +242,73 @@
   .portfolioGrid {
     grid-template-columns: 1fr;
   }
-  
+
   .projectTools h4 {
     font-size: 13px;
     text-align: center;
   }
-  
+
   .toolTag {
     font-size: 10px;
     padding: 2px 6px;
   }
-} 
+}
+
+/* Pagination Controls */
+.paginationControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  gap: 15px;
+}
+
+.paginationArrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+.paginationArrow:hover:not(.disabled) {
+  color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.paginationArrow.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.paginationDots {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.paginationDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.paginationDot:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.activeDot {
+  background: var(--primary-color);
+  width: 6px;
+  height: 6px;
+}

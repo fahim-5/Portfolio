@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./Portfolio.module.css";
 import portfolioService from "../../services/portfolioService";
 import placeholderImage from "../../assets/placeholder.js";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 // Import fallback images if needed
 import portfolioImage from "../../assets/projects/portfolio.jpg";
@@ -15,6 +16,11 @@ const Portfolio = () => {
   const projectItems = useRef([]);
   const [projectsData, setProjectsData] = useState([]);
   const [imageSources, setImageSources] = useState({});
+  const [currentPage, setCurrentPage] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Number of projects to show per page
+  const itemsPerPage = 3;
 
   // Handler for image loading errors
   const handleImageError = (title) => {
@@ -135,6 +141,29 @@ const Portfolio = () => {
     };
   }, []);
 
+  // Pagination handlers
+  const nextPage = () => {
+    if ((currentPage + 1) * itemsPerPage < projectsData.length) {
+      setCurrentPage(currentPage + 1);
+      setRefreshKey((prev) => prev + 1); // Force refresh for animations
+      projectItems.current = [];
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+      setRefreshKey((prev) => prev + 1); // Force refresh for animations
+      projectItems.current = [];
+    }
+  };
+
+  // Calculate pagination data
+  const totalPages = Math.ceil(projectsData.length / itemsPerPage);
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, projectsData.length);
+  const currentProjects = projectsData.slice(startIndex, endIndex);
+
   // Check if we have projects data
   if (projectsData.length === 0) {
     return null; // Don't render the section if no data
@@ -146,7 +175,7 @@ const Portfolio = () => {
         <h2 className={styles.sectionTitle}>Portfolio</h2>
 
         <div className={styles.portfolioGrid}>
-          {projectsData.map((project, index) => (
+          {currentProjects.map((project, index) => (
             <div
               key={index}
               className={`${styles.projectCard}`}
@@ -209,6 +238,46 @@ const Portfolio = () => {
             </div>
           ))}
         </div>
+
+        {projectsData.length > 3 && (
+          <div className={styles.paginationControls}>
+            <button
+              className={`${styles.paginationArrow} ${
+                currentPage === 0 ? styles.disabled : ""
+              }`}
+              onClick={prevPage}
+              disabled={currentPage === 0}
+            >
+              <FaChevronLeft />
+            </button>
+
+            <div className={styles.paginationDots}>
+              {[...Array(totalPages)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`${styles.paginationDot} ${
+                    i === currentPage ? styles.activeDot : ""
+                  }`}
+                  onClick={() => {
+                    setCurrentPage(i);
+                    setRefreshKey((prev) => prev + 1);
+                    projectItems.current = [];
+                  }}
+                />
+              ))}
+            </div>
+
+            <button
+              className={`${styles.paginationArrow} ${
+                currentPage >= totalPages - 1 ? styles.disabled : ""
+              }`}
+              onClick={nextPage}
+              disabled={currentPage >= totalPages - 1}
+            >
+              <FaChevronRight />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
