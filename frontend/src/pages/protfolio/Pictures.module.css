@@ -33,6 +33,35 @@
   border-radius: 2px;
 }
 
+.emptyMessage {
+  color: var(--text-muted);
+  font-size: 16px;
+  text-align: center;
+  margin: 40px 0;
+  opacity: 0.8;
+}
+
+.loading,
+.error {
+  color: var(--text-muted);
+  font-size: 16px;
+  text-align: center;
+  margin: 40px 0;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.loading {
+  background-color: rgba(0, 100, 255, 0.05);
+  border: 1px solid rgba(0, 100, 255, 0.1);
+}
+
+.error {
+  background-color: rgba(255, 50, 50, 0.05);
+  border: 1px solid rgba(255, 50, 50, 0.1);
+  color: rgba(255, 100, 100, 0.9);
+}
+
 .picturesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -48,6 +77,7 @@
   flex-direction: column;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   background-color: var(--glass-bg);
+  -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
   border: 1px solid var(--border-color);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -79,7 +109,7 @@
 }
 
 /* Update styles for the ImageUpload component inside pictureImage */
-.pictureImage > div {
+.pictureImage>div {
   height: 100%;
   width: 100%;
   padding: 0;
@@ -212,6 +242,7 @@
   justify-content: center;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   background-color: var(--glass-bg);
+  -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
   border: 2px dashed var(--border-color);
   transition: all 0.3s ease;
@@ -283,7 +314,8 @@
   width: 100%;
 }
 
-.editInput, .editTextarea {
+.editInput,
+.editTextarea {
   width: 100%;
   padding: 8px 10px;
   border-radius: 4px;
@@ -295,7 +327,8 @@
   transition: border-color 0.2s ease;
 }
 
-.editInput:focus, .editTextarea:focus {
+.editInput:focus,
+.editTextarea:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
@@ -312,7 +345,8 @@
   margin-top: 15px;
 }
 
-.saveBtn, .cancelBtn {
+.saveBtn,
+.cancelBtn {
   padding: 7px 15px;
   border-radius: 4px;
   border: none;
@@ -359,7 +393,7 @@
     max-width: 100%;
     padding: 0 20px;
   }
-  
+
   .picturesGrid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
@@ -372,7 +406,7 @@
     margin-right: auto;
     display: block;
   }
-  
+
   .sectionTitle::after {
     left: 50%;
     transform: translateX(-50%);
@@ -383,4 +417,4 @@
   .picturesGrid {
     grid-template-columns: 1fr;
   }
-} 
+}
