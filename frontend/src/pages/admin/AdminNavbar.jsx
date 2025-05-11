@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 import styles from "./AdminNavbar.module.css";
-import { 
-  FaBars, 
-  FaTimes, 
-  FaSearch, 
-  FaUser, 
-  FaCog, 
-  FaSignOutAlt, 
-  FaTachometerAlt, 
-  FaPortrait, 
+import {
+  FaBars,
+  FaTimes,
+  FaSearch,
+  FaUser,
+  FaCog,
+  FaSignOutAlt,
+  FaTachometerAlt,
+  FaPortrait,
   FaGraduationCap,
   FaBriefcase,
   FaTools,
   FaProjectDiagram,
   FaImages,
   FaComments,
-  FaArrowLeft
+  FaArrowLeft,
 } from "react-icons/fa";
 
 const AdminNavbar = () => {
@@ -38,15 +38,17 @@ const AdminNavbar = () => {
   // Close the profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const profileSection = document.querySelector(`.${styles.profileSection}`);
+      const profileSection = document.querySelector(
+        `.${styles.profileSection}`
+      );
       if (profileSection && !profileSection.contains(event.target)) {
         setProfileOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -81,7 +83,12 @@ const AdminNavbar = () => {
     { path: "/admin/pictures", label: "Pictures", icon: <FaImages /> },
     { path: "/admin/references", label: "References", icon: <FaComments /> },
     { path: "/admin/settings", label: "Settings", icon: <FaCog /> },
-    { path: "/", label: "Back to Portfolio", icon: <FaArrowLeft />, external: true },
+    {
+      path: "/",
+      label: "Back to Portfolio",
+      icon: <FaArrowLeft />,
+      external: true,
+    },
   ];
 
   return (
@@ -96,7 +103,7 @@ const AdminNavbar = () => {
               <h1>Portfolio Admin</h1>
             </div>
           </div>
-          
+
           <div className={styles.searchContainer}>
             <form onSubmit={handleSearch}>
               <div className={styles.searchInputWrapper}>
@@ -114,10 +121,10 @@ const AdminNavbar = () => {
               </div>
             </form>
           </div>
-          
+
           <div className={styles.profileSection}>
-            <button 
-              className={styles.profileButton} 
+            <button
+              className={styles.profileButton}
               onClick={() => setProfileOpen(!profileOpen)}
             >
               <div className={styles.profileAvatar}>
@@ -125,19 +132,26 @@ const AdminNavbar = () => {
               </div>
               <span className={styles.username}>{user?.name || "Admin"}</span>
             </button>
-            
+
             {profileOpen && (
               <div className={styles.profileDropdown}>
                 <div className={styles.profileHeader}>
                   <div className={styles.profileAvatarLarge}>
                     <FaUser />
                   </div>
-                  <span className={styles.profileName}>{user?.name || "Admin"}</span>
-                  <span className={styles.profileEmail}>{user?.email || "admin@example.com"}</span>
+                  <span className={styles.profileName}>
+                    {user?.name || "Admin"}
+                  </span>
+                  <span className={styles.profileEmail}>
+                    {user?.email || "admin@example.com"}
+                  </span>
                 </div>
                 <ul className={styles.profileMenu}>
                   <li>
-                    <Link to="/admin/settings" onClick={() => setProfileOpen(false)}>
+                    <Link
+                      to="/admin/settings"
+                      onClick={() => setProfileOpen(false)}
+                    >
                       <FaCog /> Settings
                     </Link>
                   </li>
@@ -152,8 +166,8 @@ const AdminNavbar = () => {
           </div>
         </div>
       </header>
-      
-      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.open : ''}`}>
+
+      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.open : ""}`}>
         <div className={styles.sidebarHeader}>
           <span>MAIN NAVIGATION</span>
         </div>
@@ -162,17 +176,21 @@ const AdminNavbar = () => {
             {navItems.map((item, index) => (
               <li key={item.path} className={styles.sidebarNavItem}>
                 {item.external ? (
-                  <a 
+                  <a
                     href={item.path}
-                    className={`${styles.sidebarNavLink} ${item.label === "Logout" ? styles.logoutLink : ""}`}
+                    className={`${styles.sidebarNavLink} ${
+                      item.label === "Logout" ? styles.logoutLink : ""
+                    }`}
                   >
                     <span className={styles.navIcon}>{item.icon}</span>
                     <span>{item.label}</span>
                   </a>
                 ) : (
-                  <Link 
-                    to={item.path} 
-                    className={`${styles.sidebarNavLink} ${location.pathname === item.path ? styles.active : ''}`}
+                  <Link
+                    to={item.path}
+                    className={`${styles.sidebarNavLink} ${
+                      location.pathname === item.path ? styles.active : ""
+                    }`}
                   >
                     <span className={styles.navIcon}>{item.icon}</span>
                     <span>{item.label}</span>
@@ -181,19 +199,25 @@ const AdminNavbar = () => {
               </li>
             ))}
             <li className={styles.sidebarNavItem}>
-              <button 
+              <button
                 onClick={handleLogout}
                 className={`${styles.sidebarNavLink} ${styles.logoutLink}`}
               >
-                <span className={styles.navIcon}><FaSignOutAlt /></span>
+                <span className={styles.navIcon}>
+                  <FaSignOutAlt />
+                </span>
                 <span>Logout</span>
               </button>
             </li>
           </ul>
         </nav>
       </aside>
-      
-      <main className={`${styles.mainContent} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
+
+      <main
+        className={`${styles.mainContent} ${
+          sidebarOpen ? styles.sidebarOpen : ""
+        }`}
+      >
         <Outlet />
       </main>
     </div>

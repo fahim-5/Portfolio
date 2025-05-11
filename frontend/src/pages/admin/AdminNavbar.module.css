@@ -417,6 +417,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -428,12 +429,12 @@
   .searchContainer {
     display: none;
   }
-  
+
   .sidebar {
     width: 100%;
     z-index: 950;
   }
-  
+
   .mainContent.sidebarOpen {
     margin-left: 0;
   }
@@ -443,7 +444,7 @@
   .username {
     display: none;
   }
-  
+
   .logo h1 {
     font-size: 1.2rem;
   }

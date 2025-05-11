@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./References.module.css";
 import portfolioService from "../../services/portfolioService";
 import placeholderImage from "../../assets/placeholder.js";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 // Import fallback images
 import managerImage from "../../assets/references/manager.jpg";
@@ -16,6 +17,11 @@ const References = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Number of references to show per page
+  const itemsPerPage = 2;
 
   // Fallback images
   const fallbackImages = {
@@ -99,9 +105,11 @@ const References = () => {
 
     // Update observer when referencesData changes
     const updateObserver = () => {
-      referenceItems.current.forEach((item) => {
-        if (item) observer.observe(item);
-      });
+      if (referenceItems.current.forEach) {
+        referenceItems.current.forEach((item) => {
+          if (item) observer.observe(item);
+        });
+      }
     };
 
     if (referencesData.length > 0) {
@@ -111,11 +119,13 @@ const References = () => {
     // Cleanup
     return () => {
       clearInterval(refreshInterval);
-      referenceItems.current.forEach((item) => {
-        if (item) observer.unobserve(item);
-      });
+      if (referenceItems.current.forEach) {
+        referenceItems.current.forEach((item) => {
+          if (item) observer.unobserve(item);
+        });
+      }
     };
-  }, [referencesData.length]);
+  }, [referencesData.length, refreshKey]);
 
   // Handle storage changes
   useEffect(() => {
@@ -156,6 +166,29 @@ const References = () => {
     // Finally fall back to placeholder
     return placeholderImage;
   };
+
+  // Pagination handlers
+  const nextPage = () => {
+    if ((currentPage + 1) * itemsPerPage < referencesData.length) {
+      setCurrentPage(currentPage + 1);
+      setRefreshKey((prev) => prev + 1); // Force refresh for animations
+      referenceItems.current = [];
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+      setRefreshKey((prev) => prev + 1); // Force refresh for animations
+      referenceItems.current = [];
+    }
+  };
+
+  // Calculate pagination data
+  const totalPages = Math.ceil(referencesData.length / itemsPerPage);
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, referencesData.length);
+  const currentReferences = referencesData.slice(startIndex, endIndex);
 
   // Loading state
   if (loading && referencesData.length === 0) {
@@ -226,9 +259,9 @@ const References = () => {
         </div>
 
         <div className={styles.referencesGrid}>
-          {referencesData.map((reference, index) => (
+          {currentReferences.map((reference, index) => (
             <div
-              key={`${reference.name}-${index}`}
+              key={`${reference.name}-${startIndex + index}`}
               className={`${styles.referenceCard} ${styles.glassCard}`}
               ref={(el) => (referenceItems.current[index] = el)}
             >
@@ -253,6 +286,46 @@ const References = () => {
             </div>
           ))}
         </div>
+
+        {totalPages > 1 && (
+          <div className={styles.paginationControls}>
+            <button
+              className={`${styles.paginationArrow} ${
+                currentPage === 0 ? styles.disabled : ""
+              }`}
+              onClick={prevPage}
+              disabled={currentPage === 0}
+            >
+              <FaChevronLeft />
+            </button>
+
+            <div className={styles.paginationDots}>
+              {[...Array(totalPages)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`${styles.paginationDot} ${
+                    i === currentPage ? styles.activeDot : ""
+                  }`}
+                  onClick={() => {
+                    setCurrentPage(i);
+                    setRefreshKey((prev) => prev + 1);
+                    referenceItems.current = [];
+                  }}
+                />
+              ))}
+            </div>
+
+            <button
+              className={`${styles.paginationArrow} ${
+                currentPage >= totalPages - 1 ? styles.disabled : ""
+              }`}
+              onClick={nextPage}
+              disabled={currentPage >= totalPages - 1}
+            >
+              <FaChevronRight />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Dashboard.module.css";
-import { 
-  FaChartBar, 
-  FaFolder, 
-  FaCode, 
+import {
+  FaChartBar,
+  FaFolder,
+  FaCode,
   FaCalendarCheck,
   FaUserCircle,
-  FaBell
+  FaBell,
 } from "react-icons/fa";
 
 const Dashboard = () => {
@@ -15,13 +15,13 @@ const Dashboard = () => {
     {
       id: 1,
       message: "Welcome to your new dashboard!",
-      time: "Just now"
+      time: "Just now",
     },
     {
       id: 2,
       message: "You have 3 new messages",
-      time: "2 hours ago"
-    }
+      time: "2 hours ago",
+    },
   ]);
 
   useEffect(() => {
@@ -49,10 +49,12 @@ const Dashboard = () => {
             <h3>Notifications</h3>
           </div>
           <div className={styles.notificationList}>
-            {notifications.map(notification => (
+            {notifications.map((notification) => (
               <div key={notification.id} className={styles.notificationItem}>
                 <p>{notification.message}</p>
-                <span className={styles.notificationTime}>{notification.time}</span>
+                <span className={styles.notificationTime}>
+                  {notification.time}
+                </span>
               </div>
             ))}
           </div>
@@ -68,14 +70,17 @@ const Dashboard = () => {
             <h3>Portfolio Sections</h3>
             <p className={styles.statValue}>7</p>
             <div className={styles.progressBar}>
-              <div 
-                className={styles.progressFill} 
-                style={{ width: '70%', background: 'linear-gradient(90deg, #4a6bff, #7c3aed)' }}
+              <div
+                className={styles.progressFill}
+                style={{
+                  width: "70%",
+                  background: "linear-gradient(90deg, #4a6bff, #7c3aed)",
+                }}
               ></div>
             </div>
           </div>
         </div>
-        
+
         <div className={styles.statCard}>
           <div className={styles.statIconWrapper}>
             <FaCode className={styles.statIcon} />
@@ -84,14 +89,17 @@ const Dashboard = () => {
             <h3>Projects</h3>
             <p className={styles.statValue}>12</p>
             <div className={styles.progressBar}>
-              <div 
-                className={styles.progressFill} 
-                style={{ width: '60%', background: 'linear-gradient(90deg, #41d7a7, #2ecc71)' }}
+              <div
+                className={styles.progressFill}
+                style={{
+                  width: "60%",
+                  background: "linear-gradient(90deg, #41d7a7, #2ecc71)",
+                }}
               ></div>
             </div>
           </div>
         </div>
-        
+
         <div className={styles.statCard}>
           <div className={styles.statIconWrapper}>
             <FaChartBar className={styles.statIcon} />
@@ -100,14 +108,17 @@ const Dashboard = () => {
             <h3>Skills</h3>
             <p className={styles.statValue}>24</p>
             <div className={styles.progressBar}>
-              <div 
-                className={styles.progressFill} 
-                style={{ width: '80%', background: 'linear-gradient(90deg, #ff9f43, #ff6b6b)' }}
+              <div
+                className={styles.progressFill}
+                style={{
+                  width: "80%",
+                  background: "linear-gradient(90deg, #ff9f43, #ff6b6b)",
+                }}
               ></div>
             </div>
           </div>
         </div>
-        
+
         <div className={styles.statCard}>
           <div className={styles.statIconWrapper}>
             <FaCalendarCheck className={styles.statIcon} />

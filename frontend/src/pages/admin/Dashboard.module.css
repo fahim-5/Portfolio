@@ -1,6 +1,7 @@
 .dashboardContainer {
     min-height: 100vh;
-    padding-top: 64px; /* Match navbar height */
+    padding-top: 64px;
+    /* Match navbar height */
 }
 
 .dashboardContent {
@@ -267,12 +268,12 @@
     .dashboardContent {
         padding: 20px;
     }
-    
+
     .statsGrid {
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 20px;
     }
-    
+
     .welcomeSection {
         padding: 20px;
     }
@@ -282,15 +283,15 @@
     .dashboardContent {
         padding: 15px;
     }
-    
+
     .statsGrid {
         grid-template-columns: 1fr;
     }
-    
+
     .quickAccessGrid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .welcomeSection h1 {
         font-size: 1.5rem;
     }
