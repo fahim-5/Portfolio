@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
-import styles from './References.module.css';
-import portfolioService from '../../services/portfolioService';
-import placeholderImage from '../../assets/placeholder.js';
+import React, { useEffect, useRef, useState } from "react";
+import styles from "./References.module.css";
+import portfolioService from "../../services/portfolioService";
+import placeholderImage from "../../assets/placeholder.js";
 
 // Import fallback images
-import managerImage from '../../assets/references/manager.jpg';
-import professorImage from '../../assets/references/professor.jpg';
-import jenniferImage from '../../assets/jennifer.jpg';
-import donaldImage from '../../assets/donald.jpg';
+import managerImage from "../../assets/references/manager.jpg";
+import professorImage from "../../assets/references/professor.jpg";
+import jenniferImage from "../../assets/jennifer.jpg";
+import donaldImage from "../../assets/donald.jpg";
 
 const References = () => {
   const referenceItems = useRef([]);
@@ -16,20 +16,20 @@ const References = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
-  
+
   // Fallback images
   const fallbackImages = {
     manager: managerImage,
     professor: professorImage,
     jennifer: jenniferImage,
-    donald: donaldImage
+    donald: donaldImage,
   };
 
   // Handler for image loading errors
   const handleImageError = (name) => {
-    setImageSources(prev => ({
+    setImageSources((prev) => ({
       ...prev,
-      [name]: placeholderImage
+      [name]: placeholderImage,
     }));
   };
 
@@ -37,39 +37,38 @@ const References = () => {
   const fetchReferences = async (retryCount = 3) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Try API first
       const apiData = await portfolioService.fetchReferencesData();
-      
+
       if (apiData && Array.isArray(apiData) && apiData.length > 0) {
         setReferencesData(apiData);
         setLastUpdate(Date.now());
         console.log("References data loaded from API:", apiData);
         return;
       }
-      
+
       // Fall back to localStorage if API returns empty or invalid data
-      const localData = portfolioService.getSectionData('references');
+      const localData = portfolioService.getSectionData("references");
       if (localData && localData.length > 0) {
         setReferencesData(localData);
         setLastUpdate(Date.now());
         console.log("References data loaded from localStorage:", localData);
         return;
       }
-      
+
       // If both sources failed, throw error
-      throw new Error('No valid references data available');
-      
+      throw new Error("No valid references data available");
     } catch (error) {
       console.error("Error fetching references:", error);
-      
+
       if (retryCount > 0) {
         console.log(`Retrying... (${retryCount} attempts left)`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         return fetchReferences(retryCount - 1);
       }
-      
+
       setError(error.message);
     } finally {
       setLoading(false);
@@ -80,12 +79,12 @@ const References = () => {
   useEffect(() => {
     // Initial fetch
     fetchReferences();
-    
+
     // Set up refresh interval (every 30 seconds)
     const refreshInterval = setInterval(() => {
       fetchReferences();
     }, 30000);
-    
+
     // Set up IntersectionObserver for animations
     const observer = new IntersectionObserver(
       (entries) => {
@@ -97,18 +96,18 @@ const References = () => {
       },
       { threshold: 0.2 }
     );
-    
+
     // Update observer when referencesData changes
     const updateObserver = () => {
       referenceItems.current.forEach((item) => {
         if (item) observer.observe(item);
       });
     };
-    
+
     if (referencesData.length > 0) {
       updateObserver();
     }
-    
+
     // Cleanup
     return () => {
       clearInterval(refreshInterval);
@@ -121,16 +120,16 @@ const References = () => {
   // Handle storage changes
   useEffect(() => {
     const handleStorageChange = (e) => {
-      if (e.key === 'portfolio_references' || e.key === 'lastUpdate') {
+      if (e.key === "portfolio_references" || e.key === "lastUpdate") {
         console.log("Storage change detected, refreshing references");
         fetchReferences();
       }
     };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
+
+    window.addEventListener("storage", handleStorageChange);
+
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -140,12 +139,12 @@ const References = () => {
     if (imageSources[reference.name]) {
       return imageSources[reference.name];
     }
-    
+
     // Then try the reference's image URL
     if (reference.image) {
       return reference.image;
     }
-    
+
     // Then try fallback images by name
     const lowerName = reference.name.toLowerCase();
     for (const [key, image] of Object.entries(fallbackImages)) {
@@ -153,7 +152,7 @@ const References = () => {
         return image;
       }
     }
-    
+
     // Finally fall back to placeholder
     return placeholderImage;
   };
@@ -180,9 +179,11 @@ const References = () => {
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>References</h2>
           <div className={styles.errorContainer}>
-            <p className={styles.errorMessage}>Error loading references: {error}</p>
-            <button 
-              onClick={() => fetchReferences()} 
+            <p className={styles.errorMessage}>
+              Error loading references: {error}
+            </p>
+            <button
+              onClick={() => fetchReferences()}
               className={styles.retryButton}
             >
               Retry
@@ -201,8 +202,8 @@ const References = () => {
           <h2 className={styles.sectionTitle}>References</h2>
           <div className={styles.emptyState}>
             <p>No references available at this time.</p>
-            <button 
-              onClick={() => fetchReferences()} 
+            <button
+              onClick={() => fetchReferences()}
               className={styles.retryButton}
             >
               Try Again
@@ -218,22 +219,22 @@ const References = () => {
     <section id="references" className={styles.references}>
       <div className={styles.container}>
         <h2 className={styles.sectionTitle}>References</h2>
-        
+
         <div className={styles.referencesIntro}>
-          Here's what my clients and colleagues have to say about working with me.
-          
+          Here's what my clients and colleagues have to say about working with
+          me.
         </div>
-        
+
         <div className={styles.referencesGrid}>
           {referencesData.map((reference, index) => (
-            <div 
+            <div
               key={`${reference.name}-${index}`}
               className={`${styles.referenceCard} ${styles.glassCard}`}
-              ref={el => (referenceItems.current[index] = el)}
+              ref={(el) => (referenceItems.current[index] = el)}
             >
               <div className={styles.referenceHeader}>
                 <div className={styles.referenceImage}>
-                  <img 
+                  <img
                     src={getImageSource(reference, index)}
                     alt={reference.name}
                     onError={() => handleImageError(reference.name)}
