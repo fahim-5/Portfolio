@@ -70,6 +70,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -124,6 +125,36 @@
   flex: 1;
 }
 
+.scrollableContent {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 15px;
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  /* Firefox */
+  scrollbar-color: var(--primary-color) rgba(30, 30, 50, 0.3);
+  /* Firefox */
+}
+
+/* Custom scrollbar for Webkit browsers (Chrome, Safari, Edge) */
+.scrollableContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollableContent::-webkit-scrollbar-track {
+  background: rgba(30, 30, 50, 0.3);
+  border-radius: 10px;
+}
+
+.scrollableContent::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+
+.scrollableContent::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
+
 .sectionTitle {
   font-size: 30px;
   position: relative;
@@ -157,15 +188,21 @@
     flex-direction: column;
     align-items: center;
   }
-  
+
   .profileSidebar {
     margin-bottom: 30px;
   }
-  
+
   .aboutContent {
     text-align: center;
+    width: 100%;
   }
-  
+
+  .scrollableContent {
+    max-height: 300px;
+    text-align: left;
+  }
+
   .sectionTitle::after {
     left: 50%;
     transform: translateX(-50%);
@@ -178,8 +215,8 @@
     width: 100%;
     max-width: 300px;
   }
-  
+
   .socialLinks {
     margin-bottom: 30px;
   }
-} 
+}

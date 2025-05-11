@@ -208,6 +208,55 @@
   transform: translateX(5px);
 }
 
+.projectLinks {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.viewSource {
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary-color);
+  font-size: 15px;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 5px;
+  z-index: 1;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.viewSource::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  transition: width 0.3s ease;
+}
+
+.viewSource i {
+  margin-left: 5px;
+  transition: transform 0.3s ease;
+}
+
+.viewSource:hover {
+  color: var(--accent-color);
+}
+
+.viewSource:hover::before {
+  width: 100%;
+}
+
+.viewSource:hover i {
+  transform: translateX(5px);
+}
+
 /* Media Queries */
 @media (max-width: 992px) {
   .container {
