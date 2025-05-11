@@ -1,12 +1,44 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./Pictures.module.css";
 import portfolioService from "../../services/portfolioService";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const Pictures = () => {
   const pictureItems = useRef([]);
   const [picturesData, setPicturesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Number of items to show per page
+  const itemsPerPage = 3;
+
+  // Calculate pagination data
+  const totalPages = Math.ceil((picturesData?.length || 0) / itemsPerPage);
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = Math.min(
+    startIndex + itemsPerPage,
+    picturesData?.length || 0
+  );
+  const currentItems = picturesData?.slice(startIndex, endIndex) || [];
+
+  // Pagination handlers
+  const nextPage = () => {
+    if ((currentPage + 1) * itemsPerPage < picturesData.length) {
+      setCurrentPage(currentPage + 1);
+      setRefreshKey((prev) => prev + 1); // Force refresh for animations
+      pictureItems.current = [];
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+      setRefreshKey((prev) => prev + 1); // Force refresh for animations
+      pictureItems.current = [];
+    }
+  };
 
   useEffect(() => {
     // Fetch pictures data directly from the database
@@ -74,7 +106,7 @@ const Pictures = () => {
         });
       }
     };
-  }, [picturesData.length]);
+  }, [picturesData.length, refreshKey]);
 
   // If loading, show a loading indicator
   if (loading) {
@@ -122,7 +154,7 @@ const Pictures = () => {
         <h2 className={styles.sectionTitle}>Photography</h2>
 
         <div className={styles.picturesGrid}>
-          {picturesData.map((picture, index) => (
+          {currentItems.map((picture, index) => (
             <div
               key={index}
               className={`${styles.pictureCard}`}
@@ -153,6 +185,46 @@ const Pictures = () => {
             </div>
           ))}
         </div>
+
+        {picturesData.length > 3 && (
+          <div className={styles.paginationControls}>
+            <button
+              className={`${styles.paginationArrow} ${
+                currentPage === 0 ? styles.disabled : ""
+              }`}
+              onClick={prevPage}
+              disabled={currentPage === 0}
+            >
+              <FaChevronLeft />
+            </button>
+
+            <div className={styles.paginationDots}>
+              {[...Array(totalPages)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`${styles.paginationDot} ${
+                    i === currentPage ? styles.activeDot : ""
+                  }`}
+                  onClick={() => {
+                    setCurrentPage(i);
+                    setRefreshKey((prev) => prev + 1);
+                    pictureItems.current = [];
+                  }}
+                />
+              ))}
+            </div>
+
+            <button
+              className={`${styles.paginationArrow} ${
+                currentPage >= totalPages - 1 ? styles.disabled : ""
+              }`}
+              onClick={nextPage}
+              disabled={currentPage >= totalPages - 1}
+            >
+              <FaChevronRight />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

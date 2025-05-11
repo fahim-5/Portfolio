@@ -1,12 +1,44 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./Education.module.css";
 import portfolioService from "../../services/portfolioService";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const Education = () => {
   const educationItems = useRef([]);
   const [educationData, setEducationData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Number of items to show per page
+  const itemsPerPage = 3;
+
+  // Calculate pagination data
+  const totalPages = Math.ceil((educationData?.length || 0) / itemsPerPage);
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = Math.min(
+    startIndex + itemsPerPage,
+    educationData?.length || 0
+  );
+  const currentItems = educationData?.slice(startIndex, endIndex) || [];
+
+  // Pagination handlers
+  const nextPage = () => {
+    if ((currentPage + 1) * itemsPerPage < educationData.length) {
+      setCurrentPage(currentPage + 1);
+      setRefreshKey((prev) => prev + 1); // Force refresh for animations
+      educationItems.current = [];
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+      setRefreshKey((prev) => prev + 1); // Force refresh for animations
+      educationItems.current = [];
+    }
+  };
 
   useEffect(() => {
     // Fetch education data directly from the database
@@ -74,7 +106,7 @@ const Education = () => {
         });
       }
     };
-  }, [educationData.length]);
+  }, [educationData.length, refreshKey]);
 
   // Format a date from YYYY-MM to a readable format
   const formatDate = (dateString) => {
@@ -147,7 +179,7 @@ const Education = () => {
         <h2 className={styles.sectionTitle}>Education</h2>
 
         <div className={styles.educationGrid}>
-          {educationData.map((edu, index) => (
+          {currentItems.map((edu, index) => (
             <div
               key={edu.id || index}
               className={styles.eduItem}
@@ -171,6 +203,46 @@ const Education = () => {
             </div>
           ))}
         </div>
+
+        {educationData.length > 3 && (
+          <div className={styles.paginationControls}>
+            <button
+              className={`${styles.paginationArrow} ${
+                currentPage === 0 ? styles.disabled : ""
+              }`}
+              onClick={prevPage}
+              disabled={currentPage === 0}
+            >
+              <FaChevronLeft />
+            </button>
+
+            <div className={styles.paginationDots}>
+              {[...Array(totalPages)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`${styles.paginationDot} ${
+                    i === currentPage ? styles.activeDot : ""
+                  }`}
+                  onClick={() => {
+                    setCurrentPage(i);
+                    setRefreshKey((prev) => prev + 1);
+                    educationItems.current = [];
+                  }}
+                />
+              ))}
+            </div>
+
+            <button
+              className={`${styles.paginationArrow} ${
+                currentPage >= totalPages - 1 ? styles.disabled : ""
+              }`}
+              onClick={nextPage}
+              disabled={currentPage >= totalPages - 1}
+            >
+              <FaChevronRight />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Decorative elements */}
