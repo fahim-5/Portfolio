@@ -1,154 +1,52 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./Dashboard.module.css";
-import {
-  FaChartBar,
-  FaFolder,
-  FaCode,
-  FaCalendarCheck,
-  FaUserCircle,
-  FaBell,
-} from "react-icons/fa";
+import { FaChartBar, FaCode, FaUserCircle } from "react-icons/fa";
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      message: "Welcome to your new dashboard!",
-      time: "Just now",
-    },
-    {
-      id: 2,
-      message: "You have 3 new messages",
-      time: "2 hours ago",
-    },
-  ]);
-
-  useEffect(() => {
-    // Get user data from localStorage
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
+  const [user] = useState({ name: "Admin" }); // Example user data
 
   return (
-    <div className={styles.dashboardContent}>
-      <div className={styles.topSection}>
-        <div className={styles.welcomeSection}>
-          <h1>Welcome to Admin Dashboard</h1>
-          {user && <p>Hello, {user.name || "Admin"}</p>}
-          <p className={styles.instructions}>
-            Use the sidebar menu to manage your portfolio content.
-          </p>
-        </div>
+    <div className={styles.dashboard}>
+      <div className={styles.welcomeCard}>
+        <h1>Welcome to Admin Dashboard</h1>
+        <p className={styles.greeting}>Hello, {user.name}</p>
+        
+        <div className={styles.instructions}>
+          <h2>Getting Started</h2>
+          <ul>
+            <li>Use the sidebar to navigate between different sections</li>
+            <li>All changes are saved automatically to the database</li>
+            <li>Manage your portfolio content easily with the editor</li>
+            <li>Preview changes before publishing</li>
+          </ul>
 
-        <div className={styles.notificationSection}>
-          <div className={styles.notificationHeader}>
-            <FaBell className={styles.notificationIcon} />
-            <h3>Notifications</h3>
-          </div>
-          <div className={styles.notificationList}>
-            {notifications.map((notification) => (
-              <div key={notification.id} className={styles.notificationItem}>
-                <p>{notification.message}</p>
-                <span className={styles.notificationTime}>
-                  {notification.time}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <div className={styles.statIconWrapper}>
-            <FaFolder className={styles.statIcon} />
-          </div>
-          <div className={styles.statInfo}>
-            <h3>Portfolio Sections</h3>
-            <p className={styles.statValue}>7</p>
-            <div className={styles.progressBar}>
-              <div
-                className={styles.progressFill}
-                style={{
-                  width: "70%",
-                  background: "linear-gradient(90deg, #4a6bff, #7c3aed)",
-                }}
-              ></div>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.statCard}>
-          <div className={styles.statIconWrapper}>
-            <FaCode className={styles.statIcon} />
-          </div>
-          <div className={styles.statInfo}>
-            <h3>Projects</h3>
-            <p className={styles.statValue}>12</p>
-            <div className={styles.progressBar}>
-              <div
-                className={styles.progressFill}
-                style={{
-                  width: "60%",
-                  background: "linear-gradient(90deg, #41d7a7, #2ecc71)",
-                }}
-              ></div>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.statCard}>
-          <div className={styles.statIconWrapper}>
-            <FaChartBar className={styles.statIcon} />
-          </div>
-          <div className={styles.statInfo}>
-            <h3>Skills</h3>
-            <p className={styles.statValue}>24</p>
-            <div className={styles.progressBar}>
-              <div
-                className={styles.progressFill}
-                style={{
-                  width: "80%",
-                  background: "linear-gradient(90deg, #ff9f43, #ff6b6b)",
-                }}
-              ></div>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.statCard}>
-          <div className={styles.statIconWrapper}>
-            <FaCalendarCheck className={styles.statIcon} />
-          </div>
-          <div className={styles.statInfo}>
-            <h3>Last Login</h3>
-            <p className={styles.statValue}>
-              {new Date().toLocaleDateString()}
-            </p>
-            <p className={styles.statSubtext}>
-              {new Date().toLocaleTimeString()}
-            </p>
-          </div>
+          <h3>Quick Tips</h3>
+          <ul>
+            <li>Keep project descriptions concise but informative</li>
+            <li>Update skills regularly to reflect your current expertise</li>
+            <li>Use high-quality images for better presentation</li>
+            <li>Regularly check your profile information for accuracy</li>
+          </ul>
         </div>
       </div>
 
       <div className={styles.quickAccess}>
-        <h2>Quick Access</h2>
-        <div className={styles.quickAccessGrid}>
-          <a href="/admin/projects" className={styles.quickAccessCard}>
-            <FaCode />
-            <span>Projects</span>
+        <h2>Quick Actions</h2>
+        <div className={styles.quickGrid}>
+          <a href="/admin/projects" className={styles.quickCard}>
+            <FaCode className={styles.icon} />
+            <span>Manage Projects</span>
+            <p>Add, edit or remove your portfolio projects</p>
           </a>
-          <a href="/admin/skills" className={styles.quickAccessCard}>
-            <FaChartBar />
-            <span>Skills</span>
+          <a href="/admin/skills" className={styles.quickCard}>
+            <FaChartBar className={styles.icon} />
+            <span>Update Skills</span>
+            <p>Modify your technical and soft skills</p>
           </a>
-          <a href="/admin/hero" className={styles.quickAccessCard}>
-            <FaUserCircle />
-            <span>Profile</span>
+          <a href="/admin/hero" className={styles.quickCard}>
+            <FaUserCircle className={styles.icon} />
+            <span>Edit Profile</span>
+            <p>Update your personal information</p>
           </a>
         </div>
       </div>
