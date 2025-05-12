@@ -130,11 +130,11 @@ const HeroAdmin = () => {
   }
 
   return (
-    <div className="admin-content">
+    <div className={styles.adminDashboard}>
       <div className={styles.adminContainer}>
         <header className={styles.header}>
           <h2>Hero Section Editor</h2>
-          <p>Manage the main hero section content</p>
+          <p className={styles.subtitle}>Manage the main hero section content</p>
         </header>
 
         {notification.message && (
@@ -145,204 +145,215 @@ const HeroAdmin = () => {
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <section className={styles.section}>
-            <h3>Basic Information</h3>
+            <h3 className={styles.sectionTitle}>Basic Information</h3>
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
-                <label>Greeting Text</label>
+                <label className={styles.label}>Greeting Text</label>
                 <input
                   type="text"
                   name="greeting"
                   value={hero.greeting}
                   onChange={handleChange}
                   placeholder="e.g., Hello, I'm"
+                  className={styles.input}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>First Name *</label>
+                <label className={styles.label}>Full Name *</label>
                 <input
                   type="text"
                   name="name"
                   value={hero.name}
                   onChange={handleChange}
                   required
+                  className={styles.input}
                 />
               </div>
 
+              
               <div className={styles.formGroup}>
-                <label>Last Name</label>
-                <input
-                  type="text"
-                  name="last_name"
-                  value={hero.last_name}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Job Title *</label>
+                <label className={styles.label}>Job Title *</label>
                 <input
                   type="text"
                   name="job_title"
                   value={hero.job_title}
                   onChange={handleChange}
                   required
+                  className={styles.input}
                 />
               </div>
             </div>
           </section>
 
+          {/* Profile Content Section */}
           <section className={styles.section}>
-            <h3>Profile Content</h3>
+            <h3 className={styles.sectionTitle}>Profile Content</h3>
             <div className={styles.formGroup}>
-              <label>Description *</label>
+              <label className={styles.label}>Description *</label>
               <textarea
                 name="description"
                 value={hero.description}
                 onChange={handleChange}
                 rows={5}
                 required
+                className={`${styles.input} ${styles.textarea}`}
               />
             </div>
 
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
-                <label>Button Text</label>
+                <label className={styles.label}>Button Text</label>
                 <input
                   type="text"
                   name="button_text"
                   value={hero.button_text}
                   onChange={handleChange}
+                  className={styles.input}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>Profile Image URL</label>
+                <label className={styles.label}>Profile Image URL</label>
                 <input
                   type="url"
                   name="profile_image_url"
                   value={hero.profile_image_url}
                   onChange={handleChange}
                   placeholder="https://example.com/image.jpg"
+                  className={styles.input}
                 />
               </div>
             </div>
           </section>
 
+          {/* About Information Section */}
           <section className={styles.section}>
-            <h3>About Information</h3>
+            <h3 className={styles.sectionTitle}>About Information</h3>
             <div className={styles.formGroup}>
-              <label>Bio (About Me) *</label>
+              <label className={styles.label}>Bio (About Me) *</label>
               <textarea
                 name="bio"
                 value={hero.bio || ''}
                 onChange={handleChange}
                 rows={6}
                 placeholder="Share your professional background, skills, and what makes you unique..."
+                className={`${styles.input} ${styles.textarea}`}
               />
             </div>
 
             <div className={styles.formGroup}>
-              <label>About Section Image URL</label>
+              <label className={styles.label}>About Section Image URL</label>
               <input
                 type="url"
                 name="aboutImageUrl"
                 value={hero.aboutImageUrl || ''}
                 onChange={handleChange}
                 placeholder="https://example.com/about-image.jpg"
+                className={styles.input}
               />
-              <p className={styles.inputHint}>This image will be displayed in the About section</p>
+              <p className={styles.hintText}>This image will be displayed in the About section</p>
             </div>
           </section>
 
+          {/* Contact Information Section */}
           <section className={styles.section}>
-            <h3>Contact Information</h3>
+            <h3 className={styles.sectionTitle}>Contact Information</h3>
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
-                <label>Email *</label>
+                <label className={styles.label}>Email *</label>
                 <input
                   type="email"
                   name="email"
                   value={hero.email}
                   onChange={handleChange}
                   required
+                  className={styles.input}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>Phone</label>
+                <label className={styles.label}>Phone</label>
                 <input
                   type="tel"
                   name="phone"
                   value={hero.phone}
                   onChange={handleChange}
+                  className={styles.input}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>Location</label>
+                <label className={styles.label}>Location</label>
                 <input
                   type="text"
                   name="location"
                   value={hero.location}
                   onChange={handleChange}
+                  className={styles.input}
                 />
               </div>
             </div>
           </section>
 
+          {/* Social Links Section */}
           <section className={styles.section}>
-            <h3>Social Links</h3>
+            <h3 className={styles.sectionTitle}>Social Links</h3>
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
-                <label>LinkedIn URL</label>
+                <label className={styles.label}>LinkedIn URL</label>
                 <input
                   type="url"
                   name="linkedin_url"
                   value={hero.linkedin_url}
                   onChange={handleChange}
                   placeholder="https://linkedin.com/in/username"
+                  className={styles.input}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>GitHub URL</label>
+                <label className={styles.label}>GitHub URL</label>
                 <input
                   type="url"
                   name="github_url"
                   value={hero.github_url}
                   onChange={handleChange}
                   placeholder="https://github.com/username"
+                  className={styles.input}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>Twitter URL</label>
+                <label className={styles.label}>Twitter URL</label>
                 <input
                   type="url"
                   name="twitter_url"
                   value={hero.twitter_url}
                   onChange={handleChange}
                   placeholder="https://twitter.com/username"
+                  className={styles.input}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>Instagram URL</label>
+                <label className={styles.label}>Instagram URL</label>
                 <input
                   type="url"
                   name="instagram_url"
                   value={hero.instagram_url}
                   onChange={handleChange}
                   placeholder="https://instagram.com/username"
+                  className={styles.input}
                 />
               </div>
             </div>
           </section>
 
+          {/* Statistics Section */}
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
-              <h3>Statistics</h3>
+              <h3 className={styles.sectionTitle}>Statistics</h3>
               <button
                 type="button"
                 onClick={addStatField}
@@ -356,19 +367,21 @@ const HeroAdmin = () => {
               {hero.stats.map((stat, index) => (
                 <div key={index} className={styles.statGroup}>
                   <div className={styles.formGroup}>
-                    <label>Value</label>
+                    <label className={styles.label}>Value</label>
                     <input
                       type="text"
                       value={stat.value}
                       onChange={(e) => handleStatChange(index, 'value', e.target.value)}
+                      className={styles.input}
                     />
                   </div>
                   <div className={styles.formGroup}>
-                    <label>Label</label>
+                    <label className={styles.label}>Label</label>
                     <input
                       type="text"
                       value={stat.label}
                       onChange={(e) => handleStatChange(index, 'label', e.target.value)}
+                      className={styles.input}
                     />
                   </div>
                   {hero.stats.length > 1 && (

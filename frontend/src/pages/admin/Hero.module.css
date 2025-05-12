@@ -1,81 +1,156 @@
-/* Hero.module.css */
+/* Hero.module.css - Dark Professional Version */
 :root {
-  --primary: #4361ee;
-  --primary-hover: #3a56d4;
-  --secondary: #f72585;
-  --text: #2b2d42;
-  --text-light: #8d99ae;
-  --background: #f8f9fa;
-  --surface: #ffffff;
-  --border: #e9ecef;
-  --success: #4bb543;
-  --error: #ff3333;
-  --warning: #ffcc00;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --transition: all 0.2s ease;
+  --primary-color: #00bcd4;
+  --primary-darker: #00a0b7;
+  --dark-bg: #0a0a14;
+  --card-bg: rgba(20, 20, 30, 0.9);
+  --border-color: rgba(80, 80, 100, 0.3);
+  --text-color: #e0e0e0;
+  --text-muted: #8a8a9a;
+  --danger-color: #ff5252;
+  --success-color: #4CAF50;
+  --accent-color: #7986cb;
+  --shadow-color: rgba(0, 188, 212, 0.2);
+  --glass-bg: rgba(15, 15, 25, 0.7);
 }
 
-/* Base Container */
+.adminDashboard {
+  background-color: var(--dark-bg);
+  min-height: 100vh;
+  color: var(--text-color);
+}
+
 .adminContainer {
-  margin-top: 70px;
   max-width: 1200px;
-  padding: 2.5rem;
-  background-color: var(--surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-/* Header Styles */
 .header {
   margin-bottom: 2.5rem;
-  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .header h2 {
   font-size: 2rem;
-  color: var(--text);
-  margin-bottom: 0.5rem;
-  font-weight: 700;
+  margin: 0;
+  color: var(--primary-color);
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-.header p {
-  color: var(--text-light);
+.subtitle {
+  color: var(--text-muted);
+  margin: 0.5rem 0 0;
   font-size: 1rem;
 }
 
-/* Form Structure */
-.form {
+.notification {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.notification.success {
+  background-color: rgba(76, 175, 80, 0.1);
+  border-left: 4px solid var(--success-color);
+  color: var(--success-color);
+}
+
+.notification.error {
+  background-color: rgba(244, 67, 54, 0.1);
+  border-left: 4px solid var(--error-color);
+  color: var(--error-color);
+}
+
+.form {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
 }
 
 .section {
-  padding: 1.5rem;
-  background-color: rgba(245, 247, 250, 0.5);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  transition: var(--transition);
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.section:hover {
-  border-color: var(--primary);
-  box-shadow: var(--shadow-sm);
+.section:last-child {
+  border-bottom: none;
+  margin-bottom: 1rem;
 }
 
-.section h3 {
-  font-size: 1.25rem;
+.sectionTitle {
+  font-size: 1.3rem;
   margin-bottom: 1.5rem;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  color: var(--primary-color);
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: var(--primary-color);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: rgba(30, 30, 40, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--shadow-color);
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.hintText {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
 }
 
 .sectionHeader {
@@ -85,200 +160,157 @@
   margin-bottom: 1.5rem;
 }
 
-/* Form Grid Layout */
-.formGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-/* Form Groups */
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.formGroup label {
-  font-weight: 600;
-  color: var(--text);
-  font-size: 0.95rem;
-}
-
-.formGroup label.required::after {
-  content: '*';
-  color: var(--error);
-  margin-left: 0.25rem;
-}
-
-/* Input Fields */
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="url"],
-textarea {
-  padding: 0.875rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 1rem;
-  transition: var(--transition);
-  width: 100%;
-}
-
-input:focus,
-textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
-}
-
-textarea {
-  min-height: 140px;
-  resize: vertical;
-  line-height: 1.5;
-}
-
-/* Stats Section */
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
 .statGroup {
-  padding: 1.25rem;
-  background-color: var(--surface);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  padding: 1rem;
+  border-radius: 4px;
   position: relative;
+  border: 1px solid var(--border-color);
 }
 
-/* Buttons */
-.button {
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-sm);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.saveButton {
-  background-color: var(--primary);
-  color: white;
-  border: none;
-}
-
-.saveButton:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.saveButton:disabled {
-  background-color: var(--text-light);
-  cursor: not-allowed;
-}
-
-.addButton {
-  background-color: var(--primary);
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-}
-
-.removeButton {
-  background-color: var(--error);
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-}
-
-/* Form Actions */
 .formActions {
   display: flex;
   justify-content: flex-end;
   margin-top: 2rem;
 }
 
-/* Notifications */
-.notification {
-  padding: 1rem 1.5rem;
-  border-radius: var(--radius-sm);
-  margin-bottom: 1.5rem;
+.saveButton {
+  background-color: var(--success-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
-.notification.success {
-  background-color: rgba(75, 181, 67, 0.1);
-  color: var(--success);
-  border-left: 4px solid var(--success);
+.saveButton:hover {
+  background-color: #3d8b40;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.notification.error {
-  background-color: rgba(255, 51, 51, 0.1);
-  color: var(--error);
-  border-left: 4px solid var(--error);
+.saveButton:disabled {
+  background-color: #2e7d32;
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-/* Loading State */
+.addButton {
+  background-color: rgba(0, 188, 212, 0.1);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addButton:hover {
+  background-color: rgba(0, 188, 212, 0.2);
+  transform: translateY(-2px);
+}
+
+.removeButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(255, 82, 82, 0.1);
+  border: 1px solid var(--danger-color);
+  color: var(--danger-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.removeButton:hover {
+  background: rgba(255, 82, 82, 0.2);
+}
+
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .loaderContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  padding: 3rem;
+  height: 200px;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(67, 97, 238, 0.1);
-  border-radius: 50%;
-  border-top-color: var(--primary);
-  animation: spin 1s ease-in-out infinite;
+.loaderContainer .spinner {
+  border: 3px solid rgba(0, 188, 212, 0.3);
+  border-top-color: var(--primary-color);
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 1rem;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Responsive Adjustments */
+/* Responsive Design */
 @media (max-width: 768px) {
   .adminContainer {
     padding: 1.5rem;
-    margin: 1rem;
   }
-
-  .formGrid {
-    grid-template-columns: 1fr;
+  
+  .form {
+    padding: 1.5rem;
   }
-
+  
+  .formGrid,
   .statsGrid {
     grid-template-columns: 1fr;
+  }
+  
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .formActions {
+    justify-content: center;
+  }
+  
+  .saveButton {
+    width: 100%;
+    justify-content: center;
   }
 }
 
 @media (max-width: 480px) {
   .header h2 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
-
-  .section {
-    padding: 1rem;
+  
+  .sectionTitle {
+    font-size: 1.1rem;
+  }
+  
+  .input, .textarea {
+    padding: 0.65rem;
   }
 }
