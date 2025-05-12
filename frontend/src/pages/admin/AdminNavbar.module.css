@@ -16,6 +16,8 @@
   --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   --box-shadow-lg: 0 15px 40px rgba(0, 0, 0, 0.3);
   --transition: all 0.3s ease;
+  --green-color: #2e8a3d;
+  --red-color: #d32f2f;
 }
 
 /* Admin Layout */
@@ -94,10 +96,10 @@
   margin: 0 20px;
 }
 
-
-form{
+.searchForm {
   background: transparent;
 }
+
 .searchInputWrapper {
   position: relative;
   display: flex;
@@ -129,6 +131,7 @@ form{
   background-color: rgba(255, 255, 255, 0.08);
   border-color: var(--primary-color);
   /* Removed box-shadow for a cleaner look */
+  box-shadow: none;
 }
 
 .searchInput::placeholder {
@@ -148,13 +151,14 @@ form{
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
+  box-shadow: none;
 }
 
 .searchButton:hover {
   transform: translateY(-1px);
   /* Removed shadow for minimalism */
+  box-shadow: none;
 }
-
 
 /* Profile Section Styles */
 .profileSection {
@@ -206,7 +210,8 @@ form{
   top: calc(100% + 15px);
   right: 0;
   width: 280px;
-  background-color: var(--bg-light);
+  background-color: #2a2e3d;
+  /* Darker background for dropdown */
   border-radius: 12px;
   box-shadow: var(--box-shadow-lg);
   overflow: hidden;
@@ -222,7 +227,8 @@ form{
   right: 20px;
   height: 15px;
   width: 15px;
-  background-color: var(--bg-light);
+  background-color: #2a2e3d;
+  /* Match dropdown background color */
   transform: rotate(45deg);
   border-top: 1px solid var(--border-color);
   border-left: 1px solid var(--border-color);
@@ -230,7 +236,8 @@ form{
 
 .profileHeader {
   padding: 20px;
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(135deg, #3a4cc1, #5e3ab6);
+  /* Darker header color */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -292,7 +299,8 @@ form{
 
 .profileMenu li a:hover,
 .profileMenu li button:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.12);
+  /* Slightly more visible hover effect */
 }
 
 .profileMenu li svg {
@@ -315,6 +323,7 @@ form{
   left: 0;
   bottom: 0;
   width: var(--sidebar-width);
+  max-width: 230px;
   background-color: var(--bg-darker);
   z-index: 900;
   transform: translateX(-100%);
@@ -392,26 +401,68 @@ form{
   color: var(--primary-color);
 }
 
-
-.backToPortfolio{
-  color: #25622e;
+/* Custom Button Styles for Sidebar */
+.backToPortfolioBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  background-color: rgba(46, 138, 61, 0.15);
+  /* Light green background */
+  color: var(--green-color) !important;
+  border-left: 3px solid var(--green-color);
+  margin-top: 16px;
+  text-align: center;
+  border:#0a0c14;
+  margin-left: 20px;
 }
 
+.backToPortfolioBtn:hover {
+  background-color: rgba(46, 138, 61, 0.25);
+  /* Darker on hover */
+  color: var(--green-color) !important;
+}
+
+.backToPortfolioBtn .navIcon {
+  color: var(--green-color);
+
+}
+
+
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  background-color: rgba(211, 47, 47, 0.15);
+  /* Light red background */
+  color: var(--red-color) !important;
+  border-left: 3px solid var(--red-color);
+  margin-top: 8px;
+  text-align: center;
+  margin-left: 20px;
+  border: none;
+  width: 180px;
+}
+
+.logoutBtn:hover {
+  background-color: rgba(211, 47, 47, 0.25);
+  /* Darker on hover */
+  color: var(--red-color) !important;
+}
+
+.logoutBtn .navIcon {
+  color: var(--red-color);
+}
+
+/* Remove unused styles */
+.backToPortfolio {
+  display: none;
+}
 
 .logoutLink {
-  color: var(--danger-color) !important;
-  margin-top: 16px;
-  border-top: 1px solid var(--border-color);
-  padding-top: 16px;
-  display: flex;
-  justify-content: center;
-}
-
-
-.logoutLink .navIcon {
-  color: var(--danger-color);
-  width: 160px;
-  
+  display: none;
 }
 
 /* Main Content */
