@@ -4,36 +4,51 @@ import portfolioService from '../../services/portfolioService';
 
 const Skills = () => {
   const [activeTab, setActiveTab] = useState('technical');
-  const [skillsData, setSkillsData] = useState({ technical: [], soft: [], languages: [] });
-  const [loading, setLoading] = useState(true);
+  const [skillsData, setSkillsData] = useState({
+    technical: [],
+    soft: [],
+    languages: []
+  });
+  const [loading, setLoading] = useState({
+    technical: false,
+    soft: false,
+    languages: false
+  });
   const [error, setError] = useState(null);
   const skillItems = useRef([]);
   
-  useEffect(() => {
-    // Fetch skills data from API
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        // Fetch from API only, no localStorage fallback
-        const apiData = await portfolioService.fetchSkillsData();
-        if (apiData) {
-          setSkillsData(apiData);
-        } else {
-          setError('No skills data returned from API');
-        }
-      } catch (error) {
-        console.error('Error fetching skills:', error);
-        setError('Failed to fetch skills data from the database');
-      } finally {
-        setLoading(false);
+  // Fetch skills data for a specific category
+  const fetchSkillsData = async (category) => {
+    setLoading(prev => ({ ...prev, [category]: true }));
+    setError(null);
+    
+    try {
+      const data = await portfolioService.fetchSkillsData(category);
+      if (data) {
+        setSkillsData(prev => ({ 
+          ...prev, 
+          [category]: data[category] || [] 
+        }));
+      } else {
+        setError(`No ${category} skills data returned from API`);
       }
-    };
-    
-    // Initial data fetch
-    fetchData();
-    
-    // Set up intersection observer for animation on scroll
+    } catch (error) {
+      console.error(`Error fetching ${category} skills:`, error);
+      setError(`Failed to fetch ${category} skills data`);
+    } finally {
+      setLoading(prev => ({ ...prev, [category]: false }));
+    }
+  };
+
+  // Initial data fetch for all categories
+  useEffect(() => {
+    fetchSkillsData('technical');
+    fetchSkillsData('soft');
+    fetchSkillsData('languages');
+  }, []);
+
+  // Set up intersection observer for animation
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -44,14 +59,6 @@ const Skills = () => {
       },
       { threshold: 0.2 }
     );
-    
-    // Make sure all skill items are initially visible
-    setTimeout(() => {
-      const currentItems = skillItems.current;
-      currentItems.forEach((item) => {
-        if (item) item.classList.add(styles.revealed);
-      });
-    }, 100);
     
     const currentItems = skillItems.current;
     
@@ -64,9 +71,9 @@ const Skills = () => {
         if (item) observer.unobserve(item);
       });
     };
-  }, []);
+  }, [skillsData[activeTab]]);
 
-  // Helper function to get icon based on skill name
+  // Icon mapping for skills
   const getIconForSkill = (skillName) => {
     const skillIconMap = {
       'React': 'react',
@@ -110,31 +117,18 @@ const Skills = () => {
       'Arabic': 'language'
     };
     
-    return skillIconMap[skillName] || 'star'; // Default to 'star' if no mapping found
+    return skillIconMap[skillName] || 'star';
   };
   
-  // Get level description for display
-  
-  
-  // Function to render the appropriate active skills
-  const getActiveSkills = () => {
-    return skillsData[activeTab] || [];
-  };
-  
-  // Check if we have skills data
+  const getActiveSkills = () => skillsData[activeTab] || [];
   const hasSkills = Object.values(skillsData).some(category => category.length > 0);
-  if (!hasSkills && !loading && !error) {
-    return null; // Don't render the section if no data and not loading
-  }
-  
-  const hasLanguages = skillsData.languages && skillsData.languages.length > 0;
-  
-  if (loading) {
+
+  if (!hasSkills && (loading.technical || loading.soft || loading.languages)) {
     return (
       <section id="skills" className={styles.skills}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Skills & Expertise</h2>
-          <p>Loading skills...</p>
+          <div className={styles.loadingSpinner}></div>
         </div>
       </section>
     );
@@ -145,7 +139,17 @@ const Skills = () => {
       <section id="skills" className={styles.skills}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Skills & Expertise</h2>
-          <p className={styles.errorMessage}>Error: {error}</p>
+          <p className={styles.errorMessage}>{error}</p>
+          <button 
+            className={styles.retryButton}
+            onClick={() => {
+              fetchSkillsData('technical');
+              fetchSkillsData('soft');
+              fetchSkillsData('languages');
+            }}
+          >
+            Retry
+          </button>
         </div>
       </section>
     );
@@ -157,57 +161,73 @@ const Skills = () => {
         <h2 className={styles.sectionTitle}>Skills & Expertise</h2>
         
         <p className={styles.skillsIntro}>
-        With strong technical and soft skills, I bring a balanced approach to projects and stay current through continuous learning.
+          Combining technical proficiency with strong interpersonal skills to deliver comprehensive solutions.
         </p>
         
         <div className={styles.skillsHeader}>
           <button 
             className={`${styles.tabButton} ${activeTab === 'technical' ? styles.active : ''}`}
             onClick={() => setActiveTab('technical')}
+            disabled={loading.technical}
           >
-            Technical Skills
+            {loading.technical ? 'Loading...' : 'Technical'}
           </button>
           <button 
             className={`${styles.tabButton} ${activeTab === 'soft' ? styles.active : ''}`}
             onClick={() => setActiveTab('soft')}
+            disabled={loading.soft}
           >
-            Soft Skills
+            {loading.soft ? 'Loading...' : 'Soft Skills'}
           </button>
-          {hasLanguages && (
-            <button 
-              className={`${styles.tabButton} ${activeTab === 'languages' ? styles.active : ''}`}
-              onClick={() => setActiveTab('languages')}
-            >
-              Languages
-            </button>
-          )}
+          <button 
+            className={`${styles.tabButton} ${activeTab === 'languages' ? styles.active : ''}`}
+            onClick={() => setActiveTab('languages')}
+            disabled={loading.languages}
+          >
+            {loading.languages ? 'Loading...' : 'Languages'}
+          </button>
         </div>
         
         <div className={styles.skillsGrid}>
-          {getActiveSkills().map((skill, index) => (
-            <div 
-              key={index} 
-              className={`${styles.skillCard} ${styles.glassCard}`}
-              ref={el => skillItems.current[index] = el}
-            >
-              <div className={styles.skillIcon}>
-                <i className={`fas fa-${getIconForSkill(skill.name)}`}></i>
-              </div>
-              <div className={styles.skillContent}>
-                <h3>{skill.name}</h3>
-                {skill.level && (
-                  <div className={styles.skillLevel}>
-                    <div className={`${styles.skillLevelBar} ${styles[skill.level]}`}></div>
-                    <p className={styles.skillLevelText}>{skill.level.charAt(0).toUpperCase() + skill.level.slice(1)}</p>
-                  </div>
-                )}
-              </div>
+          {loading[activeTab] ? (
+            <div className={styles.loadingMessage}>
+              <div className={styles.loadingSpinner}></div>
+              Loading {activeTab} skills...
             </div>
-          ))}
+          ) : getActiveSkills().length > 0 ? (
+            getActiveSkills().map((skill, index) => (
+              <div 
+                key={`${activeTab}-${index}`} 
+                className={`${styles.skillCard} ${styles.glassCard}`}
+                ref={el => skillItems.current[index] = el}
+              >
+                <div className={styles.skillIcon}>
+                  <i className={`fas fa-${getIconForSkill(skill.name)}`}></i>
+                </div>
+                <div className={styles.skillContent}>
+                  <h3>{skill.name}</h3>
+                  {skill.level && (
+                    <div className={styles.skillLevel}>
+                      <div className={`${styles.skillLevelBar} ${styles[skill.level]}`}></div>
+                      <span className={styles.skillLevelText}>
+                        {skill.level.charAt(0).toUpperCase() + skill.level.slice(1)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className={styles.noSkillsMessage}>
+              {activeTab === 'languages' 
+                ? "Language proficiency not specified" 
+                : `No ${activeTab} skills listed`}
+            </div>
+          )}
         </div>
       </div>
     </section>
   );
 };
 
-export default Skills; 
+export default Skills;

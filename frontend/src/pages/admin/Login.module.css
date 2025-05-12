@@ -3,81 +3,230 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #0f111a;
   padding: 20px;
 }
 
-.loginCard {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+.loginBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  max-width: 400px;
+  max-width: 350px;
 }
 
-.loginCard h2 {
-  margin-bottom: 20px;
-  color: #333;
+.loginCard {
+  background-color: #181b24;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  padding: 20px 15px 15px;
+  width: 100%;
+  color: #ffffff;
+}
+
+.loginTitle {
+  color: #0dd3ff;
   text-align: center;
+  margin-bottom: 8px;
+  font-size: 22px;
+}
+
+.loginSubtitle {
+  color: #a0a0a0;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 13px;
 }
 
 .loginForm {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 3px;
 }
 
 .formGroup label {
-  font-weight: 500;
-  color: #555;
+  color: #a0a0a0;
+  font-size: 13px;
 }
 
-.formGroup input {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-}
-
-.formGroup input:focus {
-  outline: none;
-  border-color: #4a90e2;
-}
-
-.loginButton {
-  background-color: #4a90e2;
-  color: white;
+.loginformInput {
+  background-color: #20232e;
+  color: #ffffff;
   border: none;
   border-radius: 4px;
-  padding: 12px;
-  font-size: 16px;
+  padding: 10px 12px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.loginformInput:focus {
+  outline: none;
+  background-color: #262a36;
+}
+
+.loginformInput::placeholder {
+  color: #6e7080;
+}
+
+.signInButton {
+  background-color: #0dd3ff;
+  color: #181b24;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 0px;
+  width: 100%;
+}
+
+.signInButton:hover {
+  background-color: #0ab9df;
+}
+
+.signInButton:disabled {
+  background-color: #6e7080;
+  cursor: not-allowed;
+}
+
+.loginFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.forgotPasswordContainer {
+  align-self: flex-end;
+  margin-top: -10px;
+  margin-bottom: 0px;
+}
+
+.forgotPasswordLink {
+  background: none;
+  border: none;
+  color: #a0a0a0;
+  cursor: pointer;
+  font-size: 12px;
+  transition: color 0.3s;
+  padding: 0;
+}
+
+.forgotPasswordLink:hover {
+  color: #0dd3ff;
+  text-decoration: underline;
+}
+
+.backLink {
+  background: none;
+  border: none;
+  color: #a0a0a0;
+  cursor: pointer;
+  font-size: 13px;
+  transition: color 0.3s;
+  margin-top: 0;
+}
+
+.backLink:hover {
+  color: #0dd3ff;
+  text-decoration: underline;
+}
+
+.error {
+  background-color: rgba(211, 47, 47, 0.1);
+  color: #ff5252;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.modal {
+  background-color: #181b24;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  color: #ffffff;
+}
+
+.modal h3 {
+  color: #831212;
+  margin-bottom: 12px;
+  font-size: 22px;
+  display: flex;
+  justify-content: center;
+}
+
+.modal p {
+  color: #a0a0a0;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.primaryButton {
+  background-color: #0dd3ff;
+  color: #181b24;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.loginButton:hover {
-  background-color: #3a7bc8;
+.primaryButton:hover {
+  background-color: #0ab9df;
 }
 
-.loginButton:disabled {
-  background-color: #a0c3e8;
-  cursor: not-allowed;
-}
-
-.error {
-  background-color: #ffebee;
-  color: #d32f2f;
-  padding: 10px;
+.secondaryButton {
+  background-color: transparent;
+  color: #a0a0a0;
+  border: 1px solid #a0a0a0;
   border-radius: 4px;
-  margin-bottom: 20px;
-  text-align: center;
-} 
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.secondaryButton:hover {
+  background-color: rgba(160, 160, 160, 0.1);
+  color: #ffffff;
+}
