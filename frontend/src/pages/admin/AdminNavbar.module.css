@@ -40,7 +40,6 @@
   z-index: 1000;
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--box-shadow);
-
 }
 
 .container {
@@ -49,12 +48,14 @@
   align-items: center;
   height: 100%;
   padding: 0 20px;
+  width: 100%;
 }
 
 .leftSection {
   display: flex;
   align-items: center;
   gap: 15px;
+  min-width: 200px;
 }
 
 .menuToggle {
@@ -93,11 +94,18 @@
 .searchContainer {
   flex: 1;
   max-width: 550px;
-  margin: 0 20px;
+  margin-top: 33px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .searchForm {
   background: transparent;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .searchInputWrapper {
@@ -105,6 +113,7 @@
   display: flex;
   align-items: center;
   width: 100%;
+  height: 42px;
 }
 
 .searchIcon {
@@ -112,6 +121,7 @@
   left: 16px;
   color: rgba(255, 255, 255, 0.5);
   font-size: 1rem;
+  z-index: 1;
 }
 
 .searchInput {
@@ -130,8 +140,7 @@
   outline: none;
   background-color: rgba(255, 255, 255, 0.08);
   border-color: var(--primary-color);
-  /* Removed box-shadow for a cleaner look */
-  box-shadow: none;
+  box-shadow: 0 0 0 2px rgba(74, 107, 255, 0.2);
 }
 
 .searchInput::placeholder {
@@ -141,7 +150,7 @@
 .searchButton {
   position: absolute;
   right: 5px;
-  top: 5px;
+  height: 32px;
   background: var(--primary-color);
   color: white;
   border: none;
@@ -151,18 +160,19 @@
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: none;
 }
 
 .searchButton:hover {
+  background-color: var(--accent-color);
   transform: translateY(-1px);
-  /* Removed shadow for minimalism */
-  box-shadow: none;
 }
 
 /* Profile Section Styles */
 .profileSection {
   position: relative;
+  min-width: 150px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .profileButton {
@@ -171,7 +181,7 @@
   gap: 12px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-color);
-  padding: 6px 12px 6px 6px;
+  padding: 8px 20px 8px 20px;
   border-radius: 30px;
   color: var(--text-color);
   font-size: 0.95rem;
@@ -236,7 +246,7 @@
 
 .profileHeader {
   padding: 20px;
-  background: linear-gradient(135deg, #3a4cc1, #5e3ab6);
+  background: linear-gradient(135deg, #14172d, #0b0619);
   /* Darker header color */
   display: flex;
   flex-direction: column;
@@ -413,7 +423,7 @@
   border-left: 3px solid var(--green-color);
   margin-top: 16px;
   text-align: center;
-  border:#0a0c14;
+  border: #0a0c14;
   margin-left: 20px;
 }
 
@@ -516,3 +526,63 @@
     font-size: 1.2rem;
   }
 }
+
+/* Search Results Dropdown */
+.searchResults {
+  position: absolute;
+  top: 63px;
+  left: 540px;
+  right: 0;
+  background-color: #2a2e3d;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow-lg);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1001;
+  border: 1px solid var(--border-color);
+  max-width: 500px;
+}
+
+
+
+.searchResultItem {
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  color: var(--text-color);
+  transition: background-color 0.2s;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.searchResultItem:last-child {
+  border-bottom: none;
+}
+
+.searchResultItem:hover {
+  background-color: rgba(74, 107, 255, 0.15);
+}
+
+.searchResultIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  color: var(--primary-color);
+}
+
+.searchResultText {
+  font-size: 0.9rem;
+}
+
+.noResults {
+  padding: 15px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  border-bottom: none;
+}
+
+

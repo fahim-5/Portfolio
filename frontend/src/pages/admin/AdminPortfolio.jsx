@@ -118,20 +118,7 @@ const ApiDiagnostic = ({ onReload }) => {
 
   return (
     <div className={styles.diagnosticPanel}>
-      <button 
-        className={styles.diagnosticButton}
-        onClick={() => {
-          if (showDiagnostics) {
-            setShowDiagnostics(false);
-            setDiagnosticData(null);
-          } else {
-            setShowDiagnostics(true);
-            runDiagnostics();
-          }
-        }}
-      >
-        {showDiagnostics ? 'Hide Diagnostics' : 'Show API Diagnostics'}
-      </button>
+      
       
       {showDiagnostics && (
         <div className={styles.diagnosticResults}>

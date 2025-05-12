@@ -106,6 +106,7 @@
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s ease;
+  margin-left: 30px;
 }
 
 .primaryButton:hover {
@@ -153,6 +154,10 @@
   gap: 0.5rem;
 }
 
+h4{
+  font-weight: 700;
+}
+
 .countBadge {
   background: rgba(0, 188, 212, 0.2);
   color: #00bcd4;
@@ -165,35 +170,56 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .skillItem {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  background: rgba(30, 35, 40, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   padding: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  min-width: 200px;
+  flex: 0 0 calc(33.333% - 1rem);
   transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.skillItem:last-child {
-  border-bottom: none;
+@media (max-width: 1200px) {
+  .skillItem {
+    flex: 0 0 calc(50% - 1rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .skillItem {
+    flex: 0 0 100%;
+  }
 }
 
 .skillItem:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(40, 45, 50, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 188, 212, 0.3);
 }
 
 .skillInfo {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .skillInfo h4 {
   font-size: 1rem;
   font-weight: 500;
   margin: 0;
+  color: #e0e0e0;
 }
 
 .skillLevel {
@@ -202,11 +228,14 @@
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
   font-size: 0.8rem;
+  align-self: flex-start;
 }
 
 .skillActions {
   display: flex;
   gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: auto;
 }
 
 .editButton,
@@ -251,17 +280,17 @@
   .adminContainer {
     padding: 1rem;
   }
-  
+
   .formActions {
     flex-direction: column;
   }
-  
+
   .skillItem {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .skillActions {
     align-self: flex-end;
   }

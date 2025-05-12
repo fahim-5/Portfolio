@@ -133,7 +133,6 @@ p {
 /* Glass cards */
 .glassCard {
   background: rgba(30, 30, 50, 0.5);
-  backdrop-filter: blur(10px);
   border-radius: 10px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   border: 1px solid var(--border-color);
@@ -170,3 +169,12 @@ section:nth-child(even) {
   background-color: var(--primary-color);
   border-radius: 2px;
 } 
+
+
+form {
+  background-color: var(--bg-darker);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: none;
+  border: none;
+}
