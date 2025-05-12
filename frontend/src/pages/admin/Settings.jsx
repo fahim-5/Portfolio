@@ -24,12 +24,12 @@ const Settings = () => {
       try {
         setLoading(true);
         console.log("Fetching user profile data...");
-        
+
         // Get token from localStorage
         const token = localStorage.getItem("authToken");
-        
+
         console.log("Authentication token exists:", !!token);
-        
+
         if (!token) {
           setError("You are not logged in. Please log in again.");
           setLoading(false);
@@ -41,13 +41,17 @@ const Settings = () => {
           console.log("Testing API connection...");
           const testResponse = await fetch(`${API_URL}/status`);
           console.log("API status check response:", testResponse.status);
-          
+
           if (!testResponse.ok) {
-            throw new Error(`API server not responding properly: ${testResponse.status}`);
+            throw new Error(
+              `API server not responding properly: ${testResponse.status}`
+            );
           }
         } catch (connectionError) {
           console.error("API connection test failed:", connectionError);
-          setError("Cannot connect to the API server. Please check your connection.");
+          setError(
+            "Cannot connect to the API server. Please check your connection."
+          );
           setLoading(false);
           return;
         }
@@ -56,12 +60,12 @@ const Settings = () => {
         console.log("Making request to /user/profile endpoint");
         const response = await axios.get(`${API_URL}/user/profile`, {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         console.log("Profile API response:", response.data);
-        
+
         if (response.data && response.data.success) {
           setUser(response.data.user);
           setEmail(response.data.user.email || "");
@@ -69,20 +73,29 @@ const Settings = () => {
           console.log("User data loaded successfully");
         } else {
           console.error("Failed to load user data:", response.data);
-          setError("Failed to load user data. " + (response.data?.message || ""));
+          setError(
+            "Failed to load user data. " + (response.data?.message || "")
+          );
         }
       } catch (error) {
         console.error("Error in fetchUserData:", error);
-        
+
         if (error.response) {
           // The request was made and the server responded with an error status
-          console.error("Server error response:", error.response.status, error.response.data);
-          
+          console.error(
+            "Server error response:",
+            error.response.status,
+            error.response.data
+          );
+
           if (error.response.status === 401) {
             setError("Authentication failed. Please log in again.");
             localStorage.removeItem("authToken"); // Clear invalid token
           } else {
-            setError("Error loading user data: " + (error.response.data?.message || error.message));
+            setError(
+              "Error loading user data: " +
+                (error.response.data?.message || error.message)
+            );
           }
         } else if (error.request) {
           // The request was made but no response was received
@@ -108,26 +121,26 @@ const Settings = () => {
 
     try {
       const token = localStorage.getItem("authToken");
-      
+
       if (!token) {
         setError("You are not logged in. Please log in again.");
         return;
       }
 
       console.log("Updating profile with data:", { name, email });
-      
+
       const response = await axios.put(
         `${API_URL}/user/profile`,
         { name, email },
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
       console.log("Update profile response:", response.data);
-      
+
       if (response.data && response.data.success) {
         setSuccess("Profile updated successfully");
         setUser(response.data.user || { ...user, name, email });
@@ -150,9 +163,12 @@ const Settings = () => {
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      
+
       if (error.response) {
-        setError("Error updating profile: " + (error.response.data?.message || error.message));
+        setError(
+          "Error updating profile: " +
+            (error.response.data?.message || error.message)
+        );
       } else if (error.request) {
         setError("No response from server. Please try again later.");
       } else {
@@ -179,26 +195,26 @@ const Settings = () => {
 
     try {
       const token = localStorage.getItem("authToken");
-      
+
       if (!token) {
         setError("You are not logged in. Please log in again.");
         return;
       }
 
       console.log("Changing password");
-      
+
       const response = await axios.put(
         `${API_URL}/user/password`,
         { currentPassword, newPassword },
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
       console.log("Change password response:", response.data);
-      
+
       if (response.data && response.data.success) {
         setSuccess("Password changed successfully");
         setCurrentPassword("");
@@ -209,13 +225,16 @@ const Settings = () => {
       }
     } catch (error) {
       console.error("Error changing password:", error);
-      
+
       if (error.response) {
         // Special handling for incorrect password
         if (error.response.status === 401) {
           setError("Current password is incorrect");
         } else {
-          setError("Error changing password: " + (error.response.data?.message || error.message));
+          setError(
+            "Error changing password: " +
+              (error.response.data?.message || error.message)
+          );
         }
       } else if (error.request) {
         setError("No response from server. Please try again later.");
@@ -298,15 +317,23 @@ const Settings = () => {
           )}
 
           {activeTab === "password" && (
-            <form onSubmit={handleChangePassword} className={styles.form}>
+            <form
+              onSubmit={handleChangePassword}
+              className={styles.form}
+              autoComplete="off"
+              data-lpignore="true"
+            >
               <div className={styles.formGroup}>
                 <label htmlFor="currentPassword">Current Password</label>
                 <input
                   type="password"
                   id="currentPassword"
+                  name="current-password-no-autofill"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Enter current password"
+                  autoComplete="off"
+                  data-lpignore="true"
                   required
                 />
               </div>
@@ -316,10 +343,13 @@ const Settings = () => {
                 <input
                   type="password"
                   id="newPassword"
+                  name="new-password-no-autofill"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter new password"
                   minLength="6"
+                  autoComplete="new-password"
+                  data-lpignore="true"
                   required
                 />
               </div>
@@ -329,13 +359,20 @@ const Settings = () => {
                 <input
                   type="password"
                   id="confirmPassword"
+                  name="confirm-password-no-autofill"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm new password"
                   minLength="6"
+                  autoComplete="new-password"
+                  data-lpignore="true"
                   required
                 />
               </div>
+
+              {/* Hidden input to trick browser password managers */}
+              <input type="text" style={{ display: "none" }} />
+              <input type="password" style={{ display: "none" }} />
 
               <button type="submit" className={styles.button}>
                 Change Password

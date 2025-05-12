@@ -128,7 +128,8 @@ const userController = {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-      // Update password
+      // Update password - Note: This function does NOT send any emails
+      // Email notifications are only sent through the forgotPassword flow
       const updated = await User.updatePassword(user.id, hashedPassword);
 
       if (!updated) {

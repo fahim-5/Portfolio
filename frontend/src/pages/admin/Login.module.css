@@ -152,6 +152,16 @@
   font-size: 13px;
 }
 
+.success {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 13px;
+}
+
 /* Modal styles */
 .modalOverlay {
   position: fixed;
@@ -229,4 +239,46 @@
 .secondaryButton:hover {
   background-color: rgba(160, 160, 160, 0.1);
   color: #ffffff;
+}
+
+.devNote {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.codeDisplay {
+  background-color: #20232e;
+  border: 1px solid #0dd3ff;
+  color: #ffffff;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.codeValue {
+  font-size: 24px;
+  font-weight: bold;
+  color: #0dd3ff;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.codeValue:hover {
+  transform: scale(1.05);
+  text-shadow: 0 0 5px rgba(13, 211, 255, 0.5);
+}
+
+.codeCopy {
+  display: block;
+  font-size: 12px;
+  font-weight: normal;
+  color: #a0a0a0;
+  margin-top: 5px;
 }
