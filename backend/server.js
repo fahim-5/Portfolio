@@ -55,5 +55,4 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
-// Start the server
-startServer();
+
