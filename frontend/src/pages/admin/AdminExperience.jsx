@@ -16,30 +16,18 @@ const AdminExperience = () => {
   const [editMode, setEditMode] = useState(false);
   const [currentId, setCurrentId] = useState(null);
 
-  // Fetch experience data
   const fetchExperienceData = async () => {
     setLoading(true);
     setError(null);
     try {
-      console.log('Fetching experience data in AdminExperience component...');
-      
-      // Ensure portfolioService is initialized
-      console.log('portfolioService available:', !!portfolioService);
-      console.log('fetchExperienceData method available:', !!portfolioService.fetchExperienceData);
-      
       const data = await portfolioService.fetchExperienceData();
-      console.log('Experience data received in component:', data);
-      
       if (data === null) {
-        console.warn('Received null data from portfolioService');
         setExperienceData([]);
         setError('Failed to fetch experience data from the server');
       } else {
         setExperienceData(data || []);
-        console.log('Experience data state updated with', data ? data.length : 0, 'items');
       }
     } catch (error) {
-      console.error('Error fetching experience data in component:', error);
       setError('An error occurred while fetching experience data: ' + error.message);
       setExperienceData([]);
     } finally {
@@ -49,27 +37,14 @@ const AdminExperience = () => {
 
   useEffect(() => {
     fetchExperienceData();
-    
-    // Add event listener for data changes
-    const handleDataChange = () => {
-      console.log('Local data changed event detected, refreshing experience data');
-      fetchExperienceData();
-    };
-    
+    const handleDataChange = () => fetchExperienceData();
     window.addEventListener('localDataChanged', handleDataChange);
-    
-    // Cleanup event listener
-    return () => {
-      window.removeEventListener('localDataChanged', handleDataChange);
-    };
+    return () => window.removeEventListener('localDataChanged', handleDataChange);
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const resetForm = () => {
@@ -127,7 +102,6 @@ const AdminExperience = () => {
     }
   };
 
-  // Create a dummy experience item for testing
   const createDummyExperience = async () => {
     try {
       const dummyData = {
@@ -137,8 +111,6 @@ const AdminExperience = () => {
         period: 'Jan 2023 - Present',
         description: 'This is a test experience entry to verify the API is working.'
       };
-      
-      console.log('Creating dummy experience with data:', dummyData);
       await portfolioService.createExperience(dummyData);
       alert('Dummy experience created successfully!');
       fetchExperienceData();
@@ -149,125 +121,131 @@ const AdminExperience = () => {
   };
 
   return (
-    <div className={styles.adminExperience}>
-      <h2>{editMode ? 'Edit' : 'Add'} Experience Entry</h2>
-      
-      {error && (
-        <div className={styles.errorMessage}>
-          <p>Error: {error}</p>
-          <p>
-            This might be because the experience table doesn't exist in your database.
-            Try creating it by adding your first experience entry.
-          </p>
-        </div>
-      )}
-      
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <input 
-          type="text" 
-          name="position" 
-          value={formData.position} 
-          onChange={handleChange} 
-          placeholder="Position" 
-          required 
-        />
-        <input 
-          type="text" 
-          name="company" 
-          value={formData.company} 
-          onChange={handleChange} 
-          placeholder="Company" 
-          required 
-        />
-        <input 
-          type="text" 
-          name="location" 
-          value={formData.location} 
-          onChange={handleChange} 
-          placeholder="Location" 
-        />
-        <input 
-          type="text" 
-          name="period" 
-          value={formData.period} 
-          onChange={handleChange} 
-          placeholder="e.g. Jan 2023 - Present" 
-        />
-        <textarea 
-          name="description" 
-          value={formData.description} 
-          onChange={handleChange} 
-          placeholder="Description"
-          rows="4"
-        ></textarea>
-        <div className={styles.formButtons}>
-          <button type="submit" className={styles.submitButton}>
-            {editMode ? 'Update' : 'Submit'}
-          </button>
-          {editMode && (
-            <button 
-              type="button" 
-              onClick={resetForm} 
-              className={styles.cancelButton}
-            >
-              Cancel
+    <div className={styles.adminContainer}>
+      <div className={styles.formSection}>
+        <h2 className={styles.sectionTitle}>{editMode ? 'Edit' : 'Add'} Experience</h2>
+        
+        {error && (
+          <div className={styles.errorMessage}>
+            <p>Error: {error}</p>
+            <p>This might be because the experience table doesn't exist in your database.</p>
+          </div>
+        )}
+        
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.formGroup}>
+            <input 
+              type="text" 
+              name="position" 
+              value={formData.position} 
+              onChange={handleChange} 
+              placeholder="Position" 
+              required 
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <input 
+              type="text" 
+              name="company" 
+              value={formData.company} 
+              onChange={handleChange} 
+              placeholder="Company" 
+              required 
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <input 
+              type="text" 
+              name="location" 
+              value={formData.location} 
+              onChange={handleChange} 
+              placeholder="Location" 
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <input 
+              type="text" 
+              name="period" 
+              value={formData.period} 
+              onChange={handleChange} 
+              placeholder="e.g. Jan 2023 - Present" 
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <textarea 
+              name="description" 
+              value={formData.description} 
+              onChange={handleChange} 
+              placeholder="Description"
+              rows="4"
+            />
+          </div>
+          <div className={styles.buttonGroup}>
+            <button type="submit" className={styles.primaryButton}>
+              {editMode ? 'Update' : 'Add Experience'}
             </button>
-          )}
-        </div>
-      </form>
-
-      <div className={styles.debugSection}>
-        <button 
-          onClick={createDummyExperience} 
-          className={styles.debugButton}
-        >
-          Create Test Experience Entry
-        </button>
-        <button 
-          onClick={fetchExperienceData} 
-          className={styles.debugButton}
-        >
-          Refresh Data
-        </button>
+            {editMode && (
+              <button 
+                type="button" 
+                onClick={resetForm} 
+                className={styles.cancelButton}
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
       </div>
 
-      <h2>Experience Entries</h2>
-      {loading ? (
-        <p>Loading experience data...</p>
-      ) : experienceData.length > 0 ? (
-        <div className={styles.experienceList}>
-          {experienceData.map((exp) => (
-            <div key={exp.id} className={styles.experienceCard}>
-              <h3>{exp.position}</h3>
-              <h4>{exp.company}</h4>
-              <p className={styles.location}>{exp.location}</p>
-              <p className={styles.period}>{exp.period}</p>
-              <p className={styles.description}>{exp.description}</p>
-              <div className={styles.cardActions}>
-                <button 
-                  onClick={() => handleEdit(exp)} 
-                  className={styles.editButton}
-                >
-                  Edit
-                </button>
-                <button 
-                  onClick={() => handleDelete(exp.id)} 
-                  className={styles.deleteButton}
-                >
-                  Delete
-                </button>
+      {/* <div className={styles.debugSection}>
+        <button onClick={createDummyExperience} className={styles.debugButton}>
+          Create Test Entry
+        </button>
+        <button onClick={fetchExperienceData} className={styles.debugButton}>
+          Refresh Data
+        </button>
+      </div> */}
+
+      <div className={styles.listSection}>
+        <h2 className={styles.sectionTitle}>Experience Entries</h2>
+        {loading ? (
+          <div className={styles.loading}>Loading experience data...</div>
+        ) : experienceData.length > 0 ? (
+          <div className={styles.experienceList}>
+            {experienceData.map((exp) => (
+              <div key={exp.id} className={styles.experienceItem}>
+                <div className={styles.itemHeader}>
+                  <div>
+                    <h3 className={styles.itemTitle}>{exp.position}</h3>
+                    <h4 className={styles.itemCompany}>{exp.company}</h4>
+                  </div>
+                  <div className={styles.itemActions}>
+                    <button 
+                      onClick={() => handleEdit(exp)} 
+                      className={styles.editButton}
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(exp.id)} 
+                      className={styles.deleteButton}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+                {exp.location && <div className={styles.itemLocation}>{exp.location}</div>}
+                {exp.period && <div className={styles.itemDuration}>{exp.period}</div>}
+                {exp.description && <div className={styles.itemDescription}>{exp.description}</div>}
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div>
-          <p>No experience entries found. Add your first one above!</p>
-          <p className={styles.debugInfo}>
-            Make sure the 'experience' table exists in your database.
-          </p>
-        </div>
-      )}
+            ))}
+          </div>
+        ) : (
+          <div className={styles.emptyState}>
+            <p>No experience entries found. Add your first one above!</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

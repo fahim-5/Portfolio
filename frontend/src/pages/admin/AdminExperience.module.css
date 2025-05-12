@@ -1,61 +1,127 @@
-/* AdminExperience.module.css */
-:root {
-  --primary-color: #00bcd4;
-  --primary-darker: #00a0b7;
-  --dark-bg: #0a0a14;
-  --card-bg: rgba(20, 20, 30, 0.7);
-  --border-color: rgba(80, 80, 100, 0.2);
-  --text-color: #e0e0e0;
-  --text-muted: #8a8a9a;
-  --danger-color: #ff5252;
-  --success-color: #4CAF50;
-  --accent-color: #7986cb;
-  --shadow-color: rgba(0, 188, 212, 0.2);
-}
-
-.container {
+/* Professional Dark Theme */
+.adminContainer {
   max-width: 1200px;
-  margin: 2rem auto;
+  margin: 0 auto;
   padding: 2rem;
-  background-color: var(--card-bg);
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--border-color);
-  margin-top: 0;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.header {
+.sectionTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #00bcd4;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 188, 212, 0.3);
+}
+
+/* Form Styles */
+.formSection {
+  background: rgba(20, 25, 30, 0.8);
+  border-radius: 8px;
+  padding: 2rem;
   margin-bottom: 2rem;
-  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.header h2 {
-  font-size: 2rem;
-  color: var(--primary-color);
-  margin-bottom: 0.5rem;
+.form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 
-.header p {
-  color: var(--text-muted);
-  font-size: 1rem;
+.formGroup {
+  margin-bottom: 1.2rem;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.8rem;
+  background: rgba(30, 35, 40, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  border-color: #00bcd4;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
+}
+
+.formGroup textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  grid-column: 1 / -1;
+}
+
+.primaryButton {
+  background: #00bcd4;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.primaryButton:hover {
+  background: #00a0b7;
+  transform: translateY(-1px);
+}
+
+.cancelButton {
+  background: transparent;
+  color: #8a8a9a;
+  border: 1px solid #8a8a9a;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancelButton:hover {
+  color: #e0e0e0;
+  border-color: #e0e0e0;
+}
+
+/* Experience List Styles */
+.listSection {
+  margin-top: 2rem;
 }
 
 .experienceList {
-  margin-bottom: 2rem;
+  display: grid;
+  gap: 1.5rem;
 }
 
 .experienceItem {
-  background-color: rgba(15, 15, 25, 0.5);
+  background: rgba(20, 25, 30, 0.8);
   border-radius: 8px;
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid var(--border-color);
-  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
 }
 
 .experienceItem:hover {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 1px var(--shadow-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 188, 212, 0.1);
+  border-color: rgba(0, 188, 212, 0.3);
 }
 
 .itemHeader {
@@ -67,18 +133,29 @@
 
 .itemTitle {
   font-size: 1.2rem;
-  color: var(--primary-color);
-  margin-bottom: 0.25rem;
+  color: #00bcd4;
+  margin-bottom: 0.3rem;
 }
 
 .itemCompany {
-  color: var(--text-color);
-  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  color: #8a8a9a;
+  margin-bottom: 0.5rem;
 }
 
+.itemLocation,
 .itemDuration {
-  color: var(--text-muted);
+  color: #8a8a9a;
   font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.itemDescription {
+  color: #e0e0e0;
+  line-height: 1.6;
+  margin-top: 1rem;
+  padding-left: 1rem;
+  border-left: 2px solid #00bcd4;
 }
 
 .itemActions {
@@ -86,381 +163,97 @@
   gap: 0.5rem;
 }
 
-.actionButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-.editButton {
-  color: var(--primary-color);
-}
-
-.editButton:hover {
-  background-color: rgba(0, 188, 212, 0.1);
-}
-
-.deleteButton {
-  color: var(--danger-color);
-}
-
-.deleteButton:hover {
-  background-color: rgba(255, 82, 82, 0.1);
-}
-
-.formSection {
-  background-color: rgba(15, 15, 25, 0.5);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid var(--border-color);
-}
-
-.sectionTitle {
-  font-size: 1.25rem;
-  color: var(--primary-color);
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.formGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.formGroup {
-  margin-bottom: 1.5rem;
-}
-
-.formGroup label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: var(--text-color);
-  font-size: 0.9rem;
-}
-
-.formGroup input,
-.formGroup textarea,
-.formGroup select {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: rgba(30, 30, 40, 0.7);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.formGroup input:focus,
-.formGroup textarea:focus,
-.formGroup select:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px var(--shadow-color);
-  outline: none;
-}
-
-.formGroup textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-.buttonGroup {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.primaryButton {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.primaryButton:hover {
-  background-color: var(--primary-darker);
-}
-
-.cancelButton {
-  background-color: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--border-color);
-}
-
-.cancelButton:hover {
-  color: var(--text-color);
-  border-color: var(--text-color);
-}
-
-.addButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: rgba(76, 175, 80, 0.1);
-  color: var(--success-color);
-  padding: 0.75rem 1.5rem;
-  border: 1px solid var(--success-color);
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  margin-bottom: 2rem;
-}
-
-.addButton:hover {
-  background-color: rgba(76, 175, 80, 0.2);
-}
-
-.notification {
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.success {
-  background-color: rgba(76, 175, 80, 0.1);
-  color: var(--success-color);
-  border-left: 4px solid var(--success-color);
-}
-
-.error {
-  background-color: rgba(255, 82, 82, 0.1);
-  color: var(--danger-color);
-  border-left: 4px solid var(--danger-color);
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 1.5rem;
-    margin: 1rem;
-  }
-  
-  .formGrid {
-    grid-template-columns: 1fr;
-  }
-  
-  .buttonGroup {
-    flex-direction: column;
-  }
-  
-  .button {
-    width: 100%;
-  }
-}
-
-.adminExperience {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.adminExperience h2 {
-  margin-bottom: 1.5rem;
-  color: #333;
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 0.5rem;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.form input, 
-.form textarea {
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.form textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-.formButtons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.submitButton {
-  background-color: #4a6cf7;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.submitButton:hover {
-  background-color: #3a55e1;
-}
-
-.cancelButton {
-  background-color: #f0f0f0;
-  color: #333;
-  border: 1px solid #ddd;
-  padding: 0.8rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.cancelButton:hover {
-  background-color: #e0e0e0;
-}
-
-.experienceList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-.experienceCard {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  position: relative;
-}
-
-.experienceCard h3 {
-  margin: 0 0 0.5rem;
-  color: #333;
-  font-size: 1.2rem;
-}
-
-.experienceCard h4 {
-  margin: 0 0 0.5rem;
-  color: #555;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.location, .period {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-
-.description {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: #444;
-}
-
-.cardActions {
-  display: flex;
-  gap: 0.8rem;
-  margin-top: 1.2rem;
-}
-
 .editButton,
 .deleteButton {
   padding: 0.5rem 1rem;
-  border: none;
   border-radius: 4px;
+  font-size: 0.85rem;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 0.9rem;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .editButton {
-  background-color: #f4f4f4;
-  color: #333;
+  background: rgba(0, 188, 212, 0.1);
+  color: #00bcd4;
+  border: 1px solid #00bcd4;
 }
 
 .editButton:hover {
-  background-color: #e8e8e8;
+  background: rgba(0, 188, 212, 0.2);
 }
 
 .deleteButton {
-  background-color: #fee2e2;
-  color: #b91c1c;
+  background: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+  border: 1px solid #ff5252;
 }
 
 .deleteButton:hover {
-  background-color: #fecaca;
+  background: rgba(255, 82, 82, 0.2);
 }
 
-@media (max-width: 768px) {
-  .experienceList {
-    grid-template-columns: 1fr;
-  }
-  
-  .adminExperience {
-    padding: 1rem;
-  }
-}
-
-.errorMessage {
-  background-color: #ffebee;
-  color: #b71c1c;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-  border-left: 4px solid #f44336;
-}
-
+/* Debug Section */
 .debugSection {
   display: flex;
   gap: 1rem;
-  margin: 1.5rem 0;
-  padding: 1rem;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  border: 1px dashed #ccc;
+  margin-bottom: 2rem;
 }
 
 .debugButton {
-  background-color: #e0f7fa;
-  color: #006064;
-  border: 1px solid #b2ebf2;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
+  background: rgba(60, 60, 70, 0.5);
+  color: #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
 }
 
 .debugButton:hover {
-  background-color: #b2ebf2;
+  background: rgba(80, 80, 90, 0.5);
 }
 
-.debugInfo {
-  font-style: italic;
-  color: #757575;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-} 
+/* Error and Loading States */
+.errorMessage {
+  background: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid #ff5252;
+}
+
+.loading {
+  color: #8a8a9a;
+  text-align: center;
+  padding: 2rem;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: #8a8a9a;
+  background: rgba(20, 25, 30, 0.5);
+  border-radius: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .adminContainer {
+    padding: 1rem;
+  }
+  
+  .form {
+    grid-template-columns: 1fr;
+  }
+  
+  .itemHeader {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .itemActions {
+    align-self: flex-end;
+  }
+}

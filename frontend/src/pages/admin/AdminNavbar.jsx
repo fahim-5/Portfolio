@@ -61,6 +61,17 @@ const AdminNavbar = () => {
     navigate("/");
   };
 
+  const handleLogoutPannel = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    // Redirect to login page
+    navigate("/admin/login");
+  };
+
+
+
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
@@ -83,12 +94,6 @@ const AdminNavbar = () => {
     { path: "/admin/pictures", label: "Pictures", icon: <FaImages /> },
     { path: "/admin/references", label: "References", icon: <FaComments /> },
     { path: "/admin/settings", label: "Settings", icon: <FaCog /> },
-    {
-      path: "/",
-      label: "Back to Portfolio",
-      icon: <FaArrowLeft />,
-      external: true,
-    },
   ];
 
   return (
@@ -168,9 +173,6 @@ const AdminNavbar = () => {
       </header>
 
       <aside className={`${styles.sidebar} ${sidebarOpen ? styles.open : ""}`}>
-        <div className={styles.sidebarHeader}>
-          <span>MAIN NAVIGATION</span>
-        </div>
         <nav className={styles.sidebarNav}>
           <ul className={styles.sidebarNavList}>
             {navItems.map((item, index) => (
@@ -201,6 +203,15 @@ const AdminNavbar = () => {
             <li className={styles.sidebarNavItem}>
               <button
                 onClick={handleLogout}
+                className={`${styles.sidebarNavLink} ${styles.logoutLink} ${styles.backToPortfolio}`}
+              >
+                <span className={styles.navIcon}>
+                  <FaSignOutAlt />
+                </span>
+                <span>Back to Portfilio</span>
+              </button>
+              <button
+                onClick={handleLogoutPannel}
                 className={`${styles.sidebarNavLink} ${styles.logoutLink}`}
               >
                 <span className={styles.navIcon}>

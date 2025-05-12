@@ -1,27 +1,10 @@
-/* AdminSkillsManager.module.css */
-:root {
-  --primary-color: #00bcd4;
-  --primary-darker: #00a0b7;
-  --dark-bg: #0a0a14;
-  --card-bg: rgba(20, 20, 30, 0.7);
-  --border-color: rgba(80, 80, 100, 0.2);
-  --text-color: #e0e0e0;
-  --text-muted: #8a8a9a;
-  --danger-color: #ff5252;
-  --success-color: #4CAF50;
-  --accent-color: #7986cb;
-  --shadow-color: rgba(0, 188, 212, 0.2);
-}
-
-.container {
+/* Professional Dark Theme */
+.adminContainer {
   max-width: 1200px;
-  margin: 2rem auto;
+  margin: 0 auto;
   padding: 2rem;
-  background-color: var(--card-bg);
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--border-color);
-  margin-top: 0;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header {
@@ -31,429 +14,154 @@
 
 .header h2 {
   font-size: 2rem;
-  color: var(--primary-color);
+  color: #00bcd4;
   margin-bottom: 0.5rem;
 }
 
 .header p {
-  color: var(--text-muted);
+  color: #8a8a9a;
   font-size: 1rem;
 }
 
-.skillsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.skillCard {
-  background-color: rgba(15, 15, 25, 0.5);
-  border-radius: 8px;
-  padding: 1.25rem;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.skillCard:hover {
-  border-color: var(--primary-color);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transform: translateY(-3px);
-}
-
-.skillHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1rem;
-}
-
-.skillIcon {
-  font-size: 2rem;
-  color: var(--primary-color);
-  margin-bottom: 0.5rem;
-}
-
-.skillActions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.actionButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.25rem;
+.errorMessage {
+  background: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+  padding: 1rem;
   border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-.editButton {
-  color: var(--primary-color);
-}
-
-.editButton:hover {
-  background-color: rgba(0, 188, 212, 0.1);
-}
-
-.deleteButton {
-  color: var(--danger-color);
-}
-
-.deleteButton:hover {
-  background-color: rgba(255, 82, 82, 0.1);
-}
-
-.skillName {
-  font-size: 1.2rem;
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.skillCategory {
-  color: var(--accent-color);
-  font-size: 0.9rem;
-  margin-bottom: 0.75rem;
-}
-
-.skillLevel {
-  margin-top: 0.75rem;
-}
-
-.skillLevelLabel {
-  display: flex;
-  justify-content: space-between;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  margin-bottom: 0.5rem;
-}
-
-.skillLevelBar {
-  height: 6px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.skillLevelFill {
-  height: 100%;
-  background: linear-gradient(to right, var(--primary-color), var(--accent-color));
-  border-radius: 3px;
-}
-
-.categoriesSection {
-  background-color: rgba(15, 15, 25, 0.5);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid var(--border-color);
-}
-
-.sectionTitle {
-  font-size: 1.25rem;
-  color: var(--primary-color);
   margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  border-left: 3px solid #ff5252;
 }
 
-.categoryList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #8a8a9a;
 }
 
-.categoryTag {
-  background-color: rgba(0, 188, 212, 0.1);
-  color: var(--primary-color);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: 1px solid rgba(0, 188, 212, 0.3);
-}
-
-.categoryTag button {
-  background: none;
-  border: none;
-  color: var(--danger-color);
-  cursor: pointer;
-  padding: 0;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-}
-
-.categoryForm {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.categoryForm input {
-  flex-grow: 1;
-  padding: 0.75rem;
-  background-color: rgba(30, 30, 40, 0.7);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: var(--text-color);
-  font-size: 1rem;
-}
-
-.categoryForm input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px var(--shadow-color);
-  outline: none;
-}
-
-.categoryForm button {
-  padding: 0.75rem 1.5rem;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.categoryForm button:hover {
-  background-color: var(--primary-darker);
-}
-
+/* Form Styles */
 .formSection {
-  background-color: rgba(15, 15, 25, 0.5);
+  background: rgba(20, 25, 30, 0.8);
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 2rem;
   margin-bottom: 2rem;
-  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.formGrid {
+.formSection h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: #00bcd4;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 188, 212, 0.3);
+}
+
+.form {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
 .formGroup {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .formGroup label {
   display: block;
   margin-bottom: 0.5rem;
-  color: var(--text-color);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: #e0e0e0;
 }
 
 .formGroup input,
-.formGroup textarea,
 .formGroup select {
   width: 100%;
-  padding: 0.75rem;
-  background-color: rgba(30, 30, 40, 0.7);
-  border: 1px solid var(--border-color);
+  padding: 0.8rem;
+  background: rgba(30, 35, 40, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
-  color: var(--text-color);
-  font-size: 1rem;
+  color: #e0e0e0;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
 }
 
 .formGroup input:focus,
-.formGroup textarea:focus,
 .formGroup select:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px var(--shadow-color);
+  border-color: #00bcd4;
   outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
 }
 
-.rangeContainer {
+.formActions {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.rangeValue {
-  display: flex;
-  justify-content: space-between;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
-
-.rangeInput {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.1);
-  outline: none;
-}
-
-.rangeInput::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  cursor: pointer;
-}
-
-.rangeInput::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  cursor: pointer;
-  border: none;
-}
-
-.buttonGroup {
-  display: flex;
-  justify-content: flex-end;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
-.button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
+/* Button Styles */
 .primaryButton {
-  background-color: var(--primary-color);
+  background: #00bcd4;
   color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .primaryButton:hover {
-  background-color: var(--primary-darker);
+  background: #00a0b7;
+  transform: translateY(-1px);
 }
 
-.cancelButton {
-  background-color: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--border-color);
-}
-
-.cancelButton:hover {
-  color: var(--text-color);
-  border-color: var(--text-color);
-}
-
-.addButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: rgba(76, 175, 80, 0.1);
-  color: var(--success-color);
-  padding: 0.75rem 1.5rem;
-  border: 1px solid var(--success-color);
+.secondaryButton {
+  background: transparent;
+  color: #8a8a9a;
+  border: 1px solid #8a8a9a;
+  padding: 0.8rem 1.5rem;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
   transition: all 0.3s ease;
-  margin-bottom: 2rem;
 }
 
-.addButton:hover {
-  background-color: rgba(76, 175, 80, 0.2);
+.secondaryButton:hover {
+  color: #e0e0e0;
+  border-color: #e0e0e0;
 }
 
-.notification {
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.hidden {
+  display: none;
 }
 
-.success {
-  background-color: rgba(76, 175, 80, 0.1);
-  color: var(--success-color);
-  border-left: 4px solid var(--success-color);
-}
-
-.error {
-  background-color: rgba(255, 82, 82, 0.1);
-  color: var(--danger-color);
-  border-left: 4px solid var(--danger-color);
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 1.5rem;
-    margin: 1rem;
-  }
-  
-  .skillsGrid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-  
-  .formGrid {
-    grid-template-columns: 1fr;
-  }
-  
-  .buttonGroup {
-    flex-direction: column;
-  }
-  
-  .button {
-    width: 100%;
-  }
-  
-  .categoryForm {
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 480px) {
-  .skillsGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.adminSkillsManager {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.adminSkillsManager h2 {
-  color: #2c3e50;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #3498db;
+/* Skills List Styles */
+.skillsContainer {
+  margin-top: 2rem;
 }
 
 .categorySection {
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background-color: white;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: rgba(20, 25, 30, 0.8);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .categorySection h3 {
-  color: #3498db;
+  font-size: 1.2rem;
+  color: #00bcd4;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.skillList {
+.countBadge {
+  background: rgba(0, 188, 212, 0.2);
+  color: #00bcd4;
+  padding: 0.2rem 0.6rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+}
+
+.skillsList {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -463,17 +171,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.2s;
-}
-
-.skillItem:hover {
-  background-color: #f5f5f5;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
 }
 
 .skillItem:last-child {
   border-bottom: none;
+}
+
+.skillItem:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .skillInfo {
@@ -482,13 +190,18 @@
   gap: 1rem;
 }
 
+.skillInfo h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
 .skillLevel {
-  display: inline-block;
-  padding: 0.2rem 0.5rem;
+  background: rgba(0, 188, 212, 0.1);
+  color: #00bcd4;
+  padding: 0.2rem 0.6rem;
   border-radius: 4px;
-  background-color: #ecf0f1;
   font-size: 0.8rem;
-  color: #7f8c8d;
 }
 
 .skillActions {
@@ -496,149 +209,60 @@
   gap: 0.5rem;
 }
 
-.editBtn, .deleteBtn {
-  border: none;
-  padding: 0.4rem 0.8rem;
+.editButton,
+.deleteButton {
+  padding: 0.5rem 1rem;
   border-radius: 4px;
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
 }
 
-.editBtn {
-  background-color: #3498db;
-  color: white;
+.editButton {
+  background: rgba(0, 188, 212, 0.1);
+  color: #00bcd4;
+  border: 1px solid #00bcd4;
 }
 
-.editBtn:hover {
-  background-color: #2980b9;
+.editButton:hover {
+  background: rgba(0, 188, 212, 0.2);
 }
 
-.deleteBtn {
-  background-color: #e74c3c;
-  color: white;
+.deleteButton {
+  background: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+  border: 1px solid #ff5252;
 }
 
-.deleteBtn:hover {
-  background-color: #c0392b;
+.deleteButton:hover {
+  background: rgba(255, 82, 82, 0.2);
 }
 
-.addButton {
-  display: block;
-  margin: 0 0 1.5rem;
-  padding: 0.6rem 1.2rem;
-  background-color: #2ecc71;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.addButton:hover {
-  background-color: #27ae60;
-}
-
-.hideForm {
-  display: none;
-}
-
-.formContainer {
-  background-color: white;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.formContainer h3 {
-  margin-top: 0;
-  color: #3498db;
-  margin-bottom: 1.2rem;
-}
-
-.formGroup {
-  margin-bottom: 1.2rem;
-}
-
-.formGroup label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #2c3e50;
-}
-
-.formGroup input, .formGroup select {
-  width: 100%;
-  padding: 0.6rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.formGroup input:focus, .formGroup select:focus {
-  outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-.formActions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.submitButton, .cancelButton {
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.submitButton {
-  background-color: #3498db;
-  color: white;
-}
-
-.submitButton:hover {
-  background-color: #2980b9;
-}
-
-.cancelButton {
-  background-color: #95a5a6;
-  color: white;
-}
-
-.cancelButton:hover {
-  background-color: #7f8c8d;
-}
-
-.loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-  font-size: 1.2rem;
-  color: #7f8c8d;
-}
-
-.error {
-  padding: 1rem;
-  background-color: #fcecec;
-  border-left: 4px solid #e74c3c;
-  color: #c0392b;
-  margin-bottom: 1.5rem;
-  border-radius: 4px;
-}
-
-.noSkills {
-  padding: 1rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-  color: #7f8c8d;
+.emptyState {
   text-align: center;
-} 
+  padding: 2rem;
+  color: #8a8a9a;
+  background: rgba(20, 25, 30, 0.5);
+  border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .adminContainer {
+    padding: 1rem;
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
+  
+  .skillItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .skillActions {
+    align-self: flex-end;
+  }
+}

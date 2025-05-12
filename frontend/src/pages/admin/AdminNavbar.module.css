@@ -38,7 +38,7 @@
   z-index: 1000;
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--box-shadow);
-  backdrop-filter: blur(10px);
+
 }
 
 .container {
@@ -83,15 +83,21 @@
   color: transparent;
   margin: 0;
   letter-spacing: 0.5px;
+  display: flex;
+  justify-content: center;
 }
 
-/* Search Styles */
+/* Simplified Search Styles */
 .searchContainer {
   flex: 1;
   max-width: 550px;
   margin: 0 20px;
 }
 
+
+form{
+  background: transparent;
+}
 .searchInputWrapper {
   position: relative;
   display: flex;
@@ -104,7 +110,6 @@
   left: 16px;
   color: rgba(255, 255, 255, 0.5);
   font-size: 1rem;
-  z-index: 2;
 }
 
 .searchInput {
@@ -123,7 +128,7 @@
   outline: none;
   background-color: rgba(255, 255, 255, 0.08);
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.15);
+  /* Removed box-shadow for a cleaner look */
 }
 
 .searchInput::placeholder {
@@ -134,7 +139,7 @@
   position: absolute;
   right: 5px;
   top: 5px;
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 25px;
@@ -143,13 +148,13 @@
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
-  z-index: 2;
 }
 
 .searchButton:hover {
   transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(74, 107, 255, 0.3);
+  /* Removed shadow for minimalism */
 }
+
 
 /* Profile Section Styles */
 .profileSection {
@@ -387,15 +392,26 @@
   color: var(--primary-color);
 }
 
+
+.backToPortfolio{
+  color: #25622e;
+}
+
+
 .logoutLink {
   color: var(--danger-color) !important;
   margin-top: 16px;
   border-top: 1px solid var(--border-color);
   padding-top: 16px;
+  display: flex;
+  justify-content: center;
 }
+
 
 .logoutLink .navIcon {
   color: var(--danger-color);
+  width: 160px;
+  
 }
 
 /* Main Content */

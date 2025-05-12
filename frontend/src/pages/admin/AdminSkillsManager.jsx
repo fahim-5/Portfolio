@@ -1,31 +1,31 @@
-// AdminSkillsManager.jsx
 import React, { useState, useEffect } from 'react';
 import styles from './AdminSkillsManager.module.css';
 import portfolioService from '../../services/portfolioService';
 import axios from 'axios';
 
 const AdminSkillsManager = () => {
-  const [skillsData, setSkillsData] = useState({ technical: [], soft: [], languages: [] });
+  const [skillsData, setSkillsData] = useState({ 
+    technical: [], 
+    soft: [], 
+    languages: [] 
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
-  // Form state
   const [showForm, setShowForm] = useState(false);
   const [editingSkill, setEditingSkill] = useState(null);
+  
   const [formData, setFormData] = useState({
     name: '',
     category: 'technical',
     level: 'intermediate'
   });
 
-  // Check authentication status
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem('authToken');
       setIsAuthenticated(!!token);
     };
-    
     checkAuth();
   }, []);
 
@@ -33,18 +33,13 @@ const AdminSkillsManager = () => {
     setLoading(true);
     setError(null);
     try {
-      // Use axios directly instead of portfolioService
       const response = await axios.get('http://localhost:5000/api/admin/skills');
-      console.log('Fetched skills:', response.data);
-      
       if (response.data) {
         setSkillsData(response.data);
       }
     } catch (err) {
       console.error('Error fetching skills:', err);
       setError('Failed to load skills. Please try again.');
-      
-      // Try localStorage as fallback
       const localData = portfolioService.getSectionData('skills');
       if (localData) {
         setSkillsData(localData);
@@ -60,10 +55,7 @@ const AdminSkillsManager = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const resetForm = () => {
@@ -90,40 +82,27 @@ const AdminSkillsManager = () => {
     }
     
     try {
-      console.log('Submitting skill data:', formData);
-      setError(null);
-      
-      // Convert category selection to lowercase for backend
       const skillData = {
         ...formData,
         category: formData.category.toLowerCase()
       };
       
-      // Use axios directly with headers
       const headers = getHeaders();
-      console.log('Using headers:', headers);
-      
       let response;
       
       if (editingSkill) {
-        // Update existing skill
-        console.log('Updating skill with ID:', editingSkill.id);
         response = await axios.put(
           `http://localhost:5000/api/admin/skills/${editingSkill.id}`, 
           skillData,
           { headers }
         );
       } else {
-        // Create new skill
-        console.log('Creating new skill');
         response = await axios.post(
           'http://localhost:5000/api/admin/skills', 
           skillData,
           { headers }
         );
       }
-      
-      console.log('API response:', response.data);
       
       if (response.data && response.data.success) {
         await fetchSkills();
@@ -134,9 +113,6 @@ const AdminSkillsManager = () => {
     } catch (err) {
       console.error('Error saving skill:', err);
       if (err.response) {
-        console.error('Server response:', err.response.data);
-        
-        // Handle authentication errors
         if (err.response.status === 401 || err.response.status === 403) {
           setError('Authentication required. Please log in.');
           setIsAuthenticated(false);
@@ -150,23 +126,14 @@ const AdminSkillsManager = () => {
   };
 
   const deleteSkill = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this skill?')) {
-      return;
-    }
+    if (!window.confirm('Are you sure you want to delete this skill?')) return;
     
     try {
-      console.log(`Deleting skill with ID: ${id}`);
-      setError(null);
-      
-      // Use axios directly with headers
       const headers = getHeaders();
-      
       const response = await axios.delete(
         `http://localhost:5000/api/admin/skills/${id}`,
         { headers }
       );
-      
-      console.log('Delete response:', response.data);
       
       if (response.data && response.data.success) {
         await fetchSkills();
@@ -176,9 +143,6 @@ const AdminSkillsManager = () => {
     } catch (err) {
       console.error('Error deleting skill:', err);
       if (err.response) {
-        console.error('Server response:', err.response.data);
-        
-        // Handle authentication errors
         if (err.response.status === 401 || err.response.status === 403) {
           setError('Authentication required. Please log in.');
           setIsAuthenticated(false);
@@ -210,39 +174,50 @@ const AdminSkillsManager = () => {
       'expert': 'Expert',
       'native': 'Native'
     };
-    
     return levels[level] || level;
   };
 
   if (loading) {
-    return <div className={styles.loader}>Loading skills...</div>;
+    return (
+      <div className={styles.adminContainer}>
+        <div className={styles.loading}>Loading skills...</div>
+      </div>
+    );
   }
 
   return (
-    <div className={styles.adminSkillsManager}>
-      <h2>Skills Manager</h2>
-      
-      {error && <div className={styles.error}>{error}</div>}
-      
-      <button 
-        className={`${styles.addButton} ${showForm ? styles.hideForm : ''}`}
-        onClick={() => {
-          resetForm();
-          setShowForm(true);
-        }}
-      >
-        Add New Skill
-      </button>
-      
+    <div className={styles.adminContainer}>
+      <div className={styles.header}>
+        <h2>Skills Manager</h2>
+        <p>Add, edit or remove skills from your portfolio</p>
+      </div>
+
+      {error && (
+        <div className={styles.errorMessage}>
+          <p>{error}</p>
+        </div>
+      )}
+
+      <div className={styles.controls}>
+        <button 
+          className={`${styles.primaryButton} ${showForm ? styles.hidden : ''}`}
+          onClick={() => {
+            resetForm();
+            setShowForm(true);
+          }}
+        >
+          Add New Skill
+        </button>
+      </div>
+
       {showForm && (
-        <div className={styles.formContainer}>
+        <div className={styles.formSection}>
           <h3>{editingSkill ? 'Edit Skill' : 'Add New Skill'}</h3>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.formGroup}>
-              <label htmlFor="name">Skill Name *</label>
+              <label>Skill Name *</label>
               <input
                 type="text"
-                id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
@@ -252,9 +227,8 @@ const AdminSkillsManager = () => {
             </div>
             
             <div className={styles.formGroup}>
-              <label htmlFor="category">Category *</label>
+              <label>Category *</label>
               <select
-                id="category"
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
@@ -267,9 +241,8 @@ const AdminSkillsManager = () => {
             </div>
             
             <div className={styles.formGroup}>
-              <label htmlFor="level">Proficiency Level</label>
+              <label>Proficiency Level</label>
               <select
-                id="level"
                 name="level"
                 value={formData.level}
                 onChange={handleInputChange}
@@ -284,12 +257,12 @@ const AdminSkillsManager = () => {
             </div>
             
             <div className={styles.formActions}>
-              <button type="submit" className={styles.submitButton}>
+              <button type="submit" className={styles.primaryButton}>
                 {editingSkill ? 'Update Skill' : 'Add Skill'}
               </button>
               <button 
                 type="button" 
-                className={styles.cancelButton}
+                className={styles.secondaryButton}
                 onClick={resetForm}
               >
                 Cancel
@@ -298,40 +271,52 @@ const AdminSkillsManager = () => {
           </form>
         </div>
       )}
-      
-      {['technical', 'soft', 'languages'].map((category) => (
-        <div key={category} className={styles.categorySection}>
-          <h3>{category.charAt(0).toUpperCase() + category.slice(1)} Skills</h3>
-          {skillsData[category]?.length > 0 ? (
-            <ul className={styles.skillList}>
-              {skillsData[category].map((skill) => (
-                <li key={skill.id} className={styles.skillItem}>
-                  <div className={styles.skillInfo}>
-                    <strong>{skill.name}</strong>
-                    {skill.level && <span className={styles.skillLevel}>{renderSkillLevel(skill.level)}</span>}
-                  </div>
-                  <div className={styles.skillActions}>
-                    <button
-                      className={styles.editBtn}
-                      onClick={() => editSkill(skill)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className={styles.deleteBtn}
-                      onClick={() => deleteSkill(skill.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className={styles.noSkills}>No skills available in this category.</p>
-          )}
-        </div>
-      ))}
+
+      <div className={styles.skillsContainer}>
+        {['technical', 'soft', 'languages'].map((category) => (
+          <div key={category} className={styles.categorySection}>
+            <h3>
+              {category.charAt(0).toUpperCase() + category.slice(1)} Skills
+              <span className={styles.countBadge}>{skillsData[category]?.length || 0}</span>
+            </h3>
+            
+            {skillsData[category]?.length > 0 ? (
+              <ul className={styles.skillsList}>
+                {skillsData[category].map((skill) => (
+                  <li key={skill.id} className={styles.skillItem}>
+                    <div className={styles.skillInfo}>
+                      <h4>{skill.name}</h4>
+                      {skill.level && (
+                        <span className={styles.skillLevel}>
+                          {renderSkillLevel(skill.level)}
+                        </span>
+                      )}
+                    </div>
+                    <div className={styles.skillActions}>
+                      <button
+                        className={styles.editButton}
+                        onClick={() => editSkill(skill)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={() => deleteSkill(skill.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className={styles.emptyState}>
+                No skills available in this category
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
